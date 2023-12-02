@@ -1,7 +1,20 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+:root {
+    --white: #ffffff;
+    --gray: #e5e5e5;
+    --ghostwhite: #f2f5ff;
+    --lightblue: #dfe9f4;
+    --blue: #054c73;
+    --darkblue: #011c42;
+    --darkgray: #666666;
+    --black: #333333;
+}
+
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    /*font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
+    font-family: Montserrat, "Open Sans", Helvetica, Arial, sans-serif;
+    background-color: var(--gray);
 }
 
 h1:focus {
@@ -23,7 +36,8 @@ a, .btn-link {
 }
 
 .content {
-    padding-top: 1.1rem;
+    position: relative;
+    top: 61.9822px;
 }
 
 .valid.modified:not([type=checkbox]) {
