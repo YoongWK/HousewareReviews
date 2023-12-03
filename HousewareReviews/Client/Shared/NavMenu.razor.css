@@ -1,265 +1,300 @@
-.navbar {
-    background-color: var(--white);
-}
+/* NavBar CSS Start*/
+    /* Navbar Customisation CSS */
+    .container-fluid {
+        padding-left: var(--bs-gutter-x);
+        padding-right: var(--bs-gutter-x);
+    }
 
-.navbar-nav {
-    --bs-nav-link-padding-x: 0.5rem;
-}
+    .navbar {
+        background-color: var(--white);
+    }
 
-.container-fluid {
-    padding-left: var(--bs-gutter-x);
-    padding-right: var(--bs-gutter-x);
-}
+    .navbar-nav {
+        --bs-nav-link-padding-x: 0.5rem;
+    }
 
-.navbar-brand {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--blue);
-}
+    .navbar-brand {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--blue);
+    }
 
-.navbar-toggler {
-    width: 30px;
-    height: 15px;
-    position: relative;
-    transition: .5s ease-in-out;
-}
+    /* Navbar Hamburger/Cross Menu Button CSS */
+    .navbar-toggler {
+        width: 30px;
+        height: 15px;
+        position: relative;
+        transition: .5s ease-in-out;
+    }
 
-.navbar-toggler:hover .toggler-icon {
-    background: var(--darkblue);
-}
+    .navbar-toggler,
+    .navbar-toggler:focus,
+    .navbar-toggler:active,
+    .navbar-toggler-icon:focus {
+        outline: none;
+        box-shadow: none;
+        border: 0;
+        position: relative;
+    }
 
-.navbar-toggler,
-.navbar-toggler:focus,
-.navbar-toggler:active,
-.navbar-toggler-icon:focus {
-    outline: none;
-    box-shadow: none;
-    border: 0;
-    position: relative;
-}
+    .navbar-toggler span {
+        margin: 0;
+        padding: 0;
+    }
 
-.navbar-toggler span {
-    margin: 0;
-    padding: 0;
-}
+    /* Navbar Hamburger/Cross Menu Lines CSS */
+    .toggler-icon {
+        position: absolute;
+        height: 4px;
+        width: 100%;
+        background: var(--blue);
+        border-radius: 2px;
+        left: 0;
+        transition: .25s ease-in-out;
+    }
+    
+    /* Navbar Hamburger Menu CSS */
+    .navbar-toggler.collapsed .top-bar {
+        margin-top: -20px;
+        transform: rotate(0deg);
+    }
 
-.toggler-icon {
-    position: absolute;
-    height: 4px;
-    width: 100%;
-    background: var(--blue);
-    border-radius: 2px;
-    left: 0;
-    transition: .25s ease-in-out;
-}
+    .navbar-toggler.collapsed .middle-bar {
+        opacity: 1;
+    }
 
-.navbar-toggler.collapsed .top-bar {
-    margin-top: -20px;
-    transform: rotate(0deg);
-}
+    .navbar-toggler.collapsed .bottom-bar {
+        margin-top: 20px;
+        transform: rotate(0deg);
+    }
 
-.navbar-toggler.collapsed .middle-bar {
-    opacity: 1;
-}
+    /* Navbar Cross Menu CSS */
+    .navbar-toggler .top-bar {
+        transform: rotate(135deg);
+    }
 
-.navbar-toggler.collapsed .bottom-bar {
-    margin-top: 20px;
-    transform: rotate(0deg);
-}
+    .navbar-toggler .middle-bar {
+        opacity: 0;
+    }
 
-.navbar-toggler .top-bar {
-    transform: rotate(135deg);
-}
+    .navbar-toggler .bottom-bar {
+        transform: rotate(-135deg);
+    }
 
-.navbar-toggler .middle-bar {
-    opacity: 0;
-}
+    /* Navbar Hamburger/Cross Menu Hover CSS */
+    .navbar-toggler:hover .toggler-icon {
+        background: var(--darkblue);
+    }
+/* NavBar CSS End */
 
-.navbar-toggler .bottom-bar {
-    transform: rotate(-135deg);
-}
+/* Menu Divider CSS Start */
+    /* Menu Divider CSS Customisation */
+    .divider {
+        margin: 0;
+        border: 1px solid var(--darkgray);
+        opacity: 50%;
+    }
+/* Menu Divider CSS End */
 
-.oi {
-    width: 2rem;
-    font-size: 1rem;
-    vertical-align: text-top;
-    top: -1px;
-    text-align: center;
-}
-
-.nav-item {
-    font-size: 0.8rem;
-    font-weight: 600;
-}
+/* NavItem CSS Start */
+    /* NavItem Customisation CSS */
+    .nav-item {
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
 
     .nav-item ::deep a {
         color: var(--darkgray);
-        border-radius: 4px;
         height: 3rem;
         display: flex;
         align-items: center;
         line-height: 3rem;
     }
 
-.nav-item ::deep a.active {
-    color: var(--black);
-}
-
-.nav-item ::deep a:hover {
-    color: var(--black);
-}
-
-.search-container {
-    display: flex;
-    align-items: center;
-    font-size: 0.8rem;
-    padding: 8px;
-}
-
-.search-bar {
-    display: inline-flex;
-    background: transparent;
-    outline: none;
-}
-
-.search-bar input {
-    font-weight: 400;
-    outline: none;
-    border: none;
-    border-radius: 0px 5px 5px 0px;
-    padding: 0;
-    color: var(--black);
-    transition: width .4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-}
-
-.search-bar input::placeholder {
-    color: var(--darkgray);
-}
-
-.search-bar input[type="search"]::-webkit-search-cancel-button {
-    -webkit-appearance: none;
-    content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%333333'><path d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/></svg>");
-    padding-right: 5px;
-    height: 0.8rem;
-    width: 0.8rem;
-    cursor: pointer;
-}
-
-.search-bar button {
-    outline: none;
-    border: none;
-    padding: 6px 0px 6px 0px;
-    border-radius: 5px 0px 0px 5px;
-    color: var(--darkgray);
-}
-
-.search-bar:hover button,
-.search-bar:focus-within button {
-    background-color: var(--gray);
-    color: var(--black);
-}
-
-@media (min-width: 1200px) {
-    .search-bar:hover input,
-    .search-bar input:focus {
-        background-color: var(--gray);
-        width: 265px;
+    /* NavItem Icon Customisation CSS */
+    .oi {
+        width: 2rem;
+        font-size: 1rem;
+        vertical-align: text-top;
+        top: -1px;
+        text-align: center;
     }
 
-    .search-bar input {
-        width: 0;
+    /* NavItem Page Active CSS */
+    .nav-item ::deep a.active {
+        color: var(--black);
     }
 
-    .search-bar input,
-    .search-bar button {
-        background-color: transparent;
-    }  
-}
+    /* NavItem Hover CSS */
+    .nav-item ::deep a:hover {
+        color: var(--black);
+    }
+/* NavItem CSS End */
 
-@media not (min-width: 1200px) {
+/* SearchBar CSS Start */
+    /* SearchBar Customisation CSS */
+    .search-container {
+        display: flex;
+        align-items: center;
+        font-size: 0.8rem;
+        padding: 8px;
+    }
+
     .search-bar {
-        width: 100%;
+        display: inline-flex;
+        background-color: transparent;
+        outline: none;
+        border-radius: 5px;
     }
 
     .search-bar input {
-        width: 100%;
+        font-weight: 400;
+        outline: none;
+        border: none;
+        background-color: transparent;
+        padding: 0;
+        color: var(--black);
+        transition: width .4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
     }
 
-    .search-bar input,
+    .search-bar input::placeholder {
+        color: var(--darkgray);
+    }
+
+    .search-bar input[type="search"]::-webkit-search-cancel-button {
+        -webkit-appearance: none;
+        content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%333333'><path d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/></svg>");
+        padding-right: 5px;
+        height: 0.8rem;
+        width: 0.8rem;
+        cursor: pointer;
+    }
+
     .search-bar button {
-        background-color: var(--gray);
+        outline: none;
+        border: none;
+        padding: 6px 0px 6px 0px;
+        border-radius: 5px 0px 0px 5px;
+        color: var(--darkgray);
+        background-color: transparent;
+        cursor: text;
     }
-}
 
-.btn-login {
-    font-size: 0.8rem;
-    font-weight: 600;
-    width: 100px;
-    color: var(--darkgray);
-    background-color: var(--lightblue);
-}
+    /* SearchBar Display + Effects CSS */
+    .search-bar:hover button,
+    .search-bar:focus-within button {
+        color: var(--black);
+    }
 
-.btn-login:hover,
-.btn-login:focus,
-.btn-login:active {
-    color: var(--black);
-    background-color: var(--lightblue);
-}
+        /* SearchBar XL Screen Size & Above Display + Effects CSS */
+        @media (min-width: 1200px) {
+            .search-bar:hover input,
+            .search-bar input:focus {
+                width: 265px;
+            }
 
-.btn-register {
-    font-size: 0.8rem;
-    font-weight: 600;
-    width: 100px;
-    color: var(--white);
-    background-color: var(--blue);
-}
+            .search-bar:hover,
+            .search-bar:focus-within {
+                background-color: var(--gray);
+            }
 
-.btn-register:hover,
-.btn-register:focus,
-.btn-register:active {
-    color: var(--ghostwhite);
-    background-color: var(--blue);
-}
+            .search-bar input {
+                width: 0;
+            }
+        }
 
-.btn-profile {
-    font-size: 0.8rem;
-    font-weight: 600;
-    outline: none;
-    border: none;
-    padding: 0px;
-    height: 3rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        /* SearchBar Below XL Screen Size Display CSS */
+        @media not (min-width: 1200px) {
+            .search-bar,
+            .search-bar input {
+                width: 100%;
+            }
 
-.dropdown-menu {
-    padding: 0px 8px 0px 8px;
-}
+            .search-bar {
+                background-color: var(--gray);
+            }
+        }
+/* SearchBar CSS End */
 
-.dropdown-toggle[aria-expanded="true"]:after {
-    transform: rotate(180deg);
-}
+/* LoginButton CSS Start */
+    /* LoginButton Customisation CSS */
+    .btn-login {
+        font-size: 0.8rem;
+        font-weight: 600;
+        width: 100px;
+        color: var(--darkgray);
+        background-color: var(--lightblue);
+    }
 
-.dropdown-toggle:after {
-    transition: 0.5s;
-}
+    /* Login button Effects CSS */
+    .btn-login:hover,
+    .btn-login:focus,
+    .btn-login:active {
+        color: var(--black);
+        background-color: var(--lightblue);
+    }
+/* LoginButton CSS End */
 
-.btn-profile,
-.btn-profile:focus,
-.btn-profile:active {
-    color: var(--darkgray);
-    background-color: transparent;
-}
+/* RegisterButton CSS Start */
+    /* RegisterButton Customisation CSS */
+    .btn-register {
+        font-size: 0.8rem;
+        font-weight: 600;
+        width: 100px;
+        color: var(--white);
+        background-color: var(--blue);
+    }
 
-.profile {
-    padding: 0.12rem;
-    border: 2px solid;
-    border-radius: 50%;
-}
+     /* RegisterButton Effects CSS */
+    .btn-register:hover,
+    .btn-register:focus,
+    .btn-register:active {
+        color: var(--ghostwhite);
+        background-color: var(--blue);
+    }
+/* RegisterButton CSS End */
 
-.divider {
-    margin: 0;
-    border: 1px solid var(--darkgray);
-    opacity: 50%;
-}
+/* ProfileButton CSS Start */
+    /* ProfileButton Customisation CSS */
+    .btn-profile {
+        font-size: 0.8rem;
+        font-weight: 600;
+        outline: none;
+        border: none;
+        padding: 0px;
+        height: 3rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .btn-profile,
+    .btn-profile:focus,
+    .btn-profile:active {
+        color: var(--darkgray);
+        background-color: transparent;
+    }
+
+    /* ProfileButton Circle CSS */
+    .profile {
+        padding: 0.12rem;
+        border: 2px solid;
+        border-radius: 50%;
+    }
+/* ProfileButton CSS End */
+
+/* Profile DropdownMenu CSS Start */
+    /* Profile DropdownMenu CSS Customisation */
+    .dropdown-menu {
+        padding: 0px 8px 0px 8px;
+    }
+
+    /* Profile DropdownMenu Caret Effects CSS */
+    .dropdown-toggle[aria-expanded="true"]:after {
+        transform: rotate(180deg);
+    }
+
+    .dropdown-toggle:after {
+        transition: 0.5s;
+    }
+/* Profile DropdownMenu CSS End */

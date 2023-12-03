@@ -1,10 +1,16 @@
-﻿@inject NavigationManager Navigation
+﻿@inject IJSRuntime JS
+@inject NavigationManager Navigation
 
+@* Navbar *@
 <nav class="navbar navbar-expand-xl fixed-top">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">Houseware Reviews</a>
+        @* Brand Name*@
+        <a class="navbar-brand" href="" @onclick="HideNavBar">Houseware Reviews</a>
+
+        @* Hamburger/Cross Menu Button *@
         <button
             class="navbar-toggler collapsed d-flex d-xl-none flex-column justify-content-around"
+            id="navbarToggler"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarNav"
@@ -16,50 +22,71 @@
             <span class="toggler-icon middle-bar"></span>
             <span class="toggler-icon bottom-bar"></span>
         </button>
+
+        @* NavItems *@
         <div class="collapse navbar-collapse" id="navbarNav">
             <nav class="navbar-nav justify-content-center flex-grow-1">
+                @* Home Navigation *@
                 <div class="nav-item px-1">
-                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                        <span class="d-xl-none oi oi-home " aria-hidden="true"></span> Home
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All" @onclick="HideNavBar">
+                        <span class="d-xl-none oi oi-home" aria-hidden="true"></span> Home
                     </NavLink>
                 </div>
+
+                @* Categories Navigation *@
                 <div class="nav-item px-1">
-                    <NavLink class="nav-link" href="#categories" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link" href="#categories" Match="NavLinkMatch.All" @onclick="HideNavBar">
                         <span class="d-xl-none oi oi-grid-two-up" aria-hidden="true"></span> Categories
                     </NavLink>
                 </div>
+
+                @* Companies Navigation *@
                 <div class="nav-item px-1">
-                    <NavLink class="nav-link" href="#companies" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link" href="#companies" Match="NavLinkMatch.All" @onclick="HideNavBar">
                         <span class="d-xl-none oi oi-briefcase" aria-hidden="true"></span> Companies
                     </NavLink>
                 </div>
+
+                @* Navbar Divider *@
                 <hr class="d-xl-none divider" style="margin: 5px auto; width:97%"/>
+                
+                @* Navbar Below XL Screen Size View Start *@
                 <AuthorizeView>
                     <NotAuthorized>
+                        @* LogIn Button *@
                         <div class="d-xl-none nav-item px-1">
-                            <NavLink class="nav-link" href="authentication/login" Match="NavLinkMatch.All">
+                            <NavLink class="nav-link" href="authentication/login" Match="NavLinkMatch.All" @onclick="HideNavBar">
                                 <span class="oi oi-account-login" aria-hidden="true"></span> Login
                             </NavLink>
                         </div>
+
+                        @* Register Button *@
                         <div class="d-xl-none nav-item px-1">
-                            <NavLink class="nav-link" href="authentication/register" Match="NavLinkMatch.All">
+                            <NavLink class="nav-link" href="authentication/register" Match="NavLinkMatch.All" @onclick="HideNavBar">
                                 <span class="oi oi-plus" aria-hidden="true"></span> Register
                             </NavLink>
                         </div>
                     </NotAuthorized>
                     <Authorized>
+                        @* Profile Navigation *@
                         <div class="d-xl-none dropdown">
                             <div class="nav-item px-1">
+                                @* Profile Button *@
                                 <button type="button" class="btn-profile btn btn-secondary dropdown-toggle shadow-none" data-bs-toggle="dropdown" aria-expanded="false">
                                     <NavLink class="nav-link" href="#">
                                         <span class="oi"><span class="profile oi-person" aria-hidden="true"></span></span> @context.User.Identity?.Name
                                     </NavLink>
                                 </button>
+
+                                @* Profile Dropdown Menu *@
                                 <div class="dropdown-menu nav-item" style="margin: 0px 8px 8px 8px;">
-                                    <NavLink class="nav-link" href="authentication/profile">
+                                    @* Manage Profile Navigation *@
+                                    <NavLink class="nav-link" href="authentication/profile" @onclick="HideNavBar">
                                         <span class="oi oi-cog" aria-hidden="true"></span> Manage Profile
                                     </NavLink>
-                                    <NavLink class="nav-link" href="#" @onclick="BeginLogOut">
+
+                                    @* LogOut Navigation *@
+                                    <NavLink class="nav-link" href="#" @onclick="@(async () => { BeginLogOut(); await HideNavBar(); })">
                                         <span class="oi oi-account-logout" aria-hidden="true"></span> Log Out
                                     </NavLink>
                                 </div>
@@ -67,23 +94,31 @@
                         </div>
                     </Authorized>
                 </AuthorizeView>
+                @* Navbar Below XL Screen Size View End *@
+
+                @* Universal Search Bar *@
                 <div class="px-1">
                     <div class="search-container px-2">
                         <form class="search-bar" action="#" method="get">
-                            <button type="submit"><span class="oi oi-magnifying-glass"></span></button>
-                            <input type="search" name="q" autocomplete="off" placeholder="Search category, product or company" />
+                            <button type="button" @onclick="SetSearchInputFocus"><span class="oi oi-magnifying-glass"></span></button>
+                            <input id="searchinput" type="search" name="q" autocomplete="off" placeholder="Search category, product or company" />
                         </form>
                     </div>
                 </div>
             </nav>
+
+            @* Navbar XL Screen Size & Above View Start *@
             <AuthorizeView>
                 <NotAuthorized>
                     <div class="d-none d-xl-flex align-items-center gap-3">
+                        @* LogIn Button *@
                         <div class="btn-login btn rounded-5 shadow-none border-0">
                             <NavLink class="nav-link" href="authentication/login" Match="NavLinkMatch.All">
                                 Log In
                             </NavLink>
                         </div>
+
+                        @* Register Button *@
                         <div class="btn-register btn rounded-5 shadow-none border-0">
                             <NavLink class="nav-link" href="authentication/register" Match="NavLinkMatch.All">
                                 Register
@@ -92,21 +127,32 @@
                     </div>
                 </NotAuthorized>
                 <Authorized>
+                    @* Profile Navigation *@
                     <div class="d-none d-xl-flex btn-group">
                         <div class="nav-item px-1">
+                            @* Profile Icon *@
                             <button type="button" class="btn-profile btn btn-secondary dropdown-toggle shadow-none" data-bs-toggle="dropdown" aria-expanded="false">
                                 <NavLink class="nav-link" href="#">
                                     <span class="oi"><span class="profile oi-person" aria-hidden="true"></span></span>
                                 </NavLink>
                             </button>
+
+                            @* Profile Dropdown Menu *@
                             <div class="dropdown-menu dropdown-menu-end nav-item" style="margin: 8px 0px 0px 0px;">
+                                @* Profile Name View *@
                                 <NavLink class="nav-link" href="#">
                                     <span class="oi"><span class="profile oi-person" aria-hidden="true"></span></span> @context.User.Identity?.Name
                                 </NavLink>
+
+                                @* Profile Dropdown Menu Divider *@
                                 <hr class="dropdown-divider divider" />
+
+                                @* Manage Profile Navigation *@
                                 <NavLink class="nav-link" href="authentication/profile">
                                     <span class="oi oi-cog" aria-hidden="true"></span> Manage Profile
                                 </NavLink>
+
+                                @* LogOut Navigation *@
                                 <NavLink class="nav-link" href="#" @onclick="BeginLogOut">
                                     <span class="oi oi-account-logout" aria-hidden="true"></span> Log Out
                                 </NavLink>
@@ -115,13 +161,27 @@
                     </div>
                 </Authorized>
             </AuthorizeView>
+            @* Navbar XL Screen Size & Above View End *@
         </div>
     </div>
 </nav>
 
 @code {
+    // LogOut Function
     private void BeginLogOut()
     {
         Navigation.NavigateToLogout("authentication/logout");
+    }
+
+    // Set Focus On Search Input Field
+    private async Task SetSearchInputFocus()
+    {
+        await JS.InvokeVoidAsync("SetSearchInputFocus");
+    }
+
+    // Hide Collapsable Bootstrap NavBar
+    public async Task HideNavBar()
+    {
+        await JS.InvokeVoidAsync("hideNavBar");
     }
 }
