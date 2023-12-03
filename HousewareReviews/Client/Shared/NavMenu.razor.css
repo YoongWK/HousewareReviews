@@ -16,7 +16,9 @@
     .navbar-brand {
         font-size: 1.5rem;
         font-weight: 700;
+        margin: 0;
         color: var(--blue);
+        min-width: 275px;
     }
 
     /* Navbar Hamburger/Cross Menu Button CSS */
