@@ -22,3 +22,15 @@ function hideNavBar() {
 function SetSearchInputFocus() {
     document.getElementById('searchinput').focus();
 }
+
+
+// Autoplay Carousel function
+function startAutoplayCarousel() {
+    
+}
+const carouselElement = document.querySelector('furnitureCarousel')
+const carousel = new bootstrap.Carousel(carouselElement, {
+    interval: 2000,
+    cycle: true
+}); 
+
