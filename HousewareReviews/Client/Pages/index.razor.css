@@ -1,7 +1,14 @@
-﻿/*#furnitureCarousel
-{
-    width: 100%;*/ /* Set the desired width */
-    /*height: 600px;*/ /* Set the desired height */
-    /* Add other styles as needed */
-/*}*/
+﻿/*.carousel-resize {
+    max-height: calc(100vh - 63px);*/ /* Adjust the value based on your navbar height */
+    /* 100vh represents the full height of the viewport (window), and subtracting the navbar height */
+    /*overflow: hidden;*/ /* Hide any overflow content to prevent overlapping */
+/*}
 
+    .carousel-resize .carousel-inner,
+    .carousel-resize .carousel-item,
+    .carousel-resize img {
+        height: 100%;
+        width: 95%;
+        margin: auto;
+        object-fit: cover;*/ /* Maintain aspect ratio and cover the whole space */
+    /*}*/
