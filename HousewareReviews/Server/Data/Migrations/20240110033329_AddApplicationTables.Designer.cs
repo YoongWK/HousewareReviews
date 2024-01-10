@@ -4,6 +4,7 @@ using HousewareReviews.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HousewareReviews.Server.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240110033329_AddApplicationTables")]
+    partial class AddApplicationTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -257,23 +260,6 @@ namespace HousewareReviews.Server.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Appliances"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Bathroom"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Beddings"
-                        });
                 });
 
             modelBuilder.Entity("HousewareReviews.Shared.Domain.Comment", b =>
@@ -319,9 +305,6 @@ namespace HousewareReviews.Server.Data.Migrations
                     b.Property<string>("ContactNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
@@ -340,28 +323,6 @@ namespace HousewareReviews.Server.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Companies");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ContactNumber = "67469933",
-                            Description = "Leading home appliance brand for high-quality and affordable hobs, hoods, and instant water heaters.",
-                            Email = "enquiry@aerogaz.com",
-                            Name = "Aerogaz",
-                            UEN = "200302472K",
-                            WebsiteUrl = "https://aerogaz.com/"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ContactNumber = "64726500",
-                            Description = "Singapore-based company for quality & affordable home appliances and consumer electronics.",
-                            Email = "sg.support@cornellappliances.com",
-                            Name = "Cornell",
-                            UEN = "200310215D",
-                            WebsiteUrl = "https://sg.cornellappliances.com/"
-                        });
                 });
 
             modelBuilder.Entity("HousewareReviews.Shared.Domain.Consumer", b =>
@@ -441,26 +402,6 @@ namespace HousewareReviews.Server.Data.Migrations
                     b.HasIndex("CompanyId");
 
                     b.ToTable("Products");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CategoryId = 1,
-                            CompanyId = 1,
-                            Description = "Modern wall fan featuring a powerful motor with 3-speed control for customized airflow.",
-                            Name = "16\" Wall Fan (AZ-173WF)",
-                            Price = 39.899999999999999
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CategoryId = 2,
-                            CompanyId = 1,
-                            Description = "Ultra slim water heater with splash-proof IPX5, anti scald device, & 5 shower options.",
-                            Name = "Instant Water Heater – Slim Series (S895)",
-                            Price = 169.0
-                        });
                 });
 
             modelBuilder.Entity("HousewareReviews.Shared.Domain.Report", b =>
