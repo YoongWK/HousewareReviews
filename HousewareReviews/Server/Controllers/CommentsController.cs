@@ -26,7 +26,7 @@ namespace HousewareReviews.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetComments()
         {
-            var comments = await _unitOfWork.Comments.GetAll();
+            var comments = await _unitOfWork.Comments.GetAll(includes: q => q.Include(x => x.Review).Include(x => x.Consumer));
             return Ok(comments);
         }
 

@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace HousewareReviews.Server.Data.Migrations
+namespace HousewareReviews.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240110040347_AddedDefaultData")]
-    partial class AddedDefaultData
+    [Migration("20240116082431_NewDB")]
+    partial class NewDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -241,6 +241,44 @@ namespace HousewareReviews.Server.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "3781efa7-66dc-47f0-860f-e506d04102e4",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "782ffd7b-1d1b-4373-b4f7-2896689a4406",
+                            Email = "staff@blazor.com",
+                            EmailConfirmed = false,
+                            FirstName = "Staff",
+                            LastName = "User",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "STAFF@BLAZOR.COM",
+                            NormalizedUserName = "STAFF@BLAZOR.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJZ3TvgOBUB7AUJgnldCIreDyseLZECYWZr6cKfW+wDraJI4RSWiq4bej9w1UuWpbQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "20bba2a7-4ce4-4165-a395-94cc3defb567",
+                            TwoFactorEnabled = false,
+                            UserName = "staff@blazor.com"
+                        },
+                        new
+                        {
+                            Id = "1ce40de7-b2a7-4cf4-a8f3-c811191a664d",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "4a2d7250-f4b0-4094-a938-634a31b19d34",
+                            Email = "consumer@blazor.com",
+                            EmailConfirmed = false,
+                            FirstName = "Consumer",
+                            LastName = "User",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "CONSUMER@BLAZOR.COM",
+                            NormalizedUserName = "CONSUMER@BLAZOR.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEH4yyc9c3mKX9dfAcUPzY8ScAFzr6wXjR5IUlr5gRPEJIzKQRps09NIbh7TaG+TUlw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "5d4e36a5-f14c-4451-a80e-febb1fe913b4",
+                            TwoFactorEnabled = false,
+                            UserName = "consumer@blazor.com"
+                        });
                 });
 
             modelBuilder.Entity("HousewareReviews.Shared.Domain.Category", b =>
@@ -608,6 +646,20 @@ namespace HousewareReviews.Server.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "ad2bcf0c-20db-474f-8407-5a6b159518ba",
+                            Name = "Staff",
+                            NormalizedName = "STAFF"
+                        },
+                        new
+                        {
+                            Id = "bd2bcf0c-20db-474f-8407-5a6b159518bb",
+                            Name = "Consumer",
+                            NormalizedName = "CONSUMER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -697,6 +749,18 @@ namespace HousewareReviews.Server.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "3781efa7-66dc-47f0-860f-e506d04102e4",
+                            RoleId = "ad2bcf0c-20db-474f-8407-5a6b159518ba"
+                        },
+                        new
+                        {
+                            UserId = "1ce40de7-b2a7-4cf4-a8f3-c811191a664d",
+                            RoleId = "bd2bcf0c-20db-474f-8407-5a6b159518bb"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>

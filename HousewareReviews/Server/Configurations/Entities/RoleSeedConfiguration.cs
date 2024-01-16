@@ -11,14 +11,14 @@ namespace HousewareReviews.Server.Configurations.Entities
                 new IdentityRole
                 {
                     Id = "ad2bcf0c-20db-474f-8407-5a6b159518ba",
-                    Name = "Administrator",
-                    NormalizedName = "ADMINISTRATOR"
+                    Name = "Staff",
+                    NormalizedName = "STAFF"
                 },
                 new IdentityRole
                 {
                     Id = "bd2bcf0c-20db-474f-8407-5a6b159518bb",
-                    Name = "User",
-                    NormalizedName = "USER"
+                    Name = "Consumer",
+                    NormalizedName = "CONSUMER"
                 }
                 );
         }

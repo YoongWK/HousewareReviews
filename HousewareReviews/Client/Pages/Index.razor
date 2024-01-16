@@ -49,6 +49,14 @@
     </button>
 </div>
 
+<AuthorizeView Roles="Staff">
+    Staff
+</AuthorizeView>
+<AuthorizeView Roles="Consumer">
+    Consumer
+</AuthorizeView>
+
+
 @code {
     public async Task startAutoplayCarousel()
     {

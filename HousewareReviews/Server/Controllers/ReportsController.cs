@@ -26,7 +26,8 @@ namespace HousewareReviews.Server.Controllers
         [HttpGet]
         public async Task<ActionResult> GetReports()
         {
-            var reports = await _unitOfWork.Reports.GetAll();
+            var reports = await _unitOfWork.Reports.GetAll(includes: q => q.Include(x => x.Review).Include(x => x.Consumer)
+            .Include(x => x.Comment).Include(x => x.Staff));
             return Ok(reports);
         }
 
@@ -89,12 +90,12 @@ namespace HousewareReviews.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReport(int id)
         {
-            var report = await _unitOfWork.Categories.Get(q => q.Id == id);
+            var report = await _unitOfWork.Reports.Get(q => q.Id == id);
             if (report == null)
             {
                 return NotFound();
             }
-            await _unitOfWork.Categories.Delete(id);
+            await _unitOfWork.Reports.Delete(id);
             await _unitOfWork.Save(HttpContext);
 
             return NoContent();

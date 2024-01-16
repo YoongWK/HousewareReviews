@@ -35,7 +35,7 @@ namespace HousewareReviews.Server.Controllers
             //     return NotFound();
             // }
             // return await _context.Reviews.ToListAsync();
-            var reviews = await _unitOfWork.Reviews.GetAll();
+            var reviews = await _unitOfWork.Reviews.GetAll(includes: q => q.Include(x => x.Product).Include(x => x.Consumer));
             return Ok(reviews);
         }
 

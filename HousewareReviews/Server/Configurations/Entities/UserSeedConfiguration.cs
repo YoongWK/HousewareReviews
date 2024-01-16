@@ -13,12 +13,23 @@ namespace HousewareReviews.Server.Configurations.Entities
                 new ApplicationUser
                 {
                     Id = "3781efa7-66dc-47f0-860f-e506d04102e4",
-                    Email = "admin@localhost.com",
-                    NormalizedEmail = "ADMIN@LOCALHOST.COM",
-                    FirstName = "Admin",
+                    Email = "staff@blazor.com",
+                    NormalizedEmail = "STAFF@BLAZOR.COM",
+                    FirstName = "Staff",
                     LastName = "User",
-                    UserName = "admin@localhost.com",
-                    NormalizedUserName = "ADMIN@LOCALHOST.COM",
+                    UserName = "staff@blazor.com",
+                    NormalizedUserName = "STAFF@BLAZOR.COM",
+                    PasswordHash = hasher.HashPassword(null, "P@ssword1")
+                },
+                new ApplicationUser
+                {
+                    Id = "1ce40de7-b2a7-4cf4-a8f3-c811191a664d",
+                    Email = "consumer@blazor.com",
+                    NormalizedEmail = "CONSUMER@BLAZOR.COM",
+                    FirstName = "Consumer",
+                    LastName = "User",
+                    UserName = "consumer@blazor.com",
+                    NormalizedUserName = "CONSUMER@BLAZOR.COM",
                     PasswordHash = hasher.HashPassword(null, "P@ssword1")
                 }
             );

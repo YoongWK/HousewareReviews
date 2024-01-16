@@ -125,11 +125,11 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     //Set user role to user
-                    if (!await _roleManager.RoleExistsAsync("User"))
+                    if (!await _roleManager.RoleExistsAsync("Consumer"))
                     {
-                        await _roleManager.CreateAsync(new IdentityRole("User"));
+                        await _roleManager.CreateAsync(new IdentityRole("Consumer"));
                     }
-                    await _userManager.AddToRoleAsync(user, "User");
+                    await _userManager.AddToRoleAsync(user, "Consumer");
 
                     _logger.LogInformation("User created a new account with password.");
 
