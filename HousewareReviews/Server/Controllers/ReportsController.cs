@@ -90,7 +90,7 @@ namespace HousewareReviews.Server.Controllers
         public async Task<IActionResult> DeleteReport(int id)
         {
             var report = await _unitOfWork.Categories.Get(q => q.Id == id);
-            if (category == null)
+            if (report == null)
             {
                 return NotFound();
             }
