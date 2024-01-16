@@ -1,0 +1,16 @@
+﻿namespace CarRental.Client.Static
+{
+    public static class Endpoints
+    {
+        private static readonly string Prefix = "api";
+
+        public static readonly string CategoriesEndpoint = $"{Prefix}/categories";
+        public static readonly string CommentsEndpoint = $"{Prefix}/comments";
+        public static readonly string CompaniesEndpoint = $"{Prefix}/companies";
+        public static readonly string ConsumersEndpoint = $"{Prefix}/consumers";
+        public static readonly string ProductsEndpoint = $"{Prefix}/products";
+        public static readonly string ReportsEndpoint = $"{Prefix}/reports";
+        public static readonly string ReviewsEndpoint = $"{Prefix}/reviews";
+        public static readonly string StaffsEndpoint = $"{Prefix}/staffs";
+    }
+}

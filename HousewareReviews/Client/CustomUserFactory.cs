@@ -3,7 +3,11 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication.Internal;
 
-public class CustomUserFactory
+
+/*Identity Server sends multiple roles as a JSON array in a single role claim. 
+ * A single role is sent as a string value in the claim. 
+ * The factory creates an individual role claim for each of the user's roles.
+*/public class CustomUserFactory
     : AccountClaimsPrincipalFactory<RemoteUserAccount>
 {
     public CustomUserFactory(IAccessTokenProviderAccessor accessor)
