@@ -18,8 +18,17 @@ else
                     <div class="col">
                         <div class="card text-center h-100 rounded-5">
                             <img src="@product.ImgUri" class="card-img-top rounded-top-5" alt="@product.Name Image">
-                            <div class="card-body p-2 m-0">
-                                <h5 class="card-title">@product.Name</h5>
+                            <div class="card-body m-0 py-0 px-2">
+                                <small class="card-title"><b>@product.Name</b></small>
+                            </div>
+                            <div class="card-body m-0 py-0 px-2">
+                                <small class="card-text">@product.Price</small>
+                            </div>
+                            <div class="card-body m-0 py-0 px-2">
+                                <small class="card-text">@product.Company?.Name</small>
+                            </div>
+                            <div class="card-body m-0 py-0 px-2">
+                                <small class="card-text">@product.Category.Name</small>
                             </div>
                         </div>
                     </div>
