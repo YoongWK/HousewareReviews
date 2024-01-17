@@ -1,6 +1,5 @@
 ﻿@page "/categories/"
 @inject IHttpClientFactory ClientFactory
-@attribute [Authorize]
 
 <h3 class="card-title p-4">Categories</h3>
 
@@ -15,12 +14,14 @@ else
             @foreach (var category in Categories)
             {
                 <div class="col">
-                    <div class="card text-center h-100 rounded-5">
-                        <img src="@category.ImgUri" class="card-img-top rounded-top-5" alt="@category.Name Image">
-                        <div class="card-body p-2 m-0">
-                            <h5 class="card-title">@category.Name</h5>
+                    <a href="/products/categories/@category.Id">
+                        <div class="card text-center h-100 rounded-5">
+                            <img src="@category.ImgUri" class="card-img-top rounded-top-5" alt="@category.Name Image">
+                            <div class="card-body p-2 m-0">
+                                <h5 class="card-title">@category.Name</h5>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             }
         </div>

@@ -1,0 +1,48 @@
+﻿@page "/products/categories/{id:int}"
+@inject IHttpClientFactory ClientFactory
+
+<h3 class="card-title p-4">Category: @category?.Name</h3>
+
+@if (Products==null)
+{
+    <div class="alert alert-info">Loading Categories</div>
+}
+else
+{
+    <div class="container-fluid px-4">
+        <div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
+            @foreach (var product in Products)
+            {
+                @if (product.Category.Id == id)
+                {
+                    <div class="col">
+                        <div class="card text-center h-100 rounded-5">
+                            <img src="@product.ImgUri" class="card-img-top rounded-top-5" alt="@product.Name Image">
+                            <div class="card-body p-2 m-0">
+                                <h5 class="card-title">@product.Name</h5>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private HttpClient _client;
+    [Parameter] public int id { get; set; }
+    private Category? category = new Category();
+    private List<Product>? Products;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("public");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        category = await _client.GetFromJsonAsync<Category>($"{Endpoints.CategoriesEndpoint}/{id}");
+        Products = await _client.GetFromJsonAsync<List<Product>>($"{Endpoints.ProductsEndpoint}");
+    }
+}
