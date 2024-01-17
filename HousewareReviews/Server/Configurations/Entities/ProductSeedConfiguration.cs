@@ -29,7 +29,38 @@ namespace HousewareReviews.Server.Configurations.Entities
                     ImgUri = null,
                     CompanyId = 1,
                     CategoryId = 2,
+                },
+                new Product
+                {
+                    Id = 3,
+                    Name = "16\" Wall Fan (AZ-171WF)",
+                    Description = "Wall Fan with 3 speeds pull-string control, left-right oscillation and has an adjustable tilting angle",
+                    Price = 49.90,
+                    ImgUri = null,
+                    CompanyId = 1,
+                    CategoryId = 1,
+                },
+                new Product
+                {
+                    Id = 4,
+                    Name = "12\" Table Fan (AZ-1283TF)",
+                    Description = "4 blade table fan with 3 speeds and a sleek retro design.",
+                    Price = 49.90,
+                    ImgUri = null,
+                    CompanyId = 1,
+                    CategoryId = 1,
+                },
+                new Product
+                {
+                    Id = 5,
+                    Name = "6\" Table Fan w Mobile Charger (AZ-6006TF)",
+                    Description = "Table Fan with 4 speeds and wireless mobile charging capability.",
+                    Price = 32.90,
+                    ImgUri = null,
+                    CompanyId = 1,
+                    CategoryId = 1,
                 }
+
             );
         }
     }
