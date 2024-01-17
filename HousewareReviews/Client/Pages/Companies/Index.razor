@@ -1,6 +1,5 @@
 ﻿@page "/companies/"
-@inject HttpClient _client
-@attribute [Authorize(Roles = "Consumer")]
+@inject IHttpClientFactory ClientFactory
 
 <h3 class="card-title p-4">Companies</h3>
 
@@ -15,8 +14,8 @@ else
 			@foreach (var company in Companies)
 			{
 				<div class="col">
-					<div class="card text-center h-100">
-						<img src="@company.LogoUri" class="card-img-top p-2" alt="@company.Name Image">
+					<div class="card text-center h-100 rounded-5">
+						<img src="@company.LogoUri" class="card-img-top rounded-top-5" alt="@company.Name Image">
 						<div class="card-body p-2 m-0">
 							<h5 class="card-title">@company.Name</h5>
 						</div>
@@ -28,7 +27,13 @@ else
 }
 
 @code {
+	private HttpClient _client;
 	private List<Company>? Companies;
+
+	protected override void OnInitialized()
+	{
+		_client = ClientFactory.CreateClient("public");
+	}
 
 	protected async override Task OnInitializedAsync()
 	{
