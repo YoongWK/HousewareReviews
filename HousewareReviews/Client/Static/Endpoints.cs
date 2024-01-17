@@ -1,4 +1,4 @@
-﻿namespace CarRental.Client.Static
+﻿namespace HousewareReviews.Client.Static
 {
     public static class Endpoints
     {

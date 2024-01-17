@@ -17,7 +17,7 @@ namespace HousewareReviews.Server.Configurations.Entities
                     Email = "enquiry@aerogaz.com",
                     ContactNumber = "67469933",
                     Description = "Leading home appliance brand for high-quality and affordable hobs, hoods, and instant water heaters.",
-                    LogoUri = null,
+                    LogoUri = "/images/Aerogaz.jpg",
                     WebsiteUrl = "https://aerogaz.com/"
                 },
                 new Company
@@ -28,7 +28,7 @@ namespace HousewareReviews.Server.Configurations.Entities
                     Email = "sg.support@cornellappliances.com",
                     ContactNumber = "64726500",
                     Description = "Singapore-based company for quality & affordable home appliances and consumer electronics.",
-                    LogoUri = null,
+                    LogoUri = "/images/Cornell.jpg",
                     WebsiteUrl = "https://sg.cornellappliances.com/"
                 }
             );
