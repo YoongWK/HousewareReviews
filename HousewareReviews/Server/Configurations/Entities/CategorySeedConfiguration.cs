@@ -14,19 +14,19 @@ namespace HousewareReviews.Server.Configurations.Entities
                 {
                     Id = 1,
                     Name = "Appliances",
-                    ImgUri = null
+                    ImgUri = "/images/Appliances.jpg"
                 },
                 new Category
                 {
                     Id = 2,
                     Name = "Bathroom",
-                    ImgUri = null
+                    ImgUri = "/images/Bathroom.jpg"
                 },
                 new Category
                 {
                     Id = 3,
                     Name = "Beddings",
-                    ImgUri = null
+                    ImgUri = "/images/Beddings.jpg"
                 }
             );
         }
