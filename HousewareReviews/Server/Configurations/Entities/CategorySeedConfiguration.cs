@@ -14,55 +14,55 @@ namespace HousewareReviews.Server.Configurations.Entities
                 {
                     Id = 1,
                     Name = "Appliances",
-                    ImgUri = "/images/Appliances.jpg"
+                    ImgUri = "/images/categories/Appliances.jpg"
                 },
                 new Category
                 {
                     Id = 2,
                     Name = "Bathroom",
-                    ImgUri = "/images/Bathroom.jpg"
+                    ImgUri = "/images/categories/Bathroom.jpg"
                 },
                 new Category
                 {
                     Id = 3,
                     Name = "Beddings",
-                    ImgUri = "/images/Beddings.jpg"
+                    ImgUri = "/images/categories/Beddings.jpg"
                 },
                 new Category
                 {
                     Id = 4,
                     Name = "Furniture",
-                    ImgUri = "/images/Furniture.jpg"
+                    ImgUri = "/images/categories/Furniture.jpg"
                 },
                 new Category
                 {
                     Id = 5,
                     Name = "Home Decor",
-                    ImgUri = "/images/HomeDecor.jpg"
+                    ImgUri = "/images/categories/HomeDecor.jpg"
                 },
                 new Category
                 {
                     Id = 6,
                     Name = "Home Organisation",
-                    ImgUri = "/images/HomeOrganisation.jpg"
+                    ImgUri = "/images/categories/HomeOrganisation.jpg"
                 },
                 new Category
                 {
                     Id = 7,
                     Name = "Home Tools",
-                    ImgUri = "/images/HomeTools.jpg"
+                    ImgUri = "/images/categories/HomeTools.jpg"
                 },
                 new Category
                 {
                     Id = 8,
                     Name = "Kitchen & Dining",
-                    ImgUri = "/images/Kitchen&Dining.jpg"
+                    ImgUri = "/images/categories/Kitchen&Dining.jpg"
                 },
                 new Category
                 {
                     Id = 9,
                     Name = "Lighting",
-                    ImgUri = "/images/Lighting.jpg"
+                    ImgUri = "/images/categories/Lighting.jpg"
                 }
             );
         }

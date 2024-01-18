@@ -1,5 +1,6 @@
 ﻿@page "/categories/"
 @inject IHttpClientFactory ClientFactory
+@attribute [Authorize(Roles ="staff")]
 
 <h3 class="card-title p-4">Categories</h3>
 
