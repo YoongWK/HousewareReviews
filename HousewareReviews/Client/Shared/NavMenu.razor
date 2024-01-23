@@ -1,6 +1,8 @@
 ﻿@inject IJSRuntime JS
 @inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
+ @using Microsoft.AspNetCore.Components.Authorization
 @* Navbar *@
 <nav class="navbar navbar-expand-xl fixed-top">
     <div class="container-fluid">
@@ -46,6 +48,15 @@
                         <span class="d-xl-none oi oi-briefcase" aria-hidden="true"></span> Companies
                     </NavLink>
                 </div>
+
+                @* Reports Navigation *@
+                <AuthorizeView Roles="Staff">
+                    <div class="nav-item px-1">
+                        <NavLink class="nav-link" href="reports" Match="NavLinkMatch.All" @onclick="HideNavBar">
+                            <span class="d-xl-none oi oi-file" aria-hidden="true"></span> Reports
+                        </NavLink>
+                    </div>
+                </AuthorizeView>
 
                 @* Navbar Divider *@
                 <hr class="d-xl-none divider" style="margin: 5px auto; width:97%"/>
@@ -96,7 +107,7 @@
                 </AuthorizeView>
                 @* Navbar Below XL Screen Size View End *@
 
-                @* Universal Search Bar *@
+                @* Universal Search Bar *@  
                 <div class="px-1">
                     <div class="search-container px-2">
                         <form class="search-bar" action="#" method="get">
@@ -105,6 +116,7 @@
                         </form>
                     </div>
                 </div>
+                    
             </nav>
 
             @* Navbar XL Screen Size & Above View Start *@
@@ -176,4 +188,11 @@
     {
         await JS.InvokeVoidAsync("hideNavBar");
     }
+    /*
+    private bool IsUserInRole(string role)
+    {
+        var authenticationState = AuthenticationStateProvider.GetAuthenticationStateAsync().Result;
+        return authenticationState.User.IsInRole(role);
+    }
+    */
 }
