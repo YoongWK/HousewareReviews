@@ -1,0 +1,31 @@
+﻿@page "/categories/edit/{id:int}"
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager _navManager
+@attribute [Authorize(Roles = "Staff")]
+
+<div class="container-fluid px-4">
+	<h3 class="card-title mt-4 mb-3">Edit Category</h3>
+	<FormComponent ButtonText="Update" OnValidSubmit="EditCategory" category="category" />
+</div>
+
+@code {
+	[Parameter] public int id { get; set; }
+	private HttpClient _client;
+	Category? category = new Category();
+
+	protected override void OnInitialized()
+	{
+		_client = ClientFactory.CreateClient("private");
+	}
+
+	protected async override Task OnParametersSetAsync()
+	{
+		category = await _client.GetFromJsonAsync<Category>($"{Endpoints.CategoriesEndpoint}/{id}");
+	}
+
+	async Task EditCategory()
+	{
+		await _client.PutAsJsonAsync($"{Endpoints.CategoriesEndpoint}/{id}", category);
+		_navManager.NavigateTo("/categories/");
+	}
+}

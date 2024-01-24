@@ -1,38 +1,102 @@
 ﻿@page "/categories/"
 @inject IHttpClientFactory ClientFactory
-@* @attribute [Authorize(Roles ="Staff")]
- *@
-<h3 class="card-title p-4">Categories</h3>
+@inject IJSRuntime js
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@implements IDisposable
 
-@if (Categories==null)
-{
-    <div class="alert alert-info">Loading Categories</div>
-}
-else
-{
-    <div class="container-fluid px-4">
-		<div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
-            @foreach (var category in Categories)
-            {
-                <div class="col">
-                    <a href="/products/categories/@category.Id">
-                        <div class="card text-center h-100 rounded-5">
-                            <img src="@category.ImgUri" class="card-img-top rounded-top-5" alt="@category.Name Image">
-                            <div class="card-body p-2 m-0">
-                                <h5 class="card-title">@category.Name</h5>
+<div class="container-fluid px-4">
+    <h3 class="card-title p-4">Categories</h3>
+
+    @if (Categories==null)
+    {
+        <div class="alert alert-info">Loading Categories</div>
+    }
+    else
+    {
+        <AuthorizeView>
+            <NotAuthorized>
+                <div class="container-fluid px-4">
+                    <div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
+                        @foreach (var category in Categories)
+                        {
+                            <div class="col">
+                                <a href="/products/categories/@category.Id">
+                                    <div class="card text-center h-100 rounded-5">
+                                        <img src="@category.ImgUri" class="card-img-top rounded-top-5" alt="@category.Name Image">
+                                        <div class="card-body p-2 m-0">
+                                            <h5 class="card-title">@category.Name</h5>
+                                        </div>
+                                    </div>
+                                </a>
                             </div>
-                        </div>
-                    </a>
+                        }
+                    </div>
                 </div>
-            }
-        </div>
-    </div>
-}
+            </NotAuthorized>
+        </AuthorizeView>
 
+        <AuthorizeView Roles="Consumer">
+            <div class="container-fluid px-4">
+                <div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
+                    @foreach (var category in Categories)
+                    {
+                        <div class="col">
+                            <a href="/products/categories/@category.Id">
+                                <div class="card text-center h-100 rounded-5">
+                                    <img src="@category.ImgUri" class="card-img-top rounded-top-5" alt="@category.Name Image">
+                                    <div class="card-body p-2 m-0">
+                                        <h5 class="card-title">@category.Name</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </AuthorizeView>
+
+        <AuthorizeView Roles="Staff">
+            <a href="/categories/create" class="btn btn-secondary">
+                <span class="oi oi-plus"></span>
+                Create New Category
+            </a>
+
+            <table class="table table-responsive w-100 mt-3" id="categoriesTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>ImageUri</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var category in Categories)
+                    {
+                        <tr>
+                            <td>@category.Name</td>
+                            <td>@category.ImgUri</td>
+                            <td>
+                                <a href="/categories/view/@category.Id" class="btn btn-primary">
+                                    <span class="oi oi-book"></span>
+                                </a>
+                                <a href="/categories/edit/@category.Id" class="btn btn-warning">
+                                    <span class="oi oi-pencil"></span>
+                                </a>
+                                <button class="btn btn-danger" @onclick="@(()=>Delete(category.Id))">
+                                    <span class="oi oi-delete"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </AuthorizeView>
+    }
+</div>
 @code {
     private HttpClient _client;
-
     private List<Category>? Categories;
+    bool userIsStaff = false;
 
     protected override void OnInitialized()
     {
@@ -42,5 +106,36 @@ else
     protected async override Task OnInitializedAsync()
     {
         Categories = await _client.GetFromJsonAsync<List<Category>>($"{Endpoints.CategoriesEndpoint}");
+        var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        userIsStaff = authstate.User.IsInRole("Staff");
+    }
+    async Task Delete(int categoryId)
+    {
+        if (Categories != null)
+        {
+            var category = Categories.First(q => q.Id == categoryId);
+            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {category.Name}?");
+            if (confirm)
+            {
+                await _client.DeleteAsync($"{Endpoints.CategoriesEndpoint}/{categoryId}");
+                await OnInitializedAsync();
+            }
+        }
+    }
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (userIsStaff)
+        {
+            await js.InvokeVoidAsync("AddDataTable", "#categoriesTable");
+        }
+
+    }
+
+    public void Dispose()
+    {
+        if (userIsStaff)
+        {
+            js.InvokeVoidAsync("DataTablesDispose", "#categoriesTable");
+        }
     }
 }
