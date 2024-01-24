@@ -17,7 +17,8 @@ namespace HousewareReviews.Server.Configurations.Entities
                     NormalizedEmail = "STAFF@BLAZOR.COM",
                     UserName = "staff@blazor.com",
                     NormalizedUserName = "STAFF@BLAZOR.COM",
-                    PasswordHash = hasher.HashPassword(null, "P@ssword1")
+                    PasswordHash = hasher.HashPassword(null, "P@ssword1"),
+                    PhoneNumber = "91234567"
                 },
                 new ApplicationUser
                 {
@@ -26,7 +27,8 @@ namespace HousewareReviews.Server.Configurations.Entities
                     NormalizedEmail = "CONSUMER@BLAZOR.COM",
                     UserName = "consumer@blazor.com",
                     NormalizedUserName = "CONSUMER@BLAZOR.COM",
-                    PasswordHash = hasher.HashPassword(null, "P@ssword1")
+                    PasswordHash = hasher.HashPassword(null, "P@ssword1"),
+                    PhoneNumber = "98765432"
                 }
             );
         }
