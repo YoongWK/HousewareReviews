@@ -15,33 +15,11 @@
     {
         <AuthorizeView>
             <NotAuthorized>
-                <div class="container-fluid px-4">
-                    <div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
-                        @foreach (var category in Categories)
-                        {
-                            <div class="col">
-                                <a href="/products/categories/@category.Id">
-                                    <div class="card text-center h-100 rounded-5">
-                                        <img src="@category.ImgUri" class="card-img-top rounded-top-5" alt="@category.Name Image">
-                                        <div class="card-body p-2 m-0">
-                                            <h5 class="card-title">@category.Name</h5>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </NotAuthorized>
-        </AuthorizeView>
-
-        <AuthorizeView Roles="Consumer">
-            <div class="container-fluid px-4">
                 <div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
                     @foreach (var category in Categories)
                     {
                         <div class="col">
-                            <a href="/products/categories/@category.Id">
+                            <a href="/products/categories/@category.Id" style="text-decoration: none;">
                                 <div class="card text-center h-100 rounded-5">
                                     <img src="@category.ImgUri" class="card-img-top rounded-top-5" alt="@category.Name Image">
                                     <div class="card-body p-2 m-0">
@@ -52,6 +30,24 @@
                         </div>
                     }
                 </div>
+            </NotAuthorized>
+        </AuthorizeView>
+
+        <AuthorizeView Roles="Consumer">
+            <div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
+                @foreach (var category in Categories)
+                {
+                    <div class="col">
+                        <a href="/products/categories/@category.Id" style="text-decoration: none;">
+                            <div class="card text-center h-100 rounded-5">
+                                <img src="@category.ImgUri" class="card-img-top rounded-top-5" alt="@category.Name Image">
+                                <div class="card-body p-2 m-0">
+                                    <h5 class="card-title">@category.Name</h5>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
             </div>
         </AuthorizeView>
 

@@ -17,7 +17,7 @@
                 @foreach (var company in Companies)
                 {
                     <div class="col">
-                        <a href="/companies/view/@company.Id">
+                        <a href="/companies/view/@company.Id" style="text-decoration: none;">
                             <div class="card text-center h-100 rounded-5">
                                 <img src="@company.LogoUri" class="card-img-top rounded-top-5" alt="@company.Name Image">
                                 <div class="card-body p-2 m-0">
@@ -36,7 +36,7 @@
                     @foreach (var company in Companies)
                     {
                         <div class="col">
-                            <a href="/companies/view/@company.Id">
+                            <a href="/companies/view/@company.Id" style="text-decoration: none;">
                                 <div class="card text-center h-100 rounded-5">
                                     <img src="@company.LogoUri" class="card-img-top rounded-top-5" alt="@company.Name Image">
                                     <div class="card-body p-2 m-0">

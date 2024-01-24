@@ -13,26 +13,23 @@ else
         <div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
             @foreach (var product in Products)
             {
-                @if (product.Category.Id == id)
-                {
-                    <div class="col">
-                        <div class="card text-center h-100 rounded-5">
-                            <img src="@product.ImgUri" class="card-img-top rounded-top-5" alt="@product.Name Image">
-                            <div class="card-body m-0 py-0 px-2">
-                                <small class="card-title"><b>@product.Name</b></small>
-                            </div>
-                            <div class="card-body m-0 py-0 px-2">
-                                <small class="card-text">@product.Price</small>
-                            </div>
-                            <div class="card-body m-0 py-0 px-2">
-                                <small class="card-text">@product.Company?.Name</small>
-                            </div>
-                            <div class="card-body m-0 py-0 px-2">
-                                <small class="card-text">@product.Category.Name</small>
-                            </div>
+                <div class="col">
+                    <div class="card text-center h-100 rounded-3">
+                        <img src="@product.ImgUri" class="card-img-top rounded-top-5" alt="@product.Name Image">
+                        <div class="card-body m-0 py-0 px-2">
+                            <small class="card-title"><b>@product.Name</b></small>
+                        </div>
+                        <div class="card-body m-0 py-0 px-2">
+                            <small class="card-text">@product.Price</small>
+                        </div>
+                        <div class="card-body m-0 py-0 px-2">
+                            <small class="card-text">@product.Company?.Name</small>
+                        </div>
+                        <div class="card-body m-0 py-0 px-2">
+                            <small class="card-text">@product.Category.Name</small>
                         </div>
                     </div>
-                }
+                </div>
             }
         </div>
     </div>
@@ -52,6 +49,18 @@ else
     protected async override Task OnInitializedAsync()
     {
         category = await _client.GetFromJsonAsync<Category>($"{Endpoints.CategoriesEndpoint}/{id}");
-        Products = await _client.GetFromJsonAsync<List<Product>>($"{Endpoints.ProductsEndpoint}");
+        var allProducts = await _client.GetFromJsonAsync<List<Product>>($"{Endpoints.ProductsEndpoint}");
+        var categoryProducts = new List<Product>();
+        if (allProducts != null)
+        {
+            foreach (var product in allProducts)
+            {
+                if (product.CompanyId == id)
+                {
+                    categoryProducts.Add(product);
+                }
+            }
+        }
+        Products = categoryProducts;
     }
 }
