@@ -1,0 +1,114 @@
+﻿@page "/products/company/{id:int}"
+@inject IHttpClientFactory ClientFactory
+@inject IJSRuntime js
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="container-fluid px-4">
+    <h3 class="card-title mt-4 mb-3">Products: @company?.Name</h3>
+    @if (Products == null)
+    {
+        <div class="alert alert-info">Loading Companies...</div>
+    }
+    else
+    {
+        <AuthorizeView Roles="Staff">
+            <a href="/products/company/@id/create" class="btn btn-secondary">
+                <span class="oi oi-plus"></span>
+                Create New Product
+            </a>
+
+            <table class="table table-responsive w-100 mt-3" id="productsTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Products)
+                    {
+                        <tr>
+                            <td>@product.Name</td>
+                            <td>@product.Price</td>
+                            <td>
+                                <a href="/products/company/@id/view/@product.Id" class="btn btn-primary">
+                                    <span class="oi oi-book"></span>
+                                </a>
+                                <a href="/products/company/@id/edit/@product.Id" class="btn btn-warning">
+                                    <span class="oi oi-pencil"></span>
+                                </a>
+                                <button class="btn btn-danger" @onclick="@(()=>Delete(product.Id))">
+                                    <span class="oi oi-delete"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </AuthorizeView>
+    }
+</div>
+
+@code {
+    private HttpClient _client;
+    [Parameter] public int id { get; set; }
+    private Company? company = new Company();
+    private List<Product>? Products = new List<Product>();
+    bool userIsStaff = false;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("public");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        company = await _client.GetFromJsonAsync<Company>($"{Endpoints.CompaniesEndpoint}/{id}");
+        var allProducts = await _client.GetFromJsonAsync<List<Product>>($"{Endpoints.ProductsEndpoint}");
+        var companyProducts = new List<Product>();
+        if (allProducts != null)
+        {
+            foreach (var product in allProducts)
+            {
+                if (product.CompanyId == id)
+                {
+                    companyProducts.Add(product);
+                }
+            }
+        }
+        Products = companyProducts;
+        var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		userIsStaff = authstate.User.IsInRole("Staff");
+	}
+
+    async Task Delete(int productId)
+    {
+        if (Products != null)
+        {
+            var product = Products.First(q => q.Id == productId);
+            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {product.Name}?");
+            if (confirm)
+            {
+                await _client.DeleteAsync($"{Endpoints.ProductsEndpoint}/{productId}");
+                await OnInitializedAsync();
+            }
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (userIsStaff)
+        {
+            await js.InvokeVoidAsync("AddDataTable", "#productsTable");
+        }
+    }
+
+    public void Dispose()
+    {
+        if (userIsStaff)
+        {
+            js.InvokeVoidAsync("DataTablesDispose", "#productsTable");
+        }
+    }
+}
