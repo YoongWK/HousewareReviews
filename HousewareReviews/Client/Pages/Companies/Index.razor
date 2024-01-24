@@ -57,8 +57,7 @@
                     <tr>
                         <th>Name</th>
                         <th>UEN</th>
-                        <th>Email</th>
-                        <th>Tel</th>
+                        <th>Products</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -68,13 +67,16 @@
                         <tr>
                             <td>@company.Name</td>
                             <td>@company.UEN</td>
-                            <td>@company.Email</td>
-                            <td>@company.ContactNumber</td>
+                            <td>
+                                <a href="/products/companies/@company.Id" class="btn btn-info">
+                                    <span class="oi oi-eye"></span>
+                                </a>
+                            </td>
                             <td>
                                 <a href="/companies/view/@company.Id" class="btn btn-primary">
                                     <span class="oi oi-book"></span>
                                 </a>
-                                <a href="/vehicles/edit/@company.Id" class="btn btn-warning">
+                                <a href="/companies/edit/@company.Id" class="btn btn-warning">
                                     <span class="oi oi-pencil"></span>
                                 </a>
                                 <button class="btn btn-danger" @onclick="@(()=>Delete(company.Id))">

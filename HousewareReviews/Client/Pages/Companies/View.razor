@@ -1,0 +1,25 @@
+﻿@page "/companies/view/{id:int}"
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager _navManager
+@attribute [Authorize(Roles = "Staff")]
+
+<div class="container-fluid px-4">
+	<h3 class="card-title mt-4 mb-3">View Company</h3>
+	<FormComponent ButtonText="Create Companies" company="company" Disabled="true" />
+</div>
+
+@code {
+	[Parameter] public int id { get; set; }
+	private HttpClient _client;
+	Company? company = new Company();
+
+	protected override void OnInitialized()
+	{
+		_client = ClientFactory.CreateClient("private");
+	}
+
+	protected async override Task OnParametersSetAsync()
+	{
+		company = await _client.GetFromJsonAsync<Company>($"{Endpoints.CompaniesEndpoint}/{id}");
+	}
+}
