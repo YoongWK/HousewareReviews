@@ -2,7 +2,7 @@
 @inject IHttpClientFactory ClientFactory
 @inject NavigationManager _navManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@attribute [Authorize(Roles = "Staff")]
+@* @attribute [Authorize(Roles = "Staff")] *@
 
 <AuthorizeView Roles="Staff">
 	<div class="container-fluid px-4">
@@ -23,17 +23,28 @@
 					<p style="color: var(--white)">@productCount Products</p>
 				</div>
 				<div class="col-12 text-end">
-					<a href="@company.WebsiteUrl" target="_blank" class="btn btn-outline-dark mb-2" style="color:white">
+					<a href="@company.WebsiteUrl" target="_blank" class="btn btn-outline-dark mb-2" style="color:var(--white)">
 						<i class="bi bi-globe"></i> Visit Our Website
 					</a>
 				</div>
 			</div>
 		</div>
 
-		<div class="card p-3 rounded-5" style="background-color:var(--white)">
+		<div class="card p-3 rounded-5 m-3" style="background-color:var(--white)">
 			<h3 class="card-title" style="color: var(--blue)"><b>About</b></h3>
-			<br />
 			<p>@company.Description</p>
+			<h3 class="card-title" style="color: var(--blue)"><b>Categories</b></h3>
+			<ul>
+				@if (distinctCategories != null)
+				{
+					@foreach (var category in distinctCategories)
+					{
+						<li>@category</li>
+					}
+				}
+				
+			</ul>
+
 		</div>
 
 	</NotAuthorized>
@@ -48,6 +59,9 @@
 	private HttpClient _client;
 	Company? company = new Company();
 	private IList<Product> Products;
+	private IList<Category> Categories;
+	private IEnumerable<String?> distinctCategories;
+
 	bool userIsStaff = false;
 	int productCount = 0;
 
@@ -61,6 +75,16 @@
 		productCount = 0;
 		company = await _client.GetFromJsonAsync<Company>($"{Endpoints.CompaniesEndpoint}/{id}");
 		Products = await _client.GetFromJsonAsync<List<Product>>($"{Endpoints.ProductsEndpoint}");
+		Categories = await _client.GetFromJsonAsync<List<Category>>($"{Endpoints.CategoriesEndpoint}");
+		distinctCategories = Products
+		.Where(p => p.CompanyId == id)
+		.Select(p => p.CategoryId)
+		.Distinct()
+		.Select(categoryId =>
+		{
+			var category = Categories.FirstOrDefault(c => c.Id == categoryId);
+			return category.Name;
+		});
 		foreach (var product in Products)
 		{
 			if (product.CompanyId == company.Id)
@@ -70,6 +94,19 @@
 		}
 		var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 		userIsStaff = authstate.User.IsInRole("Staff");
+	}
 
+	private IEnumerable<string> GetDistinctCategories()
+	{
+		var distinctCategories = Products
+		.Where(p => p.CompanyId == company.Id)
+		.Select(p => p.CategoryId)
+		.Distinct()
+		.Select(categoryId =>
+		{
+			var category = Categories.FirstOrDefault(c => c.Id == categoryId);
+			return category.Name;
+		});
+		return distinctCategories;
 	}
 }
