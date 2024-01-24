@@ -1,25 +1,75 @@
 ﻿@page "/companies/view/{id:int}"
 @inject IHttpClientFactory ClientFactory
 @inject NavigationManager _navManager
-@attribute [Authorize(Roles = "Staff")]
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@* @attribute [Authorize(Roles = "Staff")] *@
 
-<div class="container-fluid px-4">
-	<h3 class="card-title mt-4 mb-3">View Company</h3>
-	<FormComponent ButtonText="Create Companies" company="company" Disabled="true" />
-</div>
+<AuthorizeView Roles="Staff">
+	<div class="container-fluid px-4">
+		<h3 class="card-title mt-4 mb-3">View Company</h3>
+		<FormComponent ButtonText="Create Companies" company="company" Disabled="true" />
+	</div>
+</AuthorizeView>
+
+<AuthorizeView>
+	<NotAuthorized>
+		<div class="container-fluid px-2" style="background-color: var(--blue)">
+			<div class="row">
+				<div class="col-4 d-flex align-items-center">
+					<img src="@company.LogoUri" class="p-3" alt="@company.Name Image">
+				</div>
+				<div class="col-8 p-3">
+					<h3 style="color: var(--white)"><b>@company.Name</b></h3>
+					<p style="color: var(--white)">@productCount Products</p>
+				</div>
+				<div class="col-12 text-end">
+					<a href="@company.WebsiteUrl" target="_blank" class="btn btn-outline-dark mb-2" style="color:white">
+						<i class="bi bi-globe"></i> Visit Our Website
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="card p-3 rounded-5" style="background-color:var(--white)">
+			<h3 class="card-title" style="color: var(--blue)"><b>About</b></h3>
+			<br />
+			<p>@company.Description</p>
+		</div>
+
+	</NotAuthorized>
+</AuthorizeView>
+
+<AuthorizeView Roles="Consumer">
+	
+</AuthorizeView>
 
 @code {
 	[Parameter] public int id { get; set; }
 	private HttpClient _client;
 	Company? company = new Company();
+	private IList<Product> Products;
+	bool userIsStaff = false;
+	int productCount = 0;
 
 	protected override void OnInitialized()
 	{
-		_client = ClientFactory.CreateClient("private");
+		_client = ClientFactory.CreateClient("public");
 	}
 
 	protected async override Task OnParametersSetAsync()
 	{
+		productCount = 0;
 		company = await _client.GetFromJsonAsync<Company>($"{Endpoints.CompaniesEndpoint}/{id}");
+		Products = await _client.GetFromJsonAsync<List<Product>>($"{Endpoints.ProductsEndpoint}");
+		foreach (var product in Products)
+		{
+			if (product.CompanyId == company.Id)
+			{
+				productCount++;
+			}
+		}
+		var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		userIsStaff = authstate.User.IsInRole("Staff");
+
 	}
 }

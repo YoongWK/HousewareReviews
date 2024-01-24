@@ -17,12 +17,14 @@
                 @foreach (var company in Companies)
                 {
                     <div class="col">
-                        <div class="card text-center h-100 rounded-5">
-                            <img src="@company.LogoUri" class="card-img-top rounded-top-5" alt="@company.Name Image">
-                            <div class="card-body p-2 m-0">
-                                <h5 class="card-title">@company.Name</h5>
+                        <a href="/companies/view/@company.Id">
+                            <div class="card text-center h-100 rounded-5">
+                                <img src="@company.LogoUri" class="card-img-top rounded-top-5" alt="@company.Name Image">
+                                <div class="card-body p-2 m-0">
+                                    <h5 class="card-title">@company.Name</h5>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 }
             </div>
@@ -34,12 +36,14 @@
                     @foreach (var company in Companies)
                     {
                         <div class="col">
-                            <div class="card text-center h-100 rounded-5">
-                                <img src="@company.LogoUri" class="card-img-top rounded-top-5" alt="@company.Name Image">
-                                <div class="card-body p-2 m-0">
-                                    <h5 class="card-title">@company.Name</h5>
+                            <a href="/companies/view/@company.Id">
+                                <div class="card text-center h-100 rounded-5">
+                                    <img src="@company.LogoUri" class="card-img-top rounded-top-5" alt="@company.Name Image">
+                                    <div class="card-body p-2 m-0">
+                                        <h5 class="card-title">@company.Name</h5>
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     }
                 </div>
