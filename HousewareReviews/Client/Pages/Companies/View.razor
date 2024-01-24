@@ -50,26 +50,28 @@
 			<div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
 				@* for each product in company products *@
 				@if (products != null) {
-				@foreach (var product in products)
-				{
-					<div class="col">
-						<div class="card text-center h-100 rounded-3">
-							<img src="@product.ImgUri" class="card-img-top rounded-top-3" alt="@product.Name Image">
-							<div class="card-body m-0 py-0 px-2">
-								<small class="card-title"><b>@product.Name</b></small>
+					@foreach (var product in products)
+					{
+						<a href="/products/@product.Id" style="text-decoration: none;">
+							<div class="col">
+								<div class="card text-center h-100 rounded-3">
+									<img src="@product.ImgUri" class="card-img-top rounded-top-3" alt="@product.Name Image">
+									<div class="card-body m-0 py-0 px-2">
+										<small class="card-title"><b>@product.Name</b></small>
+									</div>
+									<div class="card-body m-0 py-0 px-2">
+										<small class="card-text">@product.Price</small>
+									</div>
+									<div class="card-body m-0 py-0 px-2">
+										<small class="card-text">@product.Company?.Name</small>
+									</div>
+									<div class="card-body m-0 py-0 px-2">
+										<small class="card-text">@product.Category.Name</small>
+									</div>
+								</div>
 							</div>
-							<div class="card-body m-0 py-0 px-2">
-								<small class="card-text">@product.Price</small>
-							</div>
-							<div class="card-body m-0 py-0 px-2">
-								<small class="card-text">@product.Company?.Name</small>
-							</div>
-							<div class="card-body m-0 py-0 px-2">
-								<small class="card-text">@product.Category.Name</small>
-							</div>
-						</div>
-					</div>
-				}
+						</a>
+					}
 				}
 			</div>
 		</div>
