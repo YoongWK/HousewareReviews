@@ -1,0 +1,25 @@
+﻿@page "/categories/view/{id:int}"
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager _navManager
+@attribute [Authorize(Roles = "Staff")]
+
+<div class="container-fluid px-4">
+	<h3 class="card-title mt-4 mb-3">View Category</h3>
+	<FormComponent ButtonText="Create Categories" category="category" Disabled="true" />
+</div>
+
+@code {
+	[Parameter] public int id { get; set; }
+	private HttpClient _client;
+	Category? category = new Category();
+
+	protected override void OnInitialized()
+	{
+		_client = ClientFactory.CreateClient("private");
+	}
+
+	protected async override Task OnParametersSetAsync()
+	{
+		category = await _client.GetFromJsonAsync<Category>($"{Endpoints.CategoriesEndpoint}/{id}");
+	}
+}
