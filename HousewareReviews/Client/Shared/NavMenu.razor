@@ -1,6 +1,6 @@
 ﻿@inject IJSRuntime JS
 @inject NavigationManager Navigation
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IHttpClientFactory ClientFactory
 
  @using Microsoft.AspNetCore.Components.Authorization
 @* Navbar *@
@@ -85,7 +85,15 @@
                                 @* Profile Button *@
                                 <button type="button" class="btn-profile btn btn-secondary dropdown-toggle shadow-none" data-bs-toggle="dropdown" aria-expanded="false">
                                     <NavLink class="nav-link" href="#">
-                                        <span class="oi"><span class="profile oi-person" aria-hidden="true"></span></span> @context.User.Identity?.Name
+                                        <span class="oi"><span class="profile oi-person" aria-hidden="true"></span></span>
+                                        @if (context.User.IsInRole("Staff"))
+                                        {
+                                            @Staffs.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value))?.FirstName
+                                        }
+                                        else if (context.User.IsInRole("Consumer"))
+                                        {
+                                            @Consumers.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value))?.FirstName
+                                        }
                                     </NavLink>
                                 </button>
 
@@ -158,7 +166,15 @@
                             @* Profile Button *@
                             <button type="button" class="btn-profile btn btn-secondary dropdown-toggle shadow-none" data-bs-toggle="dropdown" aria-expanded="false">
                                 <NavLink class="nav-link" href="#">
-                                    @context.User.Identity?.Name <span class="oi"><span class="profile oi-person" aria-hidden="true"></span></span>
+                                    @if (context.User.IsInRole("Staff"))
+                                    {
+                                        @Staffs.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value))?.FirstName
+                                    }
+                                    else if (context.User.IsInRole("Consumer"))
+                                    {
+                                        @Consumers.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value))?.FirstName
+                                    }
+                                    <span class="oi"><span class="profile oi-person" aria-hidden="true"></span></span>
                                 </NavLink>
                             </button>
 
@@ -184,6 +200,21 @@
 </nav>
 
 @code {
+    private HttpClient _client;
+    private List<Staff>? Staffs;
+    private List<Consumer>? Consumers;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("public");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        Staffs = await _client.GetFromJsonAsync<List<Staff>>($"{Endpoints.StaffsEndpoint}");
+        Consumers = await _client.GetFromJsonAsync<List<Consumer>>($"{Endpoints.ConsumersEndpoint}");        
+    }
+
     // LogOut Function
     private void BeginLogOut()
     {
@@ -201,11 +232,4 @@
     {
         await JS.InvokeVoidAsync("hideNavBar");
     }
-    /*
-    private bool IsUserInRole(string role)
-    {
-        var authenticationState = AuthenticationStateProvider.GetAuthenticationStateAsync().Result;
-        return authenticationState.User.IsInRole(role);
-    }
-    */
 }

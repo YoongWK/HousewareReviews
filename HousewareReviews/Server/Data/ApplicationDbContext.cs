@@ -31,8 +31,10 @@ namespace HousewareReviews.Server.Data
             builder.ApplyConfiguration(new CompanySeedConfiguration());
             builder.ApplyConfiguration(new ProductSeedConfiguration());
             builder.ApplyConfiguration(new RoleSeedConfiguration());
-            builder.ApplyConfiguration(new UserSeedConfiguration());
             builder.ApplyConfiguration(new UserRoleSeedConfiguration());
+            builder.ApplyConfiguration(new UserSeedConfiguration());
+            builder.ApplyConfiguration(new ConsumerSeedConfiguration());
+            builder.ApplyConfiguration(new StaffSeedConfiguration());
         }
     }
 }

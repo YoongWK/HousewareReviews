@@ -182,20 +182,11 @@ namespace HousewareReviews.Server.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NRIC")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -213,9 +204,6 @@ namespace HousewareReviews.Server.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("ProfileImageUri")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -244,17 +232,15 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "3781efa7-66dc-47f0-860f-e506d04102e4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4d0a45f4-b338-4ab7-8f98-634a3cf2b840",
+                            ConcurrencyStamp = "0095ce20-ecc7-486b-af87-bc02d946e05e",
                             Email = "staff@blazor.com",
                             EmailConfirmed = false,
-                            FirstName = "Staff",
-                            LastName = "User",
                             LockoutEnabled = false,
                             NormalizedEmail = "STAFF@BLAZOR.COM",
                             NormalizedUserName = "STAFF@BLAZOR.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEF7jK/V2ZIMRQ+HmNZ8uEtkmGDd0ThqO0nf3bl3tmj+k5CrWAFjKTX+1w0teV8Z1Mg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEI+9YNQivLbdn5UY81M5g+WotsRsj/B220SLLs5xyeLOXCXcT+276nELBPouGB86oQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "7f4a392d-a98f-4b5b-a10d-48d4aa470a56",
+                            SecurityStamp = "15d2656a-d10a-47ab-809e-2ac404090232",
                             TwoFactorEnabled = false,
                             UserName = "staff@blazor.com"
                         },
@@ -262,17 +248,15 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "1ce40de7-b2a7-4cf4-a8f3-c811191a664d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7184f2a9-3b09-419c-bdc5-c6f34c0a236d",
+                            ConcurrencyStamp = "4c759886-9797-4593-a7d5-c0680ca3ff6b",
                             Email = "consumer@blazor.com",
                             EmailConfirmed = false,
-                            FirstName = "Consumer",
-                            LastName = "User",
                             LockoutEnabled = false,
                             NormalizedEmail = "CONSUMER@BLAZOR.COM",
                             NormalizedUserName = "CONSUMER@BLAZOR.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGSzODvm14mcNgPteF6CQ2Rn+NLJAEtsfEhZsmSgihw4IFfkfZudkqbxteNF+tFXjw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEL/YIyly/KqPhs3oon0bwb/KpHVMUFOe17NO7mI/t5qkibccYuANqzFH/qygJzdtoA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e79c5376-8bc5-4d61-8836-3385c238b277",
+                            SecurityStamp = "8194b206-ce16-4e41-80d7-d528e8663550",
                             TwoFactorEnabled = false,
                             UserName = "consumer@blazor.com"
                         });
@@ -500,6 +484,9 @@ namespace HousewareReviews.Server.Migrations
                     b.Property<int?>("ReviewId")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CommentId");
@@ -507,6 +494,19 @@ namespace HousewareReviews.Server.Migrations
                     b.HasIndex("ReviewId");
 
                     b.ToTable("Consumers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ContactNumber = "98765432",
+                            Email = "consumer@blazor.com",
+                            FirstName = "Yoong",
+                            LastName = "Wai kit",
+                            NRIC = "S9067028Z",
+                            Password = "P@ssword1",
+                            UserId = "1ce40de7-b2a7-4cf4-a8f3-c811191a664d"
+                        });
                 });
 
             modelBuilder.Entity("HousewareReviews.Shared.Domain.Product", b =>
@@ -728,9 +728,25 @@ namespace HousewareReviews.Server.Migrations
                     b.Property<string>("ProfileImgUri")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Staffs");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ContactNumber = "91234567",
+                            Email = "staff@blazor.com",
+                            FirstName = "Andrina",
+                            LastName = "Morrison",
+                            NRIC = "S9372136E",
+                            Password = "P@ssword1",
+                            UserId = "3781efa7-66dc-47f0-860f-e506d04102e4"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

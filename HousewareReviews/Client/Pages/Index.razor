@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject IJSRuntime JS
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Houseware Reviews - Home</PageTitle>
 
@@ -49,13 +50,6 @@
     </button>
 </div>
 
-<AuthorizeView Roles="Staff">
-    Staff
-</AuthorizeView>
-<AuthorizeView Roles="Consumer">
-    Consumer
-</AuthorizeView>
-
 
 @code {
     public async Task startAutoplayCarousel()
@@ -65,9 +59,6 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // if (firstRender)
-        // {
-            await JS.InvokeVoidAsync("startAutoplayCarousel");
-        // }
+        await JS.InvokeVoidAsync("startAutoplayCarousel");
     }
 }
