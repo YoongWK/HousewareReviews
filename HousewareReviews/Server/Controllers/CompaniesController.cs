@@ -94,7 +94,7 @@ namespace HousewareReviews.Server.Controllers
             {
                 return NotFound();
             }
-            await _unitOfWork.Categories.Delete(id);
+            await _unitOfWork.Companies.Delete(id);
             await _unitOfWork.Save(HttpContext);
 
             return NoContent();

@@ -1,0 +1,24 @@
+﻿@page "/companies/create"
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager _navManager
+@attribute [Authorize(Roles ="Staff")]
+
+<div class="container-fluid px-4">
+    <h3 class="card-title mt-4 mb-3">Create New Company</h3>
+</div>
+
+@code {
+    private HttpClient _client;
+    Company company = new Company();
+
+    private async Task CreateCompany()
+    {
+        await _client.PostAsJsonAsync(Endpoints.CompaniesEndpoint, company);
+        _navManager.NavigateTo("/companies/");
+    }
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("private");
+    }
+}

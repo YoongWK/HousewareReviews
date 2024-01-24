@@ -1,42 +1,140 @@
 ﻿@page "/companies/"
 @inject IHttpClientFactory ClientFactory
+@inject IJSRuntime js
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@* @implements IDisposable *@
 
-<h3 class="card-title p-4">Companies</h3>
+<div class="container-fluid px-4">
+    <h3 class="card-title mt-4 mb-3">Companies</h3>
+    @if (Companies == null)
+    {
+        <div class="alert alert-info">Loading Companies...</div>
+    }
+    else
+    {
+        <AuthorizeView Roles="Consumer">
+            <div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
+                @foreach (var company in Companies)
+                {
+                    <div class="col">
+                        <div class="card text-center h-100 rounded-5">
+                            <img src="@company.LogoUri" class="card-img-top rounded-top-5" alt="@company.Name Image">
+                            <div class="card-body p-2 m-0">
+                                <h5 class="card-title">@company.Name</h5>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </AuthorizeView>
 
-@if (Companies == null)
-{
-    <div class="alert alert-info">Loading Companies...</div>
-}
-else
-{
-	<div class="container-fluid px-4">
-		<div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
-			@foreach (var company in Companies)
-			{
-				<div class="col">
-					<div class="card text-center h-100 rounded-5">
-						<img src="@company.LogoUri" class="card-img-top rounded-top-5" alt="@company.Name Image">
-						<div class="card-body p-2 m-0">
-							<h5 class="card-title">@company.Name</h5>
-						</div>
-					</div>
-				</div>
-			}
-		</div>
-	</div>
-}
+        <AuthorizeView>
+            <NotAuthorized>
+                <div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
+                    @foreach (var company in Companies)
+                    {
+                        <div class="col">
+                            <div class="card text-center h-100 rounded-5">
+                                <img src="@company.LogoUri" class="card-img-top rounded-top-5" alt="@company.Name Image">
+                                <div class="card-body p-2 m-0">
+                                    <h5 class="card-title">@company.Name</h5>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+
+        <AuthorizeView Roles="Staff">
+            <a href="/companies/create" class="btn btn-secondary">
+                <span class="oi oi-plus"></span>
+                Create New Company
+            </a>
+
+            <table class="table table-responsive w-100 mt-3" id="companiesTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>UEN</th>
+                        <th>Email</th>
+                        <th>Tel</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var company in Companies)
+                    {
+                        <tr>
+                            <td>@company.Name</td>
+                            <td>@company.UEN</td>
+                            <td>@company.Email</td>
+                            <td>@company.ContactNumber</td>
+                            <td>
+                                <a href="/companies/view/@company.Id" class="btn btn-primary">
+                                    <span class="oi oi-book"></span>
+                                </a>
+                                <a href="/vehicles/edit/@company.Id" class="btn btn-warning">
+                                    <span class="oi oi-pencil"></span>
+                                </a>
+                                <button class="btn btn-danger" @onclick="@(()=>Delete(company.Id))">
+                                    <span class="oi oi-delete"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </AuthorizeView>
+    }
+</div>
 
 @code {
-	private HttpClient _client;
-	private List<Company>? Companies;
+    private HttpClient _client;
+    private List<Company>? Companies;
+    private bool userIsStaff = false;
 
-	protected override void OnInitialized()
-	{
-		_client = ClientFactory.CreateClient("public");
-	}
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("public");
+    }
 
-	protected async override Task OnInitializedAsync()
-	{
-		Companies = await _client.GetFromJsonAsync<List<Company>>($"{Endpoints.CompaniesEndpoint}");
-	}
+    protected async override Task OnInitializedAsync()
+    {
+        Companies = await _client.GetFromJsonAsync<List<Company>>($"{Endpoints.CompaniesEndpoint}");
+        var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authstate.User;
+        userIsStaff = user.IsInRole("Staff");
+    }
+
+    async Task Delete(int companyId)
+    {
+        if (Companies != null)
+        {
+            var company = Companies.First(q => q.Id == companyId);
+            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {company.Name}?");
+            if (confirm)
+            {
+                await _client.DeleteAsync($"{Endpoints.CompaniesEndpoint}/{companyId}");
+                await OnInitializedAsync();
+            }
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (userIsStaff)
+        {
+            await js.InvokeVoidAsync("AddDataTable", "#bookingsTable");
+        }
+
+    }
+
+    public void Dispose()
+    {
+        if (userIsStaff)
+        {
+            js.InvokeVoidAsync("DataTablesDispose", "#bookingsTable");
+        }
+    }
 }
