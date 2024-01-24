@@ -2,7 +2,7 @@
 @inject IHttpClientFactory ClientFactory
 @inject IJSRuntime js
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@* @implements IDisposable *@
+@implements IDisposable
 
 <div class="container-fluid px-4">
     <h3 class="card-title mt-4 mb-3">Companies</h3>
@@ -92,7 +92,7 @@
 @code {
     private HttpClient _client;
     private List<Company>? Companies;
-    private bool userIsStaff = false;
+    bool userIsStaff = false;
 
     protected override void OnInitialized()
     {
@@ -103,8 +103,7 @@
     {
         Companies = await _client.GetFromJsonAsync<List<Company>>($"{Endpoints.CompaniesEndpoint}");
         var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authstate.User;
-        userIsStaff = user.IsInRole("Staff");
+        userIsStaff = authstate.User.IsInRole("Staff");
     }
 
     async Task Delete(int companyId)
@@ -125,7 +124,8 @@
     {
         if (userIsStaff)
         {
-            await js.InvokeVoidAsync("AddDataTable", "#bookingsTable");
+            Console.WriteLine("Hello");
+            await js.InvokeVoidAsync("AddDataTable", "#companiesTable");
         }
 
     }
@@ -134,7 +134,7 @@
     {
         if (userIsStaff)
         {
-            js.InvokeVoidAsync("DataTablesDispose", "#bookingsTable");
+            js.InvokeVoidAsync("DataTablesDispose", "#companiesTable");
         }
     }
 }
