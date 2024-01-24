@@ -5,7 +5,7 @@
 @implements IDisposable
 
 <div class="container-fluid px-4">
-    <h3 class="card-title p-4">Categories</h3>
+    <h3 class="card-title mt-4 mb-3">Categories</h3>
 
     @if (Categories==null)
     {
@@ -65,7 +65,7 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>ImageUri</th>
+                        <th>Image</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -74,7 +74,9 @@
                     {
                         <tr>
                             <td>@category.Name</td>
-                            <td>@category.ImgUri</td>
+                            <td>
+                                <img src="@category.ImgUri" style="max-width: 50%"/>
+                            </td>
                             <td>
                                 <a href="/categories/view/@category.Id" class="btn btn-primary">
                                     <span class="oi oi-book"></span>

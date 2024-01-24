@@ -13,11 +13,12 @@
         </div>
 
         <div class="form-group">
-            <label>Image URI:</label>
-            <div>
-                <InputText @bind-Value="@category.ImgUri" class="form-control" />
+            <label>Logo URI:</label>
+            <div class="d-flex flex-column">
+                <InputFile OnChange="OnFileSelection" accept="image/png, image/jpeg" />
                 <ValidationMessage For="@(() => category.ImgUri)" />
             </div>
+            <img class="w-100 pt-2" src="@category.ImgUri" onerror="this.style.display='none'" />
         </div>
     </fieldset>
     <br />
@@ -41,5 +42,13 @@
     protected override void OnInitialized()
     {
         _client = ClientFactory.CreateClient("private");
+    }
+
+    private async Task OnFileSelection(InputFileChangeEventArgs e)
+    {
+        var imgFile = e.File;
+        var buffers = new byte[imgFile.Size];
+        await imgFile.OpenReadStream().ReadAsync(buffers);
+        category.ImgUri = $"data:image/png;base64,{Convert.ToBase64String(buffers)}";
     }
 }

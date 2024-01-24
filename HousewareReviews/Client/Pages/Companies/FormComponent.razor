@@ -45,20 +45,20 @@
         </div>
 
         <div class="form-group">
+            <label>Website URL:</label>
+            <div>
+                <InputText @bind-Value="@company.WebsiteUrl" class="form-control" />
+                <ValidationMessage For="@(() => company.WebsiteUrl)" />
+            </div>
+        </div>
+
+        <div class="form-group">
             <label>Logo URI:</label>
             <div class="d-flex flex-column">
                 <InputFile OnChange="OnFileSelection" accept="image/png, image/jpeg" />
                 <ValidationMessage For="@(() => company.LogoUri)" />
             </div>
             <img class="w-100 pt-2" src="@company.LogoUri" onerror="this.style.display='none'" />
-        </div>
-
-        <div class="form-group">
-            <label>Website URL:</label>
-            <div>
-                <InputText @bind-Value="@company.WebsiteUrl" class="form-control" />
-                <ValidationMessage For="@(() => company.WebsiteUrl)" />
-            </div>
         </div>
     </fieldset>
     <br />
