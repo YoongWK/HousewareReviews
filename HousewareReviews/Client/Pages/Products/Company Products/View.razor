@@ -1,11 +1,11 @@
-﻿@page "/products/company/{CompanyId:int}/edit/{ProductId:int}"
+﻿@page "/products/company/{CompanyId:int}/view/{ProductId:int}"
 @inject IHttpClientFactory ClientFactory
 @inject NavigationManager _navManager
 @attribute [Authorize(Roles = "Staff")]
 
 <div class="container-fluid px-4">
-	<h3 class="card-title mt-4 mb-3">Edit @company.Name Product</h3>
-	<CompanyProductFormComponent ButtonText="Update" OnValidSubmit="EditProduct" product="product" CompanyId="CompanyId" />
+	<h3 class="card-title mt-4 mb-3">View @company.Name Product</h3>
+	<FormComponent product="product" Disabled="true" CompanyId="CompanyId" />
 </div>
 
 @code {
@@ -24,11 +24,5 @@
 	{
 		product = await _client.GetFromJsonAsync<Product>($"{Endpoints.ProductsEndpoint}/{ProductId}");
 		company = await _client.GetFromJsonAsync<Company>($"{Endpoints.CompaniesEndpoint}/{CompanyId}");
-	}
-
-	async Task EditProduct()
-	{
-		await _client.PutAsJsonAsync($"{Endpoints.ProductsEndpoint}/{ProductId}", product);
-		_navManager.NavigateTo($"/products/company/{CompanyId}");
 	}
 }

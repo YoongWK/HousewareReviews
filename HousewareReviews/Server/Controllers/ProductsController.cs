@@ -34,7 +34,7 @@ namespace HousewareReviews.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetProduct(int id)
         {
-            var product = await _unitOfWork.Products.Get(q => q.Id == id);
+            var product = await _unitOfWork.Products.Get(q => q.Id == id, includes: q => q.Include(x => x.Company).Include(x => x.Category));
             if (product == null)
             {
                 return NotFound();

@@ -1,0 +1,42 @@
+﻿@page "/products/{id:int}"
+@inject IHttpClientFactory ClientFactory
+
+<div class="container-fluid">
+    <div class="d-flex align-items-center p-4 row column-gap-2" style="background-color: var(--lightblue)">
+        <div class="col-lg">
+            <img src="@product.ImgUri" class="rounded-4 w-100">
+        </div>
+        <div class="d-lg-none p-2"></div>
+        <div class="col-lg-7 d-flex flex-column">
+            <h4><b>@product.Name</b></h4>
+            <span>@product.Description</span>
+            <br />
+            <span>$@String.Format("{0:F2}", product.Price)</span>
+            <span>Company: <span style="color: var(--blue)">@product.Company?.Name</span></span>
+            <span>Category: <span style="color: var(--blue)">@product.Category?.Name</span></span>
+        </div>
+        <div class="d-lg-none p-2"></div>
+        <div class="col-lg d-flex justify-content-end">
+            <a href="#" class="btn rounded-5 text-white" style="background-color: var(--blue)">
+				<small><b>Write A Review</b></small>
+                <span class="oi oi-share"></span>
+            </a>
+        </div>
+    </div>
+</div>
+
+@code {
+    private HttpClient _client;
+    [Parameter] public int id { get; set; }
+    private Product? product = new Product();
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("public");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        product = await _client.GetFromJsonAsync<Product>($"{Endpoints.ProductsEndpoint}/{id}");
+    }
+}
