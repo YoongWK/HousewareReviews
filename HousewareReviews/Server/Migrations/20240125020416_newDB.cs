@@ -423,8 +423,8 @@ namespace HousewareReviews.Server.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "1ce40de7-b2a7-4cf4-a8f3-c811191a664d", 0, "a97f94dc-8547-4e18-bb45-3c2b011e851e", "consumer@blazor.com", false, false, null, "CONSUMER@BLAZOR.COM", "CONSUMER@BLAZOR.COM", "AQAAAAIAAYagAAAAEAbVdHF0vUp2fp5/4xf4lNUj6gWFkC5bdPX08PDOul1Rr+FaEMJQssaZw7nZ8a0VYA==", "98765432", false, "1bb52575-b4ce-42ee-a1ac-6f2d5d67d19b", false, "consumer@blazor.com" },
-                    { "3781efa7-66dc-47f0-860f-e506d04102e4", 0, "b8b2057e-4df6-4ce4-8238-b0299d7147d4", "staff@blazor.com", false, false, null, "STAFF@BLAZOR.COM", "STAFF@BLAZOR.COM", "AQAAAAIAAYagAAAAED0egDoBdQyScA7D3EWV3nXMa1TkklbNvp9Uygcj6gWlLbhUfL4+EROnBhYecHOuSQ==", "91234567", false, "061f631e-9e03-4916-801f-75b9bbd79bcf", false, "staff@blazor.com" }
+                    { "1ce40de7-b2a7-4cf4-a8f3-c811191a664d", 0, "41dc76a6-89f9-4575-813d-571194e38f7d", "consumer@blazor.com", false, false, null, "CONSUMER@BLAZOR.COM", "CONSUMER@BLAZOR.COM", "AQAAAAIAAYagAAAAEA4zOY0L5G/OcapFIjG0y/5MuqGT1hwWHVe2SluryIZS+pztyGMKz6lVY5zC+uSFWw==", "98765432", false, "b5591953-4500-4380-b90b-0942ead60a5e", false, "consumer@blazor.com" },
+                    { "3781efa7-66dc-47f0-860f-e506d04102e4", 0, "a537d110-1c0d-46f4-838a-35638ad68693", "staff@blazor.com", false, false, null, "STAFF@BLAZOR.COM", "STAFF@BLAZOR.COM", "AQAAAAIAAYagAAAAELvEQowBo3523PzeBtZLP8iGgLgSfx5DcLx7ihsXoUCfSR2yXJivHDaBqvXkMIu+Lw==", "91234567", false, "7734abf8-5628-4a56-b544-1b11ebb437eb", false, "staff@blazor.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -457,7 +457,7 @@ namespace HousewareReviews.Server.Migrations
             migrationBuilder.InsertData(
                 table: "Consumers",
                 columns: new[] { "Id", "CommentId", "ContactNumber", "Email", "FirstName", "LastName", "NRIC", "Password", "ProfileImgUri", "ReviewId", "UserId" },
-                values: new object[] { 1, null, "98765432", "consumer@blazor.com", "Yoong", "Wai kit", "S9067028Z", "P@ssword1", null, null, "1ce40de7-b2a7-4cf4-a8f3-c811191a664d" });
+                values: new object[] { 1, null, "98765432", "consumer@blazor.com", "Yoong", "Wai Kit", "S9067028Z", "P@ssword1", null, null, "1ce40de7-b2a7-4cf4-a8f3-c811191a664d" });
 
             migrationBuilder.InsertData(
                 table: "Staffs",

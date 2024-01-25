@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HousewareReviews.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240124193440_newDB")]
+    [Migration("20240125020416_newDB")]
     partial class newDB
     {
         /// <inheritdoc />
@@ -235,16 +235,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "3781efa7-66dc-47f0-860f-e506d04102e4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b8b2057e-4df6-4ce4-8238-b0299d7147d4",
+                            ConcurrencyStamp = "a537d110-1c0d-46f4-838a-35638ad68693",
                             Email = "staff@blazor.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "STAFF@BLAZOR.COM",
                             NormalizedUserName = "STAFF@BLAZOR.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAED0egDoBdQyScA7D3EWV3nXMa1TkklbNvp9Uygcj6gWlLbhUfL4+EROnBhYecHOuSQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELvEQowBo3523PzeBtZLP8iGgLgSfx5DcLx7ihsXoUCfSR2yXJivHDaBqvXkMIu+Lw==",
                             PhoneNumber = "91234567",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "061f631e-9e03-4916-801f-75b9bbd79bcf",
+                            SecurityStamp = "7734abf8-5628-4a56-b544-1b11ebb437eb",
                             TwoFactorEnabled = false,
                             UserName = "staff@blazor.com"
                         },
@@ -252,16 +252,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "1ce40de7-b2a7-4cf4-a8f3-c811191a664d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a97f94dc-8547-4e18-bb45-3c2b011e851e",
+                            ConcurrencyStamp = "41dc76a6-89f9-4575-813d-571194e38f7d",
                             Email = "consumer@blazor.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "CONSUMER@BLAZOR.COM",
                             NormalizedUserName = "CONSUMER@BLAZOR.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAbVdHF0vUp2fp5/4xf4lNUj6gWFkC5bdPX08PDOul1Rr+FaEMJQssaZw7nZ8a0VYA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEA4zOY0L5G/OcapFIjG0y/5MuqGT1hwWHVe2SluryIZS+pztyGMKz6lVY5zC+uSFWw==",
                             PhoneNumber = "98765432",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "1bb52575-b4ce-42ee-a1ac-6f2d5d67d19b",
+                            SecurityStamp = "b5591953-4500-4380-b90b-0942ead60a5e",
                             TwoFactorEnabled = false,
                             UserName = "consumer@blazor.com"
                         });
@@ -507,7 +507,7 @@ namespace HousewareReviews.Server.Migrations
                             ContactNumber = "98765432",
                             Email = "consumer@blazor.com",
                             FirstName = "Yoong",
-                            LastName = "Wai kit",
+                            LastName = "Wai Kit",
                             NRIC = "S9067028Z",
                             Password = "P@ssword1",
                             UserId = "1ce40de7-b2a7-4cf4-a8f3-c811191a664d"
