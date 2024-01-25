@@ -23,11 +23,38 @@
             </a>
         </div>
     </div>
+    <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
+        <div class="col-lg">
+            <img src="@product.Company?.LogoUri" class="rounded-4 w-100">
+        </div>
+        <div class="col-lg-3">
+			<h5 class="m-0">@product.Company?.Name</h5>
+        </div>
+        <div class="col-lg">
+            <h6>Total Reviews:</h6>
+            <span>
+                1
+            </span>
+        </div>
+        <div class="col-lg">
+            <h6>Overall Rating:</h6>
+            <span>
+                2
+            </span>
+        </div>
+        <div class="col-lg d-flex justify-content-end">
+            <a href="/companies/view/@product.CompanyId" class="btn rounded-5 text-white" style="background-color: var(--blue)">
+                <small><b>View Page</b></small>
+                <span class="oi oi-arrow-right"></span>
+            </a>
+        </div>
+    </div>
 </div>
 
 @code {
     private HttpClient _client;
     [Parameter] public int id { get; set; }
+    private List<Product>? products;
     private Product? product = new Product();
 
     protected override void OnInitialized()
@@ -38,5 +65,6 @@
     protected async override Task OnInitializedAsync()
     {
         product = await _client.GetFromJsonAsync<Product>($"{Endpoints.ProductsEndpoint}/{id}");
+        products = await _client.GetFromJsonAsync<List<Product>>($"{Endpoints.ProductsEndpoint}");
     }
 }

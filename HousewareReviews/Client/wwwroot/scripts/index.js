@@ -23,22 +23,8 @@ function SetSearchInputFocus() {
     document.getElementById('searchinput').focus();
 }
 
-
 // Autoplay Carousel function
 function startAutoplayCarousel() {
-    setTimeout(1000);
-
-    //$(document).on("load", () => {
-    //    alert("Hi");
-    //});
+    setTimeout(3000);
     document.getElementById("nextFurnitureCarouselBtn").click();
-    //$('#nextFurnitureCarouselBtn').click(function () {
-    //    $('#furnitureCarousel').carousel('next');
-    //});
 }
-//const carouselElement = document.querySelector('furnitureCarousel')
-//const carousel = new bootstrap.Carousel(carouselElement, {
-//    interval: 2000,
-//    cycle: true
-//}); 
-
