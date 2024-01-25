@@ -49,7 +49,7 @@ namespace HousewareReviews.Server.Controllers
             //     return NotFound();
             // }
             // var review = await _context.Reviews.FindAsync(id);
-            var review = await _unitOfWork.Reviews.Get(q => q.Id == id);
+            var review = await _unitOfWork.Reviews.Get(q => q.Id == id, includes: q => q.Include(x => x.Product).Include(x => x.Consumer));
 
 
             if (review == null)

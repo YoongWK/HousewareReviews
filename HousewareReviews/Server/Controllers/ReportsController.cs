@@ -35,7 +35,8 @@ namespace HousewareReviews.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetReport(int id)
         {
-            var report = await _unitOfWork.Reports.Get(q => q.Id == id);
+            var report = await _unitOfWork.Reports.Get(q => q.Id == id, includes: q => q.Include(x => x.Review).Include(x => x.Consumer)
+            .Include(x => x.Comment).Include(x => x.Staff));
             if (report == null)
             {
                 return NotFound();

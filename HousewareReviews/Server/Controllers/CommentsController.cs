@@ -34,7 +34,7 @@ namespace HousewareReviews.Server.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetComment(int id)
         {
-            var comment = await _unitOfWork.Comments.Get(q => q.Id == id);
+            var comment = await _unitOfWork.Comments.Get(q => q.Id == id, includes: q => q.Include(x => x.Review).Include(x => x.Consumer));
             if (comment == null)
             {
                 return NotFound();
