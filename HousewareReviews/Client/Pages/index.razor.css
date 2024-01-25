@@ -1,14 +1,64 @@
-﻿/*.carousel-resize {
-    max-height: calc(100vh - 63px);*/ /* Adjust the value based on your navbar height */
-    /* 100vh represents the full height of the viewport (window), and subtracting the navbar height */
-    /*overflow: hidden;*/ /* Hide any overflow content to prevent overlapping */
-/*}
+﻿.welcome {
+    background-color: rgba(223, 233, 244, 0.7);
+    width: 40%;
+    padding: 2.6vw;
+    right: 8%;
+    margin-bottom: 1.3vw;
+}
 
-    .carousel-resize .carousel-inner,
-    .carousel-resize .carousel-item,
-    .carousel-resize img {
-        height: 100%;
-        width: 95%;
-        margin: auto;
-        object-fit: cover;*/ /* Maintain aspect ratio and cover the whole space */
-    /*}*/
+.welcome-title {
+    color: var(--blue);
+    font-weight: bold;
+    font-size: 2.6vw;
+    margin-bottom: 1vw;
+}
+
+.welcome-text {
+    color: var(--black);
+    font-size: 1.3vw;
+    margin-bottom: 1vw;
+}
+
+.welcome-btn {
+    background-color: var(--blue);
+    font-size: 1.3vw;
+    padding: 0.8vw 1.3vw;
+}
+
+.control {
+    width: 8vw;
+}
+
+.staffhome {
+    position: relative;
+}
+
+.staffhome-info {
+    position: absolute;
+    bottom: 1vw;
+    left: 0;
+}
+
+.staffhome-info-title {
+    font-size: 4vw;
+    font-weight: bold;
+}
+
+.staffhome-info-text {
+    font-size: 2vw;
+    color: var(--darkgray);
+    font-weight: 500;
+}
+
+.staffaccess {
+    color: var(--blue);
+    font-weight: 600;
+}
+
+.staffaccess-item {
+    color: var(--darkgray);
+}
+
+.oi {
+    font-size: 3.2rem;
+}

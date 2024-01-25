@@ -88,13 +88,21 @@
                                         <span class="oi"><span class="profile oi-person" aria-hidden="true"></span></span>
                                         @if (context.User.IsInRole("Staff"))
                                         {
-                                            var staff = Staffs.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value));
-                                            @($"{staff?.FirstName} {staff?.LastName}")
+                                            if (Staffs != null)
+                                            {
+                                                var staff = Staffs.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value));
+                                                @($"{staff?.FirstName} {staff?.LastName}")
+                                            }
+
                                         }
                                         else if (context.User.IsInRole("Consumer"))
                                         {
-                                            var consumer = Consumers.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value));
-                                            @($"{consumer?.FirstName} {consumer?.LastName}")
+                                            if (Consumers != null)
+                                            {
+                                                var consumer = Consumers.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value));
+                                                @($"{consumer?.FirstName} {consumer?.LastName}")
+                                            }
+                                            
                                         }
                                     </NavLink>
                                 </button>
@@ -170,13 +178,21 @@
                                 <NavLink class="nav-link" href="#">
                                     @if (context.User.IsInRole("Staff"))
                                     {
-                                        var staff = Staffs.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value));
-                                        @($"{staff?.FirstName} {staff?.LastName}")
+                                        if (Staffs != null)
+                                        {
+                                            var staff = Staffs.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value));
+                                            @($"{staff?.FirstName} {staff?.LastName}")
+                                        }
+
                                     }
                                     else if (context.User.IsInRole("Consumer"))
                                     {
-                                        var consumer = Consumers.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value));
-                                        @($"{consumer?.FirstName} {consumer?.LastName}")
+                                        if (Consumers != null)
+                                        {
+                                            var consumer = Consumers.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value));
+                                            @($"{consumer?.FirstName} {consumer?.LastName}")
+                                        }
+
                                     }
                                     <span class="oi"><span class="profile oi-person" aria-hidden="true"></span></span>
                                 </NavLink>
