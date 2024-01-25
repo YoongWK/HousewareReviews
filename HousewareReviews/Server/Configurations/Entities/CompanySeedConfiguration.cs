@@ -17,7 +17,7 @@ namespace HousewareReviews.Server.Configurations.Entities
                     Email = "enquiry@aerogaz.com",
                     ContactNumber = "67469933",
                     Description = "Leading home appliance brand for high-quality and affordable hobs, hoods, and instant water heaters.",
-                    LogoUri = "/images/companies/Aerogaz",
+                    LogoUri = "/images/companies/Aerogaz.jpg",
                     WebsiteUrl = "https://aerogaz.com/"
                 },
                 new Company
@@ -28,7 +28,7 @@ namespace HousewareReviews.Server.Configurations.Entities
                     Email = "sg.support@cornellappliances.com",
                     ContactNumber = "64726500",
                     Description = "Singapore-based company for quality & affordable home appliances and consumer electronics.",
-                    LogoUri = "/images/companies/Cornell",
+                    LogoUri = "/images/companies/Cornell.jpg",
                     WebsiteUrl = "https://sg.cornellappliances.com/"
                 },
                 new Company
@@ -39,7 +39,7 @@ namespace HousewareReviews.Server.Configurations.Entities
                     Email = "sg.service@dyson.com",
                     ContactNumber = "67195413",
                     Description = "Renowned company famous for its innovative vacuum cleaners, hand dryers, & bladeless fans.",
-                    LogoUri = "/images/companies/Dyson",
+                    LogoUri = "/images/companies/Dyson.jpg",
                     WebsiteUrl = "https://www.dyson.com.sg/"
                 },
                 new Company
@@ -50,7 +50,7 @@ namespace HousewareReviews.Server.Configurations.Entities
                     Email = "customer-care.sin@electrolux.com",
                     ContactNumber = "67273699",
                     Description = "Recognised global appliance brand for high-quality home and kitchen appliances.",
-                    LogoUri = "/images/companies/Electrolux",
+                    LogoUri = "/images/companies/Electrolux.jpg",
                     WebsiteUrl = "https://www.electrolux.com.sg/"
                 }
             );
