@@ -17,7 +17,7 @@
         </div>
         <div class="d-lg-none p-2"></div>
         <div class="col-lg d-flex justify-content-end">
-            <a href="#" class="btn rounded-5 text-white" style="background-color: var(--blue)">
+            <a href="/products/@product.Id/reviews/create" class="btn rounded-5 text-white" style="background-color: var(--blue)">
 				<small><b>Write A Review</b></small>
                 <span class="oi oi-share"></span>
             </a>
@@ -33,7 +33,7 @@
         <div class="col-lg">
             <h6>Total Reviews:</h6>
             <span>
-                1
+                @reviewCount
             </span>
         </div>
         <div class="col-lg">
@@ -49,6 +49,23 @@
             </a>
         </div>
     </div>
+
+    @if (reviews != null)
+    {
+        @foreach (var review in reviews)
+        {
+            <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
+                <p>@review.Consumer.FirstName</p>
+                <br />
+                <p>Rating: @review.Rating Star</p>
+                <br />
+                <p>@review.Description</p>
+            </div>
+        }
+    }
+    
+    
+
 </div>
 
 @code {
@@ -56,6 +73,9 @@
     [Parameter] public int id { get; set; }
     private List<Product>? products;
     private Product? product = new Product();
+    private IList<Review> Reviews;
+    private List<Review>? reviews;
+    int reviewCount = 0;
 
     protected override void OnInitialized()
     {
@@ -66,5 +86,25 @@
     {
         product = await _client.GetFromJsonAsync<Product>($"{Endpoints.ProductsEndpoint}/{id}");
         products = await _client.GetFromJsonAsync<List<Product>>($"{Endpoints.ProductsEndpoint}");
+        Reviews = await _client.GetFromJsonAsync<List<Review>>($"{Endpoints.ReviewsEndpoint}");
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        reviewCount = 0;
+        var productReviews = new List<Review>();
+
+        if (Reviews != null)
+        {
+            foreach (var review in Reviews)
+            {
+                if (review.ProductId == product.Id)
+                {
+                    productReviews.Add(review);
+                    reviewCount++;
+				}
+			}
+		}
+		reviews = productReviews;
     }
 }

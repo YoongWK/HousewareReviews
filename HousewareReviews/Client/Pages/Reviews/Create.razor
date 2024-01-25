@@ -1,0 +1,54 @@
+﻿@page "/products/{ProductId:int}/reviews/create/"
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager _navManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize]
+
+<div class="container-fluid px-4">
+	<h3 class="card-title mt-4 mb-3">Write Review for @product.Name</h3>
+	<FormComponent ButtonText="Create Review" OnValidSubmit="CreateReview" review="review" ProductId="ProductId" />
+</div>
+
+@code {
+	[Parameter] public int ProductId { get; set; }
+	private HttpClient _client;
+	Product? product = new Product();
+	Review? review = new Review();
+	private int consumerid;
+	private List<Consumer>? Consumers;
+
+	protected override void OnInitialized()
+	{
+		_client = ClientFactory.CreateClient("private");
+	}
+
+	protected async override Task OnInitializedAsync()
+	{
+		Consumers = await _client.GetFromJsonAsync<List<Consumer>>($"{Endpoints.ConsumersEndpoint}");
+		var context = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		if (context.User.IsInRole("Consumer"))
+		{
+			var consumer = Consumers.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value));
+			consumerid = consumer.Id;
+		}
+	}
+
+	protected async override Task OnParametersSetAsync()
+	{
+		product = await _client.GetFromJsonAsync<Product>($"{Endpoints.ProductsEndpoint}/{ProductId}");
+	}
+
+	private async Task CreateReview()
+	{
+		// fill in the other details over here
+		var DateCreated = DateTime.Now;
+		var DateUpdated = DateTime.Now;
+		review.ConsumerId = consumerid;
+		review.ProductId = ProductId;
+		review.DateCreated = DateCreated;
+		review.DateUpdated = DateUpdated;
+
+		await _client.PostAsJsonAsync(Endpoints.ReviewsEndpoint, review);
+		_navManager.NavigateTo($"/products/{ProductId}");
+	}
+}

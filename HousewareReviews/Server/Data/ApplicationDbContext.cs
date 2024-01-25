@@ -35,6 +35,7 @@ namespace HousewareReviews.Server.Data
             builder.ApplyConfiguration(new UserSeedConfiguration());
             builder.ApplyConfiguration(new ConsumerSeedConfiguration());
             builder.ApplyConfiguration(new StaffSeedConfiguration());
+            builder.ApplyConfiguration(new ReviewSeedConfiguration());
         }
     }
 }

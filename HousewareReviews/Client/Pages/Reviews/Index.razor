@@ -1,7 +1,23 @@
 ﻿@* @page "/reviews/{id:int}"
 @inject IHttpClientFactory ClientFactory
-<h3>Hello This is where you write a review</h3>
+@inject NavigationManager _navManager
+@attribute [Authorize]
+
+<FormComponent ButtonText="Finish" OnValidSubmit="CreateReview" company="company" /> *@
 
 @code {
+    // private HttpClient _client;
+    // [Parameter] public int id { get; set; }
+    // Review? review = new Review();
 
-} *@
+    // protected override void OnInitialized()
+    // {
+    //     _client = ClientFactory.CreateClient("private");
+    // }
+
+    // private async Task CreateReview()
+    // {
+    //     await _client.PostAsJsonAsync(Endpoints.CompaniesEndpoint, review);
+    //     _navManager.NavigateTo("/companies/{id:int}");
+    // }
+}
