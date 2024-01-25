@@ -23,8 +23,9 @@
 					<p style="color: var(--white)">@productCount Products</p>
 				</div>
 				<div class="col-12 text-end">
-					<a href="@company.WebsiteUrl" target="_blank" class="btn btn-outline-dark mb-2" style="color:var(--white)">
-						<i class="bi bi-globe"></i> Visit Our Website
+					<a href="@company.WebsiteUrl" target="_blank" class="btn btn-light rounded-5 mb-2" style="color:var(--darkgray)">
+						<span class="oi oi-globe"></span>
+						<small><b>Visit Our Website</b></small>
 					</a>
 				</div>
 			</div>
@@ -41,6 +42,10 @@
 					{
 						<li>@category</li>
 					}
+				}
+				else
+				{
+					<li>No @company.Name products under any categories</li>
 				}
 			</ul>
 		</div>

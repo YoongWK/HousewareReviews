@@ -15,7 +15,7 @@ namespace HousewareReviews.Shared.Domain
         // public int? UsefulCnt { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
-        public DateTime DateReplied { get; set; }
+        public DateTime? DateReplied { get; set; }
         public int? ProductId { get; set; }
         public virtual Product? Product { get; set; }
         public int? ConsumerId { get; set; }
