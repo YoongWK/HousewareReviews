@@ -1,0 +1,208 @@
+﻿/* NavBar CSS Start*/
+    /* Navbar Customisation CSS */
+    .container-fluid {
+        padding-left: var(--bs-gutter-x);
+        padding-right: var(--bs-gutter-x);
+    }
+
+    .navbar {
+        background-color: var(--white);
+    }
+
+    .navbar-nav {
+        --bs-nav-link-padding-x: 0.5rem;
+    }
+
+    .navbar-brand {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+        color: var(--blue);
+        min-width: 275px;
+    }
+
+    /* Navbar Hamburger/Cross Menu Button CSS */
+    .navbar-toggler {
+        width: 30px;
+        height: 15px;
+        position: relative;
+        transition: .5s ease-in-out;
+    }
+
+    .navbar-toggler,
+    .navbar-toggler:focus,
+    .navbar-toggler:active,
+    .navbar-toggler-icon:focus {
+        outline: none;
+        box-shadow: none;
+        border: 0;
+        position: relative;
+    }
+
+    .navbar-toggler span {
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Navbar Hamburger/Cross Menu Lines CSS */
+    .toggler-icon {
+        position: absolute;
+        height: 4px;
+        width: 100%;
+        background: var(--blue);
+        border-radius: 2px;
+        left: 0;
+        transition: .25s ease-in-out;
+    }
+    
+    /* Navbar Hamburger Menu CSS */
+    .navbar-toggler.collapsed .top-bar {
+        margin-top: -20px;
+        transform: rotate(0deg);
+    }
+
+    .navbar-toggler.collapsed .middle-bar {
+        opacity: 1;
+    }
+
+    .navbar-toggler.collapsed .bottom-bar {
+        margin-top: 20px;
+        transform: rotate(0deg);
+    }
+
+    /* Navbar Cross Menu CSS */
+    .navbar-toggler .top-bar {
+        transform: rotate(135deg);
+    }
+
+    .navbar-toggler .middle-bar {
+        opacity: 0;
+    }
+
+    .navbar-toggler .bottom-bar {
+        transform: rotate(-135deg);
+    }
+
+    /* Navbar Hamburger/Cross Menu Hover CSS */
+    .navbar-toggler:hover .toggler-icon {
+        background: var(--darkblue);
+    }
+/* NavBar CSS End */
+
+/* NavItem CSS Start */
+    /* NavItem Customisation CSS */
+    .nav-item {
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .nav-item a {
+        color: var(--darkgray);
+        height: 3rem;
+        display: flex;
+        align-items: center;
+        line-height: 3rem;
+    }
+
+    /* NavItem Icon Customisation CSS */
+    .oi {
+        width: 2rem;
+        font-size: 1rem;
+        vertical-align: text-top;
+        top: -1px;
+        text-align: center;
+    }
+
+    /* NavItem Page Active CSS */
+    .nav-item a.active {
+        color: var(--black);
+    }
+
+    /* NavItem Hover CSS */
+    .nav-item a:hover {
+        color: var(--black);
+    }
+/* NavItem CSS End */
+
+/* LoginButton CSS Start */
+    /* LoginButton Customisation CSS */
+    .btn-login {
+        font-size: 0.8rem;
+        font-weight: 600;
+        width: 100px;
+        color: var(--darkgray);
+        background-color: var(--lightblue);
+    }
+
+    /* Login button Effects CSS */
+    .btn-login:hover,
+    .btn-login:focus,
+    .btn-login:active {
+        color: var(--black);
+        background-color: var(--lightblue);
+    }
+/* LoginButton CSS End */
+
+/* RegisterButton CSS Start */
+    /* RegisterButton Customisation CSS */
+    .btn-register {
+        font-size: 0.8rem;
+        font-weight: 600;
+        width: 100px;
+        color: var(--white);
+        background-color: var(--blue);
+    }
+
+     /* RegisterButton Effects CSS */
+    .btn-register:hover,
+    .btn-register:focus,
+    .btn-register:active {
+        color: var(--ghostwhite);
+        background-color: var(--blue);
+    }
+/* RegisterButton CSS End */
+
+/* ProfileButton CSS Start */
+    /* ProfileButton Customisation CSS */
+    .btn-profile {
+        font-size: 0.8rem;
+        font-weight: 600;
+        outline: none;
+        border: none;
+        padding: 0px;
+        height: 3rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .btn-profile,
+    .btn-profile:focus,
+    .btn-profile:active {
+        color: var(--darkgray);
+        background-color: transparent;
+    }
+
+    /* ProfileButton Circle CSS */
+    .profile {
+        padding: 0.12rem;
+        border: 2px solid;
+        border-radius: 50%;
+    }
+/* ProfileButton CSS End */
+
+/* Profile DropdownMenu CSS Start */
+    /* Profile DropdownMenu CSS Customisation */
+    .dropdown-menu {
+        padding: 0px 8px 0px 8px;
+    }
+
+    /* Profile DropdownMenu Caret Effects CSS */
+    .dropdown-toggle[aria-expanded="true"]:after {
+        transform: rotate(180deg);
+    }
+
+    .dropdown-toggle:after {
+        transition: 0.5s;
+    }
+/* Profile DropdownMenu CSS End */

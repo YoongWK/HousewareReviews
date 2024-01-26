@@ -1,0 +1,37 @@
+﻿.imagecard {
+    position: relative;
+}
+
+.imagecard-image {
+    border-radius: 1rem 0rem 0rem 1rem;
+}
+
+.imagecard-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.imagecard-content-title {
+    color: var(--white);
+    font-size: 2.8vw;
+    font-weight: bold;
+}
+
+.imagecard-content-text {
+    color: var(--white);
+    font-size: 1.4vw;
+}
+
+@media not (min-width: 1200px) {
+    .imagecard-image {
+        border-radius: 1rem 1rem 0rem 0rem;
+        object-fit: cover;
+        height: 15vw;
+    }
+
+    .imagecard-content-title {
+        font-size: 3.5vw;
+    }
+}
