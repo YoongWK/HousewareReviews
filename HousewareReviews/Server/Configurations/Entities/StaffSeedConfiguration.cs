@@ -18,6 +18,7 @@ namespace HousewareReviews.Server.Configurations.Entities
                     NRIC = "S9372136E",
                     Email = "staff@blazor.com",
                     ContactNumber = "91234567",
+                    ProfileImgUri = "/images/users/andrina.jpg",
                     Password = "P@ssword1"
                 }
             );

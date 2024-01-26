@@ -41,9 +41,7 @@ namespace HousewareReviews.Server.Configurations.Entities
                     Id = 3,
                     Rating = 4,
                     Description = "Reliable fan. Good choice for staying cool.",
-                    Reply = null,
                     DateCreated = new DateTime(2024, 1, 2, 14, 30, 45),
-                    DateReplied = null,
                     DateUpdated = new DateTime(2024, 1, 2, 14, 30, 45),
                     ProductId = 1,
                     ConsumerId = 1
@@ -71,6 +69,16 @@ namespace HousewareReviews.Server.Configurations.Entities
                     DateUpdated = new DateTime(2024, 1, 24, 10, 49, 49),
                     ProductId = 2,
                     ConsumerId = 3
+                },
+                new Review
+                {
+                    Id = 6,
+                    Rating = 1,
+                    Description = "dvjhbwedjgfjsdjvjsovnsdvkjvjovjijsifdjijhfjjfijf9fofmlxxpp-qjjfjfkj",
+                    DateCreated = new DateTime(2024, 1, 21, 10, 15, 45),
+                    DateUpdated = new DateTime(2024, 1, 21, 10, 15, 45),
+                    ProductId = 1,
+                    ConsumerId = 4
                 }
             );
         }

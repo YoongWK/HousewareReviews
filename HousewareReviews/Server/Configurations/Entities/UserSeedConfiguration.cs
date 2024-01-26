@@ -29,6 +29,36 @@ namespace HousewareReviews.Server.Configurations.Entities
                     NormalizedUserName = "CONSUMER@BLAZOR.COM",
                     PasswordHash = hasher.HashPassword(null, "P@ssword1"),
                     PhoneNumber = "98765432"
+                },
+                new ApplicationUser
+                {
+                    Id = "9du2ii40-h7d9-8sj2-j98s-is0dh83jk48s",
+                    Email = "maymorrison@gmail.com",
+                    NormalizedEmail = "MAYMORRISON@GMAIL.COM",
+                    UserName = "maymorrison@gmail.com",
+                    NormalizedUserName = "MAYMORRISON@GMAIL.COM",
+                    PasswordHash = hasher.HashPassword(null, "P@ssword1"),
+                    PhoneNumber = "92438900"
+                },
+                new ApplicationUser
+                {
+                    Id = "2oh7diw9-0or5-3jf9-8ss6-ks8ya5h297bd",
+                    Email = "joshuatan@outlook.com",
+                    NormalizedEmail = "JOSHUATAN@OUTLOOK.COM",
+                    UserName = "joshuatan@outlook.com",
+                    NormalizedUserName = "JOSHUATAN@OUTLOOK.COM",
+                    PasswordHash = hasher.HashPassword(null, "P@ssword1"),
+                    PhoneNumber = "83072245"
+                },
+                new ApplicationUser
+                {
+                    Id = "5di8sy83-2i9r-f56h-s8d9-s09njsh7dd53",
+                    Email = "ethanlim@hotmail.com",
+                    NormalizedEmail = "ETHANLIM@HOTMAIL.COM",
+                    UserName = "ethanlim@hotmail.com",
+                    NormalizedUserName = "ETHANLIM@HOTMAIL.COM",
+                    PasswordHash = hasher.HashPassword(null, "P@ssword1"),
+                    PhoneNumber = "87229044"
                 }
             );
         }
