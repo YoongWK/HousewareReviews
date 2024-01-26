@@ -270,19 +270,22 @@
         align-items: center;
     }
 
-    .btn-profile,
-    .btn-profile:focus,
-    .btn-profile:active {
-        color: var(--darkgray);
-        background-color: transparent;
-    }
+        .btn-profile,
+        .btn-profile:focus,
+        .btn-profile:active {
+            color: var(--darkgray);
+            background-color: transparent;
+        }
 
     /* ProfileButton Circle CSS */
-    .profile {
-        padding: 0.12rem;
-        border: 2px solid;
-        border-radius: 50%;
-    }
+.profile {
+    border-radius: 50%;
+    height: 23px;
+    width: 23px;
+    margin: 5px;
+    border: 2px solid;
+    object-fit: cover;
+}
 /* ProfileButton CSS End */
 
 /* Profile DropdownMenu CSS Start */

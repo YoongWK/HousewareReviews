@@ -162,6 +162,7 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account
                     consumer.Email = Input.Email;
                     consumer.ContactNumber = Input.ContactNumber;
                     consumer.Password = Input.Password;
+                    consumer.ProfileImgUri = "/images/users/default.jpg";
 
                     _context.Consumers.Add(consumer);
                     await _context.SaveChangesAsync();

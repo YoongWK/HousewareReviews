@@ -84,24 +84,23 @@
                                 @* Profile Button *@
                                 <button type="button" class="btn-profile btn btn-secondary dropdown-toggle shadow-none" data-bs-toggle="dropdown" aria-expanded="false">
                                     <NavLink class="nav-link" href="#">
-                                        <span class="oi"><span class="profile oi-person" aria-hidden="true"></span></span>
                                         @if (context.User.IsInRole("Staff"))
                                         {
                                             if (Staffs != null)
                                             {
                                                 var staff = Staffs.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value));
+                                                <img class="profile" src="@staff?.ProfileImgUri" />
                                                 @($"{staff?.FirstName} {staff?.LastName}")
                                             }
-
                                         }
                                         else if (context.User.IsInRole("Consumer"))
                                         {
                                             if (Consumers != null)
                                             {
                                                 var consumer = Consumers.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value));
+                                                <img class="profile" src="@consumer?.ProfileImgUri" />
                                                 @($"{consumer?.FirstName} {consumer?.LastName}")
                                             }
-                                            
                                         }
                                     </NavLink>
                                 </button>
@@ -181,8 +180,8 @@
                                         {
                                             var staff = Staffs.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value));
                                             @($"{staff?.FirstName} {staff?.LastName}")
+                                            <img class="profile" src="@staff?.ProfileImgUri" />
                                         }
-
                                     }
                                     else if (context.User.IsInRole("Consumer"))
                                     {
@@ -190,10 +189,9 @@
                                         {
                                             var consumer = Consumers.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value));
                                             @($"{consumer?.FirstName} {consumer?.LastName}")
+                                            <img class="profile" src="@consumer?.ProfileImgUri" />
                                         }
-
                                     }
-                                    <span class="oi"><span class="profile oi-person" aria-hidden="true"></span></span>
                                 </NavLink>
                             </button>
 

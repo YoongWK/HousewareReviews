@@ -185,9 +185,12 @@
 
     /* ProfileButton Circle CSS */
     .profile {
-        padding: 0.12rem;
-        border: 2px solid;
         border-radius: 50%;
+        height: 23px;
+        width: 23px;
+        margin: 5px;
+        border: 2px solid;
+        object-fit: cover;
     }
 /* ProfileButton CSS End */
 

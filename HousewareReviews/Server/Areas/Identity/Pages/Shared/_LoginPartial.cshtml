@@ -21,26 +21,27 @@
 			<div class="d-xl-none dropdown">
 				<div class="nav-item px-1">
 					<button type="button" class="btn-profile btn dropdown-toggle shadow-none nav-link" data-bs-toggle="dropdown" aria-expanded="false">
-						<span class="oi"><span class="profile oi-person" aria-hidden="true"></span></span>
-                            @if (user != null)
+                        @if (user != null)
+                        {
+                            if (User.IsInRole("Staff"))
                             {
-                                if (User.IsInRole("Staff"))
+                                var staff = DbContext.Staffs.FirstOrDefault(u => u.UserId == user.Id);
+                                if (staff != null)
                                 {
-                                    var staff = DbContext.Staffs.FirstOrDefault(u => u.UserId == user.Id);
-                                    if (staff != null)
-                                    {
-                                        @($"{staff?.FirstName} {staff?.LastName}")
-                                    }
-                                }
-                                else if (User.IsInRole("Consumer"))
-                                {
-                                    var consumer = DbContext.Consumers.FirstOrDefault(u => u.UserId == user.Id);
-                                    if (consumer != null)
-                                    {
-                                        @($"{consumer?.FirstName} {consumer?.LastName}")
-                                    }
+                                    <img class="profile" src="@staff?.ProfileImgUri" />
+                                    @($"{staff?.FirstName} {staff?.LastName}")
                                 }
                             }
+                            else if (User.IsInRole("Consumer"))
+                            {
+                                var consumer = DbContext.Consumers.FirstOrDefault(u => u.UserId == user.Id);
+                                if (consumer != null)
+                                {
+                                    <img class="profile" src="@consumer?.ProfileImgUri" />
+                                    @($"{consumer?.FirstName} {consumer?.LastName}")
+                                }
+                            }
+                        }
 					</button>
 					<div class="dropdown-menu nav-item" style="margin: 0px 8px 8px 8px;">
 						<a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
@@ -66,6 +67,7 @@
                             if (staff != null)
                             {
                                 @($"{staff?.FirstName} {staff?.LastName}")
+                                <img class="profile" src="@staff?.ProfileImgUri" />
                             }
                         }
                         else if (User.IsInRole("Consumer"))
@@ -74,10 +76,10 @@
                             if (consumer != null)
                             {
                                 @($"{consumer?.FirstName} {consumer?.LastName}")
+                                <img class="profile" src="@consumer?.ProfileImgUri" />
                             }
                         }
                     }
-                    <span class="oi"><span class="profile oi-person" aria-hidden="true"></span></span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end nav-item" style="margin: 8px 0px 0px 0px;">
                     <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">

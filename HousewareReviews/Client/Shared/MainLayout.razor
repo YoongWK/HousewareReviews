@@ -5,7 +5,7 @@
     <div>
         <NavMenu />
     </div>
-    <main @onclick="HideNavBar">
+    <main>
         <article class="content">
             @Body
         </article>
@@ -14,9 +14,5 @@
 
 @code
 {
-    // Hide Collapsable Bootstrap NavBar
-    public async Task HideNavBar()
-    {
-        await JS.InvokeVoidAsync("hideNavBar");
-    }
+
 }
