@@ -28,3 +28,12 @@ function startAutoplayCarousel() {
     setTimeout(3000);
     document.getElementById("nextFurnitureCarouselBtn").click();
 }
+
+// View replies and comments
+function showRepliesNComments(reviewId) {
+    // the button is id = "repliesncomments"
+    let container = document.getElementById(`rncContainer-${reviewId}`);
+    if (container) {
+        container.style.display = container.style.display === 'none' ? 'block' : 'none';
+    }
+}

@@ -92,7 +92,8 @@
 			</div>
 			<div class="col-8 p-3">
 				<h3 style="color: var(--white)"><b>@company.Name</b></h3>
-				<p style="color: var(--white)">@productCount Products</p>
+				<p class="m-0" style="color: var(--white)">@productCount Products</p>
+				<p class="m-0" style="color: var(--white)">@companyreviewCount Reviews</p>
 			</div>
 			<div class="col-12 text-end">
 				<a href="@company.WebsiteUrl" target="_blank" class="btn btn-light rounded-5 mb-2" style="color:var(--darkgray)">
@@ -108,12 +109,13 @@
 		<p>@company.Description</p>
 		<h3 class="card-title" style="color: var(--blue)"><b>Categories</b></h3>
 		<ul>
-			@if (distinctCategories.Count() != 0)
+			@if (distinctCategories != null)
 			{
 				@foreach (var category in distinctCategories)
 				{
 					<li>@category</li>
 				}
+				Console.WriteLine("Hello");
 			}
 			else
 			{
@@ -123,7 +125,7 @@
 	</div>
 
 	<div class="card p-3 rounded-4 m-3" style="background-color: var(--lightblue)">
-		<h2 class="card-title text-center m-2" style="color: var(--black)"><b>Our Products</b></h2>
+		<h2 class="card-title text-center m-2 pb-2" style="color: var(--black)"><b>Our Products</b></h2>
 		<div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
 			@* for each product in company products *@
 			@if (products != null)
@@ -131,21 +133,19 @@
 				@foreach (var product in products)
 				{
 					<a href="/products/@product.Id" style="text-decoration: none;">
-						<div class="col">
-							<div class="card text-center h-100 rounded-3">
-								<img src="@product.ImgUri" class="card-img-top rounded-top-3" alt="@product.Name Image">
-								<div class="card-body m-0 py-0 px-2">
-									<small class="card-title"><b>@product.Name</b></small>
-								</div>
-								<div class="card-body m-0 py-0 px-2">
-									<small class="card-text">@product.Price</small>
-								</div>
-								<div class="card-body m-0 py-0 px-2">
-									<small class="card-text">@product.Company?.Name</small>
-								</div>
-								<div class="card-body m-0 py-0 px-2">
-									<small class="card-text">@product.Category.Name</small>
-								</div>
+						<div class="card text-center h-100 rounded-3">
+							<img src="@product.ImgUri" class="card-img-top rounded-top-3" alt="@product.Name Image">
+							<div class="card-body m-0 py-0 px-2">
+								<small class="card-title"><b>@product.Name</b></small>
+							</div>
+							<div class="card-body m-0 py-0 px-2">
+								<small class="card-text">@product.Price</small>
+							</div>
+							<div class="card-body m-0 py-0 px-2">
+								<small class="card-text">@product.Company?.Name</small>
+							</div>
+							<div class="card-body m-0 py-0 px-2">
+								<small class="card-text">@product.Category.Name</small>
 							</div>
 						</div>
 					</a>

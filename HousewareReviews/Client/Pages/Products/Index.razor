@@ -1,83 +1,127 @@
 ﻿@page "/products/{id:int}"
 @inject IHttpClientFactory ClientFactory
+@inject IJSRuntime js
 
-<div class="container-fluid">
-    <div class="d-flex align-items-center p-4 row column-gap-2" style="background-color: var(--lightblue)">
-        <div class="col-lg">
-            <img src="@product.ImgUri" class="rounded-4 w-100">
-        </div>
-        <div class="d-lg-none p-2"></div>
-        <div class="col-lg-7 d-flex flex-column">
-            <h4><b>@product.Name</b></h4>
-            <span>@product.Description</span>
-            <br />
-            <span>$@String.Format("{0:F2}", product.Price)</span>
-            <span>Company: <span style="color: var(--blue)">@product.Company?.Name</span></span>
-            <span>Category: <span style="color: var(--blue)">@product.Category?.Name</span></span>
-        </div>
-        <div class="d-lg-none p-2"></div>
-        <div class="col-lg d-flex justify-content-end">
-            <a href="/products/@product.Id/reviews/create" class="btn rounded-5 text-white" style="background-color: var(--blue)">
-				<small><b>Write A Review</b></small>
-                <span class="oi oi-share"></span>
-            </a>
-        </div>
-    </div>
-    <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
-        <div class="col-lg">
-            <img src="@product.Company?.LogoUri" class="rounded-4 w-100">
-        </div>
-        <div class="col-lg-3">
-			<h5 class="m-0">@product.Company?.Name</h5>
-        </div>
-        <div class="col-lg">
-            <h6>Total Reviews:</h6>
-            <span>
-                @companyreviewCount
-            </span>
-        </div>
-        <div class="col-lg">
-            <h6>Overall Rating:</h6>
-            <span>
-                2
-            </span>
-        </div>
-        <div class="col-lg d-flex justify-content-end">
-            <a href="/companies/view/@product.CompanyId" class="btn rounded-5 text-white" style="background-color: var(--blue)">
-                <small><b>View Page</b></small>
-                <span class="oi oi-arrow-right"></span>
-            </a>
-        </div>
-    </div>
-
-    <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
-        <h3 class="card-title" style="color: var(--black)"><b>Reviews (@productreviewCount)</b></h3>
-    </div>
-
-    @if (reviews != null)
-    {
-        @foreach (var review in reviews)
-        {
-            <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
-                <div class="d-flex">
-                    <div class="me-auto">
-                        <h4>
-                            <span class="oi"><span class="profile oi-person" aria-hidden="true"></span></span>
-                            <b>@review.Consumer.FirstName @review.Consumer.LastName</b>
-                        </h4>
-                    </div>
-                    <div>
-                        <h6><b>Last Updated: @review.DateUpdated.Date.ToShortDateString()</b></h6>
-                    </div>
-                </div>
-                    <hr />
-                    <p>Rating: @review.Rating Star</p>
-                    <br />
-                    <p>@review.Description</p>
+<AuthorizeView Roles="Consumer">
+    <div class="container-fluid">
+        <div class="d-flex align-items-center p-4 row column-gap-2" style="background-color: var(--lightblue)">
+            <div class="col-lg">
+                <img src="@product.ImgUri" class="rounded-4 w-100">
             </div>
+            <div class="d-lg-none p-2"></div>
+            <div class="col-lg-7 d-flex flex-column">
+                <h4><b>@product.Name</b></h4>
+                <span>@product.Description</span>
+                <br />
+                <span>$@String.Format("{0:F2}", product.Price)</span>
+                <span>Company: <span style="color: var(--blue)">@product.Company?.Name</span></span>
+                <span>Category: <span style="color: var(--blue)">@product.Category?.Name</span></span>
+            </div>
+            <div class="d-lg-none p-2"></div>
+            <div class="col-lg d-flex justify-content-end">
+                <a href="/products/@product.Id/reviews/create" class="btn rounded-5 text-white" style="background-color: var(--blue)">
+				    <small><b>Write A Review</b></small>
+                    <span class="oi oi-share"></span>
+                </a>
+            </div>
+        </div>
+        <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
+            <div class="col-lg">
+                <img src="@product.Company?.LogoUri" class="rounded-4 w-100">
+            </div>
+            <div class="col-lg-3">
+			    <h5 class="m-0">@product.Company?.Name</h5>
+            </div>
+            <div class="col-lg">
+                <h6>Total Reviews:</h6>
+                <span>
+                    @companyreviewCount
+                </span>
+            </div>
+            <div class="col-lg">
+                <h6>Overall Rating:</h6>
+                <span>
+                    2
+                </span>
+            </div>
+            <div class="col-lg d-flex justify-content-end">
+                <a href="/companies/view/@product.CompanyId" class="btn rounded-5 text-white" style="background-color: var(--blue)">
+                    <small><b>View Page</b></small>
+                    <span class="oi oi-arrow-right"></span>
+                </a>
+            </div>
+        </div>
+
+        <!--Card for progress bars for Reviews-->
+        <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
+            <h3 class="card-title" style="color: var(--black)"><b>Reviews (@productreviewCount)</b></h3>
+        </div>
+
+        @if (reviews != null)
+        {
+            @foreach (var review in reviews)
+            {
+                <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
+                    <div class="d-flex">
+                        <div class="me-auto">
+                            <h4>
+                                <span class="oi"><span class="profile oi-person" aria-hidden="true"></span></span>
+                                <b>@review.Consumer.FirstName @review.Consumer.LastName</b>
+                            </h4>
+                        </div>
+                        <div>
+                            <h6><b>Last Updated: @review.DateUpdated.Date.ToShortDateString()</b></h6>
+                        </div>
+                    </div>
+                        <hr />
+                        <p>Rating: @review.Rating Star</p>
+                        <br />
+                        <p>@review.Description</p>
+                        <br />
+                        <h6><b>Date Reviewed: @review.DateCreated.Date.ToShortDateString()</b></h6>
+                        <hr />
+                    <div class="d-flex container">
+                        
+                        @* <a href="/reply/@review.Id" style="text-decoration: none; color: var(--black)"> *@ @* </a> *@
+                        <div class="dropdown me-auto" id="repliesncomments">
+                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <small>View Replies & Comments</small>
+                                @* <span class="oi oi-chevron-bottom" aria-hidden="true"></span> *@
+                            </button>
+                            <div class="dropdown-menu" style="position:relative;">
+                            <div class="d-flex align-items-center m-4 p-3 row bg-light rounded-4">
+                                    <p>No comments or replies yet.</p>
+                            </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <span class="oi oi-comment-square" aria-hidden="true"></span>
+                            <small>Comment</small>
+                            &nbsp;
+                            <span class="oi oi-thumb-up" aria-hidden="true"></span>
+                            <small>Helpful</small>
+                            &nbsp;
+                            <span class="oi oi-flag" aria-hidden="true"></span>
+                            <small>Report</small>
+                        </div>
+                    </div>
+
+
+                    @* <div id="rncContainer-@review.Id" class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4" style="display: @displayRnC">
+                        <!-- Placeholder for comments and replies -->
+                        <p>No comments or replies yet.</p>
+                    </div> *@
+                </div>
+            }
         }
-    }
-</div>
+    </div>
+</AuthorizeView>
+<AuthorizeView>
+    <NotAuthorized>
+
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private HttpClient _client;
@@ -105,6 +149,7 @@
     {
         productreviewCount = 0;
         companyreviewCount = 0;
+        // hideRnC = true;
         var productReviews = new List<Review>();
 
         if (Reviews != null)
@@ -122,7 +167,9 @@
                     companyreviewCount++;
                 }
             }
-		}
-		reviews = productReviews;
+        }
+        reviews = productReviews;
     }
+
+
 }
