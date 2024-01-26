@@ -18,6 +18,7 @@ namespace HousewareReviews.Server.Configurations.Entities
                     NRIC = "S9067028Z",
                     Email = "consumer@blazor.com",
                     ContactNumber = "98765432",
+                    ProfileImgUri = "/images/users/waikit.jpg",
                     Password = "P@ssword1"
                 },
                 new Consumer
@@ -29,6 +30,7 @@ namespace HousewareReviews.Server.Configurations.Entities
                     NRIC = "S2836518E",
                     Email = "maymorrison@gmail.com",
                     ContactNumber = "92438900",
+                    ProfileImgUri = "/images/users/may.jpg",
                     Password = "P@ssword1"
                 },
                 new Consumer
@@ -40,6 +42,7 @@ namespace HousewareReviews.Server.Configurations.Entities
                     NRIC = "T8904392R",
                     Email = "joshuatan@outlook.com",
                     ContactNumber = "83072245",
+                    ProfileImgUri = "/images/users/joshua.jpg",
                     Password = "P@ssword1"
                 },
                 new Consumer
@@ -51,6 +54,7 @@ namespace HousewareReviews.Server.Configurations.Entities
                     NRIC = "T3876509Z",
                     Email = "ethanlim@hotmail.com",
                     ContactNumber = "87229044",
+                    ProfileImgUri = "/images/users/ethan.jpg",
                     Password = "P@ssword1"
                 }
             );
