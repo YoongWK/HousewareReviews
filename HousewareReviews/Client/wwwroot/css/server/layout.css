@@ -24,6 +24,69 @@
     font-size: 1.4vw;
 }
 
+.form-title {
+    font-weight: 600;
+    color: var(--black);
+}
+
+.form-floating > .form-control-plaintext ~ label::after,
+.form-floating > .form-control:focus ~ label::after,
+.form-floating > .form-control:not(:placeholder-shown) ~ label::after,
+.form-floating > .form-select ~ label::after {
+    background-color: transparent;
+}
+
+.form-input {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+}
+
+.form-input:focus,
+.form-input:active {
+    box-shadow: none;
+    border-bottom-color: var(--black);
+}
+
+.form-input-label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--black);
+}
+
+.form-input-check:focus,
+.form-input-check:active {
+    box-shadow: none;
+    border-color: #dee2e6;
+}
+
+.form-input-check:checked {
+    background-color: var(--blue);
+    border-color: var(--blue);
+}
+
+.form-input-button {
+    padding: 6px 12px;
+    font-weight: 500;
+    border: none;
+    background-color: var(--gray);
+    color: var(--black);
+}
+
+.form-input-button:active,
+.form-input-button:focus,
+.form-input-button:hover {
+    background-color: var(--blue);
+    color: var(--white);
+    box-shadow: none;
+}
+
+.form-input-link {
+    text-decoration: none;
+    color: var(--blue);
+}
+
 @media not (min-width: 1200px) {
     .imagecard-image {
         border-radius: 1rem 1rem 0rem 0rem;
