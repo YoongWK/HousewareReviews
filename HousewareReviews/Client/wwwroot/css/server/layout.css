@@ -2,8 +2,12 @@
     position: relative;
 }
 
-.imagecard-image {
+.imagecard-image-l {
     border-radius: 1rem 0rem 0rem 1rem;
+}
+
+.imagecard-image-r {
+    border-radius: 0rem 1rem 1rem 0rem;
 }
 
 .imagecard-content {
@@ -88,7 +92,13 @@
 }
 
 @media not (min-width: 1200px) {
-    .imagecard-image {
+    .imagecard-image-l {
+        border-radius: 1rem 1rem 0rem 0rem;
+        object-fit: cover;
+        height: 15vw;
+    }
+
+    .imagecard-image-r {
         border-radius: 1rem 1rem 0rem 0rem;
         object-fit: cover;
         height: 15vw;

@@ -83,35 +83,35 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
+            [Required(ErrorMessage = "First Name is required.")]
             [Display(Name = "First Name")]
             public string FirstName { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Last Name is required.")]
             [Display(Name = "Last Name")]
             public string LastName { get; set; }
 
-            [Required]
-            [RegularExpression(@"^[STFGstfg]\d{7}[A-Za-z]", ErrorMessage = "NRIC is not a valid NRIC.")]
+            [Required(ErrorMessage = "NRIC is required.")]
+            [RegularExpression(@"^[STFGstfg]\d{7}[A-Za-z]", ErrorMessage = "NRIC is not valid.")]
             [Display(Name = "NRIC")]
             public string NRIC { get; set; }
 
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Email is required.")]
+            [EmailAddress(ErrorMessage = "Email is not valid.")]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Contact Number is required.")]
             [DataType(DataType.PhoneNumber)]
-            [RegularExpression(@"(6|8|9)\d{7}", ErrorMessage = "Contact Number is not a valid phone number")]
+            [RegularExpression(@"(6|8|9)\d{7}", ErrorMessage = "Contact Number is not valid.")]
             [Display(Name = "Contact Numer")]
             public string ContactNumber { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [Required(ErrorMessage = "Password is required.")]
+            [StringLength(100, ErrorMessage = "Password must be {2} to {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
@@ -122,7 +122,7 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account
             /// </summary>
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Compare("Password", ErrorMessage = "Password and Confirm Password do not match.")]
             public string ConfirmPassword { get; set; }
         }
 

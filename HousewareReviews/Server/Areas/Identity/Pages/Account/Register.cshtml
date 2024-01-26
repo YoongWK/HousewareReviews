@@ -4,7 +4,78 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="d-flex align-items-center row rounded-4 m-0" style="background-color: var(--white)">
+    <div class="order-xl-first order-last col-xl-6 p-0">
+		<div class="px-5 py-3">
+			<h2 class="form-title text-center">@ViewData["Title"]</h2>
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <div class="row mx-0">
+					<div class="col-xl p-0 form-floating">
+						<input asp-for="Input.FirstName" class="form-control form-input" autocomplete="given-name" aria-required="true" placeholder="firstname" />
+						<label asp-for="Input.FirstName" class="form-label">First Name</label>
+						<small><span asp-validation-for="Input.FirstName" class="text-danger"></span></small>
+					</div>
+                    <div class="col-xl-1"></div>
+					<div class="col-xl p-0 form-floating">
+						<input asp-for="Input.LastName" class="form-control form-input" autocomplete="family-name" aria-required="true" placeholder="lastname" />
+						<label asp-for="Input.LastName" class="form-label">Last Name</label>
+						<small><span asp-validation-for="Input.LastName" class="text-danger"></span></small>
+					</div>
+                </div>
+                <div class="row mx-0 mb-3">
+                    <div class="col-xl p-0 form-floating">
+                        <input asp-for="Input.NRIC" class="form-control form-input" autocomplete="nric" aria-required="true" placeholder="nric" />
+                        <label asp-for="Input.NRIC" class="form-label">NRIC</label>
+                        <small><span asp-validation-for="Input.NRIC" class="text-danger"></span></small>
+                    </div>
+                    <div class="col-xl-1"></div>
+                    <div class="col-xl p-0 form-floating">
+                        <input asp-for="Input.Email" class="form-control form-input" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        <label asp-for="Input.Email" class="form-label">Email</label>
+                        <small><span asp-validation-for="Input.Email" class="text-danger"></span></small>
+                    </div>
+                </div>
+                <div class="form-floating">
+                    <input asp-for="Input.ContactNumber" class="form-control form-input" autocomplete="phone-number" aria-required="true" placeholder="phonenumber" />
+                    <label asp-for="Input.ContactNumber" class="form-label">Phone Number</label>
+					<small><span asp-validation-for="Input.ContactNumber" class="text-danger"></span></small>
+                </div>
+                <div class="row mx-0 mb-3">
+                    <div class="col-xl p-0 form-floating">
+                        <input asp-for="Input.Password" class="form-control form-input" autocomplete="new-password" aria-required="true" placeholder="password" />
+                        <label asp-for="Input.Password" class="form-label">Password</label>
+						<small><span asp-validation-for="Input.Password" class="text-danger"></span></small>
+                    </div>
+                    <div class="col-xl-1"></div>
+                    <div class="col-xl p-0 form-floating">
+                        <input asp-for="Input.ConfirmPassword" class="form-control form-input" autocomplete="new-password" aria-required="true" placeholder="password" />
+                        <label asp-for="Input.ConfirmPassword" class="form-label">Confirm Password</label>
+						<small><span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span></small>
+                    </div>
+                </div>
+
+                
+                <button id="registerSubmit" type="submit" class="w-100 form-input-button rounded-5">Register</button>
+                <div>
+                    <p class="form-input-label m-0 mt-2">
+                        Already have an account? <a class="form-input-link" asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Log In</a>
+                    </p>
+                </div>
+            </form>
+		</div>
+	</div>
+    <div class="order-xl-last order-first col-xl-6 imagecard p-0">
+        <img class="imagecard-image-r w-100" src="~/images/backgrounds/register.jpg" />
+        <div class="imagecard-content text-center">
+            <h2 class="imagecard-content-title">Sign Up Today!</h2>
+            <p class="d-none d-xl-block imagecard-content-text">Register an account to join our vibrant community of home enthusiasts.</p>
+        </div>
+    </div>
+</div>
+
+
+@* <h1>@ViewData["Title"]</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -50,7 +121,7 @@
         </form>
     </div>
 </div>
-
+ *@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
