@@ -1,10 +1,12 @@
 ﻿using Duende.IdentityServer.EntityFramework.Options;
+using HousewareComments.Server.Configurations.Entities;
 using HousewareReviews.Server.Configurations.Entities;
 using HousewareReviews.Server.Models;
 using HousewareReviews.Shared.Domain;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Reflection.Emit;
 
 namespace HousewareReviews.Server.Data
 {
@@ -22,11 +24,47 @@ namespace HousewareReviews.Server.Data
         public DbSet<Product>  Products { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<Report> Reports { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder builder)
+        public DbSet<Reviewreport> Reviewreports { get; set; }
+		public DbSet<Commentreport> Commentreports { get; set; }
+		protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(builder);
+			builder.Entity<Review>()
+			.HasOne(s => s.Consumer)
+			.WithMany()
+			.HasForeignKey(s => s.ConsumerId)
+			.OnDelete(DeleteBehavior.SetNull);
+
+			builder.Entity<Comment>()
+			.HasOne(s => s.Consumer)
+			.WithMany()
+			.HasForeignKey(s => s.ConsumerId)
+			.OnDelete(DeleteBehavior.SetNull);
+
+			builder.Entity<Reviewreport>()
+			.HasOne(s => s.Consumer)
+			.WithMany()
+			.HasForeignKey(s => s.ConsumerId)
+			.OnDelete(DeleteBehavior.SetNull);
+
+			builder.Entity<Reviewreport>()
+		    .HasOne(s => s.Staff)
+		    .WithMany()
+		    .HasForeignKey(s => s.StaffId)
+		    .OnDelete(DeleteBehavior.SetNull);
+
+			builder.Entity<Commentreport>()
+			.HasOne(s => s.Consumer)
+			.WithMany()
+			.HasForeignKey(s => s.ConsumerId)
+			.OnDelete(DeleteBehavior.SetNull);
+
+			builder.Entity<Commentreport>()
+			.HasOne(s => s.Staff)
+			.WithMany()
+			.HasForeignKey(s => s.StaffId)
+			.OnDelete(DeleteBehavior.SetNull);
+
+			base.OnModelCreating(builder);
             builder.ApplyConfiguration(new CategorySeedConfiguration());
             builder.ApplyConfiguration(new CompanySeedConfiguration());
             builder.ApplyConfiguration(new ProductSeedConfiguration());
@@ -36,6 +74,9 @@ namespace HousewareReviews.Server.Data
             builder.ApplyConfiguration(new ConsumerSeedConfiguration());
             builder.ApplyConfiguration(new StaffSeedConfiguration());
             builder.ApplyConfiguration(new ReviewSeedConfiguration());
-        }
+            builder.ApplyConfiguration(new CommentSeedConfiguration());
+            builder.ApplyConfiguration(new ReviewreportSeedConfiguration());
+			builder.ApplyConfiguration(new CommentreportSeedConfiguration());
+		}
     }
 }

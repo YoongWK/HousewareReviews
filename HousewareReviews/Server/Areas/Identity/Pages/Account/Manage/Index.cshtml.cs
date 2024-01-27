@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using HousewareReviews.Server.Data;
 using HousewareReviews.Server.Models;
 using HousewareReviews.Shared.Domain;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -37,8 +38,9 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 		///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
 		///     directly from your code. This API may change or be removed in future releases.
 		/// </summary>
+		/// 
+		public string ProfileImgUri { get; set; }
 		public string Username { get; set; }
-
 		/// <summary>
 		///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
 		///     directly from your code. This API may change or be removed in future releases.
@@ -53,18 +55,18 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public class InputModel
-        {
+		/// <summary>
+		///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+		///     directly from your code. This API may change or be removed in future releases.
+		/// </summary>
+		public class InputModel
+		{
 			/// <summary>
 			///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
 			///     directly from your code. This API may change or be removed in future releases.
 			/// </summary>
-			[Display(Name = "Profile Image")]
-			public string ProfileImgUri { get; set; }
+			[Display(Name = "Profile Image File")]
+			public IFormFile ProfileImgFile { get; set; }
 
 			[Required(ErrorMessage = "First Name is required.")]
 			[Display(Name = "First Name")]
@@ -83,7 +85,16 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 			[DataType(DataType.PhoneNumber)]
 			[RegularExpression(@"(6|8|9)\d{7}", ErrorMessage = "Contact Number is not valid.")]
 			[Display(Name = "Contact Number")]
+
 			public string ContactNumber { get; set; }
+			[StringLength(100, ErrorMessage = "Password must be {2} to {1} characters long.", MinimumLength = 6)]
+			[DataType(DataType.Password)]
+			[Display(Name = "New password")]
+
+			public string NewPassword { get; set; }
+			[DataType(DataType.Password)]
+			[Display(Name = "Current password")]
+			public string OldPassword { get; set; }
 		}
 
 		private async Task LoadAsync(ApplicationUser user, Staff staff, Consumer consumer, string role)
@@ -91,14 +102,14 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 			var userName = await _userManager.GetUserNameAsync(user);
 			Username = userName;
 
-			var profileImgUri = "";
 			var firstName = "";
 			var lastName = "";
 			var email = "";
 			var contactNumber = "";
+
 			if (role == "Staff")
 			{
-				profileImgUri = staff.ProfileImgUri;
+				ProfileImgUri = staff.ProfileImgUri;
 				firstName = staff.FirstName;
 				lastName = staff.LastName;
 				email = staff.Email;
@@ -106,7 +117,7 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 			}
 			else if (role == "Consumer")
 			{
-				profileImgUri = consumer.ProfileImgUri;
+				ProfileImgUri = consumer.ProfileImgUri;
 				firstName = consumer.FirstName;
 				lastName = consumer.LastName;
 				email = consumer.Email;
@@ -114,7 +125,6 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 			}
 			Input = new InputModel
 			{
-				ProfileImgUri = profileImgUri,
 				FirstName = firstName,
 				LastName = lastName,
 				Email = email,
@@ -157,12 +167,34 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+			var user = await _userManager.GetUserAsync(User);
 
 			if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
+
+			if (Input.ProfileImgFile != null)
+			{
+				using (var ms = new MemoryStream())
+				{
+					Input.ProfileImgFile.CopyTo(ms);
+					var fileBytes = ms.ToArray();
+					ProfileImgUri = $"data:image/png;base64,{Convert.ToBase64String(fileBytes)}";
+				}
+			}
+
+			if (Input.NewPassword != null)
+			{
+				var changePasswordResult = await _userManager.ChangePasswordAsync(user, Input.OldPassword == null? "" : Input.OldPassword, Input.NewPassword);
+				if (!changePasswordResult.Succeeded)
+				{
+					foreach (var error in changePasswordResult.Errors)
+					{
+						ModelState.AddModelError(string.Empty, error.Description);
+					}
+				}
+			}
 
 			if (User.IsInRole("Staff"))
 			{
@@ -176,11 +208,12 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 					await LoadAsync(user, staff, null, "Staff");
 					return Page();
 				}
-				staff.ProfileImgUri = Input.ProfileImgUri;
+				staff.ProfileImgUri = ProfileImgUri == null? staff.ProfileImgUri : ProfileImgUri;
                 staff.FirstName = Input.FirstName;
                 staff.LastName = Input.LastName;
                 staff.Email = Input.Email;
                 staff.ContactNumber = Input.ContactNumber;
+				staff.Password = Input.NewPassword == null? staff.Password : Input.NewPassword;
 				_context.Entry(staff).State = EntityState.Modified;
 			}
 			else if (User.IsInRole("Consumer"))
@@ -195,11 +228,12 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 					await LoadAsync(user, null, consumer, "Consumer");
 					return Page();
 				}
-				consumer.ProfileImgUri= Input.ProfileImgUri;
+				consumer.ProfileImgUri= ProfileImgUri == null ? consumer.ProfileImgUri : ProfileImgUri;
 				consumer.FirstName = Input.FirstName;
 				consumer.LastName = Input.LastName;
 				consumer.Email = Input.Email;
 				consumer.ContactNumber = Input.ContactNumber;
+				consumer.Password = Input.NewPassword == null ? consumer.Password : Input.NewPassword;
 				_context.Entry(consumer).State = EntityState.Modified;
 			}
 			else
@@ -207,9 +241,9 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 				return NotFound($"Unable to find role of user with ID '{user.Id}'.");
 			}
 
-			await _context.SaveChangesAsync();
 			await _userManager.SetPhoneNumberAsync(user, Input.ContactNumber);
 			await _userManager.SetEmailAsync(user, Input.Email);
+			await _context.SaveChangesAsync();
 			await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();

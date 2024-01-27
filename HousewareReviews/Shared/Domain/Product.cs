@@ -13,9 +13,9 @@ namespace HousewareReviews.Shared.Domain
         public string? Description { get; set; }
         public double? Price { get; set; }
         public string? ImgUri {  get; set; }
-        public int? CompanyId { get; set; }
+        public int CompanyId { get; set; }
         public virtual Company? Company { get; set; }
-        public int? CategoryId { get; set; }
+        public int CategoryId { get; set; }
         public virtual Category? Category { get; set;}
     }
 }

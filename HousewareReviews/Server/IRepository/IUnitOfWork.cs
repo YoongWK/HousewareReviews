@@ -15,8 +15,9 @@ namespace HousewareReviews.Server.IRepository
         IGenericRepository<Company> Companies { get; }
         IGenericRepository<Consumer> Consumers { get; }
         IGenericRepository<Product> Products { get; }
-        IGenericRepository<Report> Reports { get; }
-        IGenericRepository<Review> Reviews { get; }
+        IGenericRepository<Reviewreport> Reviewreports { get; }
+		IGenericRepository<Commentreport> Commentreports { get; }
+		IGenericRepository<Review> Reviews { get; }
         IGenericRepository<Staff> Staffs { get; }
     }
 }

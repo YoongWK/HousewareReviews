@@ -12,14 +12,13 @@ namespace HousewareReviews.Shared.Domain
         public int? Rating { get; set; }
         public string? Description { get; set; }
         public string? Reply { get; set; }
-        // public int? UsefulCnt { get; set; }
+        public int? UsefulCnt { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
         public DateTime? DateReplied { get; set; }
-        public int? ProductId { get; set; }
+        public int ProductId { get; set; }
         public virtual Product? Product { get; set; }
         public int? ConsumerId { get; set; }
         public virtual Consumer? Consumer { get; set; }
-        public virtual List<Consumer>? ConsumersFoundUseful { get; set; }
     }
 }

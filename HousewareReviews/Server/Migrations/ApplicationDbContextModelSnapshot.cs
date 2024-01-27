@@ -232,16 +232,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "3781efa7-66dc-47f0-860f-e506d04102e4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "090ed106-db07-4afa-ba66-4f4111b20f2b",
+                            ConcurrencyStamp = "f62ed5b3-956d-4a76-a4f6-ebe6475ba59e",
                             Email = "staff@blazor.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "STAFF@BLAZOR.COM",
                             NormalizedUserName = "S1234567A",
-                            PasswordHash = "AQAAAAIAAYagAAAAEE3PRtSyHv+RXzZVegzcQe/pUnWR1NIw7JOmBo3JH1Dml9N/2TYrJgQ69aBDOxKzFw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEI2lHYNcnazXFq9LWUXedrkVEz+bHFby+GfqW5fdodLH0C5PJ7XH0DVaRB7STy0IRA==",
                             PhoneNumber = "91234567",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "7923cd1d-95a4-4c21-8e97-56535c6707a2",
+                            SecurityStamp = "ca7062d5-25b3-4943-826e-aaaf4bbc718d",
                             TwoFactorEnabled = false,
                             UserName = "S1234567A"
                         },
@@ -249,16 +249,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "1ce40de7-b2a7-4cf4-a8f3-c811191a664d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a85f3d2e-53a5-407b-b62f-acfd3babeab5",
+                            ConcurrencyStamp = "6cd6bf1e-7687-452d-827f-68b3e209d1ea",
                             Email = "consumer@blazor.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "CONSUMER@BLAZOR.COM",
                             NormalizedUserName = "T1234567A",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPz6a5Wf0JJZlzstMZSZQLLvtQntoUTT1/XNOA6H1KTDEnfb6TNUwO3RIzfBHpB/WA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMz64if13AoR9EKNlI9hiEccea/nwhSRm1lDqKrHqxHu2hR2kq1ceu9vkMJqDSdiPw==",
                             PhoneNumber = "98765432",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "4481dba3-1206-44ea-a18a-18dc50f81586",
+                            SecurityStamp = "19242ad7-b684-4eca-a98f-7092fc6ae316",
                             TwoFactorEnabled = false,
                             UserName = "T1234567A"
                         },
@@ -266,16 +266,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "9du2ii40-h7d9-8sj2-j98s-is0dh83jk48s",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c7fb55cf-0d46-4463-8223-664babcc3f40",
+                            ConcurrencyStamp = "35db25d6-56b6-4a96-af9b-2e6c0022f3bc",
                             Email = "maymorrison@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "MAYMORRISON@GMAIL.COM",
                             NormalizedUserName = "S6523489J",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHX+gaivtJnUk3siK70Sv+GV0O2Aaeqd69T+hD8WR2tIpJ+Mytf7GkfGTHWPL1i/Cg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEA09KgY5Bm7Sx4GZ+jXOMwVMdtrCvxIsAaLW23dCQyINaxHAMBQanQEqeLafMcN7iw==",
                             PhoneNumber = "92438900",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d43a20bd-9405-4294-9906-f13bc80e37f1",
+                            SecurityStamp = "bcc942e0-a1a2-424b-be2f-059595fea4a8",
                             TwoFactorEnabled = false,
                             UserName = "S6523489J"
                         },
@@ -283,16 +283,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "2oh7diw9-0or5-3jf9-8ss6-ks8ya5h297bd",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "dc96c937-72d6-4687-a22c-d63ca5cfc1ae",
+                            ConcurrencyStamp = "69a2dcf0-f000-42f8-a4b8-afc4cb8520af",
                             Email = "joshuatan@outlook.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "JOSHUATAN@OUTLOOK.COM",
                             NormalizedUserName = "T9366538J",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJ+127pKIXHRs9g/AI/D66cRDGAs/O004m567qRElfnyUCiQZQv65T4YDtPTyB/Jcw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOUQKqlAFAKFJwDRPp3q5Um27XlZA3OO2ROJtAs1S4JwNs34qHAC0mj21VkDasJWjw==",
                             PhoneNumber = "83072245",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b00cd492-1186-4ce9-8223-90e4eeb22d71",
+                            SecurityStamp = "51b299e8-8dfd-4ed3-bee4-4822aadd271e",
                             TwoFactorEnabled = false,
                             UserName = "T9366538J"
                         },
@@ -300,16 +300,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "5di8sy83-2i9r-f56h-s8d9-s09njsh7dd53",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "625561d4-9301-4c9c-85b6-94a08896cd1f",
+                            ConcurrencyStamp = "b977d0b6-cb0a-4edc-a413-07c2c0ee29f5",
                             Email = "ethanlim@hotmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ETHANLIM@HOTMAIL.COM",
                             NormalizedUserName = "S9812704F",
-                            PasswordHash = "AQAAAAIAAYagAAAAEO/qIJWLPwMJITrCvkWUqciAWoRI7zrtBzSeGbi4uZcH3gKGnNevxxRg2XDP/BuwKQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHOlRxLJ/R5nyum9i5owf+MXOqOgTY0X40O+k/qjr6MXBNmHavCLxeQFMNwAVmcERQ==",
                             PhoneNumber = "87229044",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d4042e81-8ddb-4e1c-b488-79f631afaee5",
+                            SecurityStamp = "dabdb9d0-7ab3-4fa4-9b5d-18d2e22dd494",
                             TwoFactorEnabled = false,
                             UserName = "S9812704F"
                         });
@@ -410,7 +410,10 @@ namespace HousewareReviews.Server.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ReviewId")
+                    b.Property<int>("ReviewId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UsefulCnt")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -420,6 +423,83 @@ namespace HousewareReviews.Server.Migrations
                     b.HasIndex("ReviewId");
 
                     b.ToTable("Comments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ConsumerId = 4,
+                            DateCreated = new DateTime(2024, 1, 6, 15, 32, 40, 0, DateTimeKind.Unspecified),
+                            DateUpdated = new DateTime(2024, 1, 6, 15, 32, 40, 0, DateTimeKind.Unspecified),
+                            Description = "Agreed! The Aerogaz 16” wall fan is way too noisy. Regretted buying it. Found a quieter one for better sleep.",
+                            ReviewId = 4
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ConsumerId = 2,
+                            DateCreated = new DateTime(2024, 1, 6, 15, 32, 40, 0, DateTimeKind.Unspecified),
+                            DateUpdated = new DateTime(2024, 1, 6, 15, 32, 40, 0, DateTimeKind.Unspecified),
+                            Description = "Absolutely agree! It's a game-changer!",
+                            ReviewId = 5
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ConsumerId = 3,
+                            DateCreated = new DateTime(2024, 1, 17, 15, 10, 40, 0, DateTimeKind.Unspecified),
+                            DateUpdated = new DateTime(2024, 1, 17, 15, 10, 40, 0, DateTimeKind.Unspecified),
+                            Description = ":#%#&%”?*%”#%6",
+                            ReviewId = 1
+                        });
+                });
+
+            modelBuilder.Entity("HousewareReviews.Shared.Domain.Commentreport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Category")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CommentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ConsumerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Outcome")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("StaffId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
+
+                    b.HasIndex("ConsumerId");
+
+                    b.HasIndex("StaffId");
+
+                    b.ToTable("Commentreports");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Category = "Spam",
+                            CommentId = 3,
+                            ConsumerId = 1,
+                            Description = "Unhelpful comment that serves no purpose",
+                            Outcome = "Pending"
+                        });
                 });
 
             modelBuilder.Entity("HousewareReviews.Shared.Domain.Company", b =>
@@ -510,9 +590,6 @@ namespace HousewareReviews.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CommentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ContactNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -534,17 +611,10 @@ namespace HousewareReviews.Server.Migrations
                     b.Property<string>("ProfileImgUri")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ReviewId")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CommentId");
-
-                    b.HasIndex("ReviewId");
 
                     b.ToTable("Consumers");
 
@@ -607,10 +677,10 @@ namespace HousewareReviews.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CategoryId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CompanyId")
+                    b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -706,48 +776,6 @@ namespace HousewareReviews.Server.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HousewareReviews.Shared.Domain.Report", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Category")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CommentId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ConsumerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Outcome")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ReviewId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("StaffId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CommentId");
-
-                    b.HasIndex("ConsumerId");
-
-                    b.HasIndex("ReviewId");
-
-                    b.HasIndex("StaffId");
-
-                    b.ToTable("Reports");
-                });
-
             modelBuilder.Entity("HousewareReviews.Shared.Domain.Review", b =>
                 {
                     b.Property<int>("Id")
@@ -771,7 +799,7 @@ namespace HousewareReviews.Server.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProductId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int?>("Rating")
@@ -779,6 +807,9 @@ namespace HousewareReviews.Server.Migrations
 
                     b.Property<string>("Reply")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UsefulCnt")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -856,6 +887,54 @@ namespace HousewareReviews.Server.Migrations
                             Description = "dvjhbwedjgfjsdjvjsovnsdvkjvjovjijsifdjijhfjjfijf9fofmlxxpp-qjjfjfkj",
                             ProductId = 1,
                             Rating = 1
+                        });
+                });
+
+            modelBuilder.Entity("HousewareReviews.Shared.Domain.Reviewreport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Category")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ConsumerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Outcome")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ReviewId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StaffId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConsumerId");
+
+                    b.HasIndex("ReviewId");
+
+                    b.HasIndex("StaffId");
+
+                    b.ToTable("Reviewreports");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Category = "Spam",
+                            ConsumerId = 1,
+                            Description = "Irrelevant gibberish review",
+                            Outcome = "Pending",
+                            ReviewId = 6
                         });
                 });
 
@@ -1092,83 +1171,105 @@ namespace HousewareReviews.Server.Migrations
                 {
                     b.HasOne("HousewareReviews.Shared.Domain.Consumer", "Consumer")
                         .WithMany()
-                        .HasForeignKey("ConsumerId");
+                        .HasForeignKey("ConsumerId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("HousewareReviews.Shared.Domain.Review", "Review")
                         .WithMany()
-                        .HasForeignKey("ReviewId");
+                        .HasForeignKey("ReviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Consumer");
 
                     b.Navigation("Review");
                 });
 
-            modelBuilder.Entity("HousewareReviews.Shared.Domain.Consumer", b =>
+            modelBuilder.Entity("HousewareReviews.Shared.Domain.Commentreport", b =>
                 {
-                    b.HasOne("HousewareReviews.Shared.Domain.Comment", null)
-                        .WithMany("ConsumersFoundUseful")
-                        .HasForeignKey("CommentId");
+                    b.HasOne("HousewareReviews.Shared.Domain.Comment", "Comment")
+                        .WithMany()
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("HousewareReviews.Shared.Domain.Review", null)
-                        .WithMany("ConsumersFoundUseful")
-                        .HasForeignKey("ReviewId");
+                    b.HasOne("HousewareReviews.Shared.Domain.Consumer", "Consumer")
+                        .WithMany()
+                        .HasForeignKey("ConsumerId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("HousewareReviews.Shared.Domain.Staff", "Staff")
+                        .WithMany()
+                        .HasForeignKey("StaffId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Comment");
+
+                    b.Navigation("Consumer");
+
+                    b.Navigation("Staff");
                 });
 
             modelBuilder.Entity("HousewareReviews.Shared.Domain.Product", b =>
                 {
                     b.HasOne("HousewareReviews.Shared.Domain.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("HousewareReviews.Shared.Domain.Company", "Company")
                         .WithMany()
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Category");
 
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("HousewareReviews.Shared.Domain.Report", b =>
+            modelBuilder.Entity("HousewareReviews.Shared.Domain.Review", b =>
                 {
-                    b.HasOne("HousewareReviews.Shared.Domain.Comment", "Comment")
-                        .WithMany()
-                        .HasForeignKey("CommentId");
-
                     b.HasOne("HousewareReviews.Shared.Domain.Consumer", "Consumer")
                         .WithMany()
-                        .HasForeignKey("ConsumerId");
+                        .HasForeignKey("ConsumerId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("HousewareReviews.Shared.Domain.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Consumer");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("HousewareReviews.Shared.Domain.Reviewreport", b =>
+                {
+                    b.HasOne("HousewareReviews.Shared.Domain.Consumer", "Consumer")
+                        .WithMany()
+                        .HasForeignKey("ConsumerId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("HousewareReviews.Shared.Domain.Review", "Review")
                         .WithMany()
-                        .HasForeignKey("ReviewId");
+                        .HasForeignKey("ReviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("HousewareReviews.Shared.Domain.Staff", "Staff")
                         .WithMany()
-                        .HasForeignKey("StaffId");
-
-                    b.Navigation("Comment");
+                        .HasForeignKey("StaffId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Consumer");
 
                     b.Navigation("Review");
 
                     b.Navigation("Staff");
-                });
-
-            modelBuilder.Entity("HousewareReviews.Shared.Domain.Review", b =>
-                {
-                    b.HasOne("HousewareReviews.Shared.Domain.Consumer", "Consumer")
-                        .WithMany()
-                        .HasForeignKey("ConsumerId");
-
-                    b.HasOne("HousewareReviews.Shared.Domain.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId");
-
-                    b.Navigation("Consumer");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1220,16 +1321,6 @@ namespace HousewareReviews.Server.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("HousewareReviews.Shared.Domain.Comment", b =>
-                {
-                    b.Navigation("ConsumersFoundUseful");
-                });
-
-            modelBuilder.Entity("HousewareReviews.Shared.Domain.Review", b =>
-                {
-                    b.Navigation("ConsumersFoundUseful");
                 });
 #pragma warning restore 612, 618
         }

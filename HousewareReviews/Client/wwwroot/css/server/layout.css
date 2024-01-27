@@ -84,6 +84,7 @@
     border: none;
     background-color: var(--gray);
     color: var(--black);
+    cursor: pointer;
 }
 
 .form-input-button:active,
@@ -97,6 +98,14 @@
 .form-input-link {
     text-decoration: none;
     color: var(--blue);
+}
+
+.form-image {
+    border-radius: 50%;
+    height: 30.7vw;
+    width: 30.7vw;
+    border: 2px solid;
+    object-fit: cover;
 }
 
 @media not (min-width: 1200px) {

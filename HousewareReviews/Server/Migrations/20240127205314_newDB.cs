@@ -86,6 +86,26 @@ namespace HousewareReviews.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Consumers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NRIC = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ContactNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProfileImgUri = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Consumers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DeviceCodes",
                 columns: table => new
                 {
@@ -278,8 +298,8 @@ namespace HousewareReviews.Server.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Price = table.Column<double>(type: "float", nullable: true),
                     ImgUri = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CompanyId = table.Column<int>(type: "int", nullable: true),
-                    CategoryId = table.Column<int>(type: "int", nullable: true)
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -288,56 +308,14 @@ namespace HousewareReviews.Server.Migrations
                         name: "FK_Products_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Products_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Comments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ReviewId = table.Column<int>(type: "int", nullable: true),
-                    ConsumerId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Comments", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Consumers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NRIC = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ContactNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProfileImgUri = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CommentId = table.Column<int>(type: "int", nullable: true),
-                    ReviewId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Consumers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Consumers_Comments_CommentId",
-                        column: x => x.CommentId,
-                        principalTable: "Comments",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -349,10 +327,11 @@ namespace HousewareReviews.Server.Migrations
                     Rating = table.Column<int>(type: "int", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Reply = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UsefulCnt = table.Column<int>(type: "int", nullable: true),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateReplied = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: true),
+                    DateReplied = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
                     ConsumerId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -362,16 +341,48 @@ namespace HousewareReviews.Server.Migrations
                         name: "FK_Reviews_Consumers_ConsumerId",
                         column: x => x.ConsumerId,
                         principalTable: "Consumers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Reviews_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Reports",
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UsefulCnt = table.Column<int>(type: "int", nullable: true),
+                    ReviewId = table.Column<int>(type: "int", nullable: false),
+                    ConsumerId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comments_Consumers_ConsumerId",
+                        column: x => x.ConsumerId,
+                        principalTable: "Consumers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Comments_Reviews_ReviewId",
+                        column: x => x.ReviewId,
+                        principalTable: "Reviews",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reviewreports",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -379,34 +390,67 @@ namespace HousewareReviews.Server.Migrations
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Outcome = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ReviewId = table.Column<int>(type: "int", nullable: true),
                     ConsumerId = table.Column<int>(type: "int", nullable: true),
-                    CommentId = table.Column<int>(type: "int", nullable: true),
+                    ReviewId = table.Column<int>(type: "int", nullable: false),
                     StaffId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Reports", x => x.Id);
+                    table.PrimaryKey("PK_Reviewreports", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reports_Comments_CommentId",
-                        column: x => x.CommentId,
-                        principalTable: "Comments",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Reports_Consumers_ConsumerId",
+                        name: "FK_Reviewreports_Consumers_ConsumerId",
                         column: x => x.ConsumerId,
                         principalTable: "Consumers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
-                        name: "FK_Reports_Reviews_ReviewId",
+                        name: "FK_Reviewreports_Reviews_ReviewId",
                         column: x => x.ReviewId,
                         principalTable: "Reviews",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Reports_Staffs_StaffId",
+                        name: "FK_Reviewreports_Staffs_StaffId",
                         column: x => x.StaffId,
                         principalTable: "Staffs",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Commentreports",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Outcome = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConsumerId = table.Column<int>(type: "int", nullable: true),
+                    CommentId = table.Column<int>(type: "int", nullable: false),
+                    StaffId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Commentreports", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Commentreports_Comments_CommentId",
+                        column: x => x.CommentId,
+                        principalTable: "Comments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Commentreports_Consumers_ConsumerId",
+                        column: x => x.ConsumerId,
+                        principalTable: "Consumers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Commentreports_Staffs_StaffId",
+                        column: x => x.StaffId,
+                        principalTable: "Staffs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.InsertData(
@@ -423,8 +467,11 @@ namespace HousewareReviews.Server.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "1ce40de7-b2a7-4cf4-a8f3-c811191a664d", 0, "41dc76a6-89f9-4575-813d-571194e38f7d", "consumer@blazor.com", false, false, null, "CONSUMER@BLAZOR.COM", "CONSUMER@BLAZOR.COM", "AQAAAAIAAYagAAAAEA4zOY0L5G/OcapFIjG0y/5MuqGT1hwWHVe2SluryIZS+pztyGMKz6lVY5zC+uSFWw==", "98765432", false, "b5591953-4500-4380-b90b-0942ead60a5e", false, "consumer@blazor.com" },
-                    { "3781efa7-66dc-47f0-860f-e506d04102e4", 0, "a537d110-1c0d-46f4-838a-35638ad68693", "staff@blazor.com", false, false, null, "STAFF@BLAZOR.COM", "STAFF@BLAZOR.COM", "AQAAAAIAAYagAAAAELvEQowBo3523PzeBtZLP8iGgLgSfx5DcLx7ihsXoUCfSR2yXJivHDaBqvXkMIu+Lw==", "91234567", false, "7734abf8-5628-4a56-b544-1b11ebb437eb", false, "staff@blazor.com" }
+                    { "1ce40de7-b2a7-4cf4-a8f3-c811191a664d", 0, "6cd6bf1e-7687-452d-827f-68b3e209d1ea", "consumer@blazor.com", false, false, null, "CONSUMER@BLAZOR.COM", "T1234567A", "AQAAAAIAAYagAAAAEMz64if13AoR9EKNlI9hiEccea/nwhSRm1lDqKrHqxHu2hR2kq1ceu9vkMJqDSdiPw==", "98765432", false, "19242ad7-b684-4eca-a98f-7092fc6ae316", false, "T1234567A" },
+                    { "2oh7diw9-0or5-3jf9-8ss6-ks8ya5h297bd", 0, "69a2dcf0-f000-42f8-a4b8-afc4cb8520af", "joshuatan@outlook.com", false, false, null, "JOSHUATAN@OUTLOOK.COM", "T9366538J", "AQAAAAIAAYagAAAAEOUQKqlAFAKFJwDRPp3q5Um27XlZA3OO2ROJtAs1S4JwNs34qHAC0mj21VkDasJWjw==", "83072245", false, "51b299e8-8dfd-4ed3-bee4-4822aadd271e", false, "T9366538J" },
+                    { "3781efa7-66dc-47f0-860f-e506d04102e4", 0, "f62ed5b3-956d-4a76-a4f6-ebe6475ba59e", "staff@blazor.com", false, false, null, "STAFF@BLAZOR.COM", "S1234567A", "AQAAAAIAAYagAAAAEI2lHYNcnazXFq9LWUXedrkVEz+bHFby+GfqW5fdodLH0C5PJ7XH0DVaRB7STy0IRA==", "91234567", false, "ca7062d5-25b3-4943-826e-aaaf4bbc718d", false, "S1234567A" },
+                    { "5di8sy83-2i9r-f56h-s8d9-s09njsh7dd53", 0, "b977d0b6-cb0a-4edc-a413-07c2c0ee29f5", "ethanlim@hotmail.com", false, false, null, "ETHANLIM@HOTMAIL.COM", "S9812704F", "AQAAAAIAAYagAAAAEHOlRxLJ/R5nyum9i5owf+MXOqOgTY0X40O+k/qjr6MXBNmHavCLxeQFMNwAVmcERQ==", "87229044", false, "dabdb9d0-7ab3-4fa4-9b5d-18d2e22dd494", false, "S9812704F" },
+                    { "9du2ii40-h7d9-8sj2-j98s-is0dh83jk48s", 0, "35db25d6-56b6-4a96-af9b-2e6c0022f3bc", "maymorrison@gmail.com", false, false, null, "MAYMORRISON@GMAIL.COM", "S6523489J", "AQAAAAIAAYagAAAAEA09KgY5Bm7Sx4GZ+jXOMwVMdtrCvxIsAaLW23dCQyINaxHAMBQanQEqeLafMcN7iw==", "92438900", false, "bcc942e0-a1a2-424b-be2f-059595fea4a8", false, "S6523489J" }
                 });
 
             migrationBuilder.InsertData(
@@ -448,21 +495,27 @@ namespace HousewareReviews.Server.Migrations
                 columns: new[] { "Id", "ContactNumber", "Description", "Email", "LogoUri", "Name", "UEN", "WebsiteUrl" },
                 values: new object[,]
                 {
-                    { 1, "67469933", "Leading home appliance brand for high-quality and affordable hobs, hoods, and instant water heaters.", "enquiry@aerogaz.com", "/images/companies/Aerogaz", "Aerogaz", "200302472K", "https://aerogaz.com/" },
-                    { 2, "64726500", "Singapore-based company for quality & affordable home appliances and consumer electronics.", "sg.support@cornellappliances.com", "/images/companies/Cornell", "Cornell", "200310215D", "https://sg.cornellappliances.com/" },
-                    { 3, "67195413", "Renowned company famous for its innovative vacuum cleaners, hand dryers, & bladeless fans.", "sg.service@dyson.com", "/images/companies/Dyson", "Dyson", "197000473M", "https://www.dyson.com.sg/" },
-                    { 4, "67273699", "Recognised global appliance brand for high-quality home and kitchen appliances.", "customer-care.sin@electrolux.com", "/images/companies/Electrolux", "Electrolux", "200310215D", "https://www.electrolux.com.sg/" }
+                    { 1, "67469933", "Leading home appliance brand for high-quality and affordable hobs, hoods, and instant water heaters.", "enquiry@aerogaz.com", "/images/companies/Aerogaz.jpg", "Aerogaz", "200302472K", "https://aerogaz.com/" },
+                    { 2, "64726500", "Singapore-based company for quality & affordable home appliances and consumer electronics.", "sg.support@cornellappliances.com", "/images/companies/Cornell.jpg", "Cornell", "200310215D", "https://sg.cornellappliances.com/" },
+                    { 3, "67195413", "Renowned company famous for its innovative vacuum cleaners, hand dryers, & bladeless fans.", "sg.service@dyson.com", "/images/companies/Dyson.jpg", "Dyson", "197000473M", "https://www.dyson.com.sg/" },
+                    { 4, "67273699", "Recognised global appliance brand for high-quality home and kitchen appliances.", "customer-care.sin@electrolux.com", "/images/companies/Electrolux.jpg", "Electrolux", "200310215D", "https://www.electrolux.com.sg/" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Consumers",
-                columns: new[] { "Id", "CommentId", "ContactNumber", "Email", "FirstName", "LastName", "NRIC", "Password", "ProfileImgUri", "ReviewId", "UserId" },
-                values: new object[] { 1, null, "98765432", "consumer@blazor.com", "Yoong", "Wai Kit", "S9067028Z", "P@ssword1", null, null, "1ce40de7-b2a7-4cf4-a8f3-c811191a664d" });
+                columns: new[] { "Id", "ContactNumber", "Email", "FirstName", "LastName", "NRIC", "Password", "ProfileImgUri", "UserId" },
+                values: new object[,]
+                {
+                    { 1, "98765432", "consumer@blazor.com", "Yoong", "Wai Kit", "T1234567A", "P@ssword1", "/images/users/waikit.jpg", "1ce40de7-b2a7-4cf4-a8f3-c811191a664d" },
+                    { 2, "92438900", "maymorrison@gmail.com", "May", "Morrison", "S6523489J", "P@ssword1", "/images/users/may.jpg", "9du2ii40-h7d9-8sj2-j98s-is0dh83jk48s" },
+                    { 3, "83072245", "joshuatan@outlook.com", "Joshua", "Tan", "T9366538J", "P@ssword1", "/images/users/joshua.jpg", "2oh7diw9-0or5-3jf9-8ss6-ks8ya5h297bd" },
+                    { 4, "87229044", "ethanlim@hotmail.com", "Ethan", "Lim", "S9812704F", "P@ssword1", "/images/users/ethan.jpg", "5di8sy83-2i9r-f56h-s8d9-s09njsh7dd53" }
+                });
 
             migrationBuilder.InsertData(
                 table: "Staffs",
                 columns: new[] { "Id", "ContactNumber", "Email", "FirstName", "LastName", "NRIC", "Password", "ProfileImgUri", "UserId" },
-                values: new object[] { 1, "91234567", "staff@blazor.com", "Andrina", "Morrison", "S9372136E", "P@ssword1", null, "3781efa7-66dc-47f0-860f-e506d04102e4" });
+                values: new object[] { 1, "91234567", "staff@blazor.com", "Andrina", "Morrison", "S1234567A", "P@ssword1", "/images/users/andrina.jpg", "3781efa7-66dc-47f0-860f-e506d04102e4" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -470,7 +523,10 @@ namespace HousewareReviews.Server.Migrations
                 values: new object[,]
                 {
                     { "bd2bcf0c-20db-474f-8407-5a6b159518bb", "1ce40de7-b2a7-4cf4-a8f3-c811191a664d" },
-                    { "ad2bcf0c-20db-474f-8407-5a6b159518ba", "3781efa7-66dc-47f0-860f-e506d04102e4" }
+                    { "bd2bcf0c-20db-474f-8407-5a6b159518bb", "2oh7diw9-0or5-3jf9-8ss6-ks8ya5h297bd" },
+                    { "ad2bcf0c-20db-474f-8407-5a6b159518ba", "3781efa7-66dc-47f0-860f-e506d04102e4" },
+                    { "bd2bcf0c-20db-474f-8407-5a6b159518bb", "5di8sy83-2i9r-f56h-s8d9-s09njsh7dd53" },
+                    { "bd2bcf0c-20db-474f-8407-5a6b159518bb", "9du2ii40-h7d9-8sj2-j98s-is0dh83jk48s" }
                 });
 
             migrationBuilder.InsertData(
@@ -486,6 +542,39 @@ namespace HousewareReviews.Server.Migrations
                     { 6, 8, 1, "Durable high capacity 2-tier steamer with adjustable time & detachable steam tray.", "/images/products/az366st.jpg", "2-Tier Multi-function Steamer (AZ-366ST)", 59.0 },
                     { 7, 8, 1, "Effective slim hood with 3-speed control, powerful extraction, efficient filtering, & re-circulation mode.", "/images/products/az6880.jpg", "60cm Slim Hood (AZ-6880)", 230.0 }
                 });
+
+            migrationBuilder.InsertData(
+                table: "Reviews",
+                columns: new[] { "Id", "ConsumerId", "DateCreated", "DateReplied", "DateUpdated", "Description", "ProductId", "Rating", "Reply", "UsefulCnt" },
+                values: new object[,]
+                {
+                    { 1, 4, new DateTime(2023, 12, 25, 10, 30, 45, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 28, 11, 20, 10, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 25, 10, 30, 45, 0, DateTimeKind.Unspecified), "This Aerogaz wall fan, power sia! Confirm plus chop the motor very solid. Really shiok for beating the heat. No kidding.", 1, 5, "Hey Ethan, awesome to hear you’re loving our wall fan. Stay cool and thanks for choosing Aerogaz!", null },
+                    { 2, 2, new DateTime(2024, 1, 2, 10, 30, 45, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 2, 11, 20, 10, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 2, 10, 30, 45, 0, DateTimeKind.Unspecified), "The fan does its job in cooling the place down. But always got a hum sound, need to tahan the extra background melody.", 1, 3, "Hello May, appreciate your honest review! We’re sorry to hear about the hum and we’ll look into improving this issue. If you have more details to share, hit us up. Thanks!", null },
+                    { 3, 1, new DateTime(2024, 1, 2, 14, 30, 45, 0, DateTimeKind.Unspecified), null, new DateTime(2024, 1, 2, 14, 30, 45, 0, DateTimeKind.Unspecified), "Reliable fan. Good choice for staying cool.", 1, 4, null, null },
+                    { 4, 3, new DateTime(2024, 1, 4, 10, 30, 45, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 6, 11, 20, 10, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 5, 10, 49, 49, 0, DateTimeKind.Unspecified), "Alamak, this Aerogaz 16\" wall fan damn noisy lor! Motor like got its own concert. Confirm regret, better find one quieter, can sleep better.", 1, 1, "Hi Joshua, we’re sorry to hear about the noise issue. Please contact our support team to share more details. We’re here to help. Thanks for letting us know!", null },
+                    { 5, 3, new DateTime(2024, 1, 24, 10, 30, 45, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 26, 11, 40, 10, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 24, 10, 49, 49, 0, DateTimeKind.Unspecified), "Love this water heater sia! Instant hot water, sleek design, and easy to install.", 2, 5, "Hi Joshua, glad to hear that you are loving our product! Thank you for choosing Aerogaz.", null },
+                    { 6, 4, new DateTime(2024, 1, 21, 10, 15, 45, 0, DateTimeKind.Unspecified), null, new DateTime(2024, 1, 21, 10, 15, 45, 0, DateTimeKind.Unspecified), "dvjhbwedjgfjsdjvjsovnsdvkjvjovjijsifdjijhfjjfijf9fofmlxxpp-qjjfjfkj", 1, 1, null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Comments",
+                columns: new[] { "Id", "ConsumerId", "DateCreated", "DateUpdated", "Description", "ReviewId", "UsefulCnt" },
+                values: new object[,]
+                {
+                    { 1, 4, new DateTime(2024, 1, 6, 15, 32, 40, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 6, 15, 32, 40, 0, DateTimeKind.Unspecified), "Agreed! The Aerogaz 16” wall fan is way too noisy. Regretted buying it. Found a quieter one for better sleep.", 4, null },
+                    { 2, 2, new DateTime(2024, 1, 6, 15, 32, 40, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 6, 15, 32, 40, 0, DateTimeKind.Unspecified), "Absolutely agree! It's a game-changer!", 5, null },
+                    { 3, 3, new DateTime(2024, 1, 17, 15, 10, 40, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 17, 15, 10, 40, 0, DateTimeKind.Unspecified), ":#%#&%”?*%”#%6", 1, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Reviewreports",
+                columns: new[] { "Id", "Category", "ConsumerId", "Description", "Outcome", "ReviewId", "StaffId" },
+                values: new object[] { 1, "Spam", 1, "Irrelevant gibberish review", "Pending", 6, null });
+
+            migrationBuilder.InsertData(
+                table: "Commentreports",
+                columns: new[] { "Id", "Category", "CommentId", "ConsumerId", "Description", "Outcome", "StaffId" },
+                values: new object[] { 1, "Spam", 3, 1, "Unhelpful comment that serves no purpose", "Pending", null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -527,6 +616,21 @@ namespace HousewareReviews.Server.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Commentreports_CommentId",
+                table: "Commentreports",
+                column: "CommentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Commentreports_ConsumerId",
+                table: "Commentreports",
+                column: "ConsumerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Commentreports_StaffId",
+                table: "Commentreports",
+                column: "StaffId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comments_ConsumerId",
                 table: "Comments",
                 column: "ConsumerId");
@@ -534,16 +638,6 @@ namespace HousewareReviews.Server.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_ReviewId",
                 table: "Comments",
-                column: "ReviewId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Consumers_CommentId",
-                table: "Consumers",
-                column: "CommentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Consumers_ReviewId",
-                table: "Consumers",
                 column: "ReviewId");
 
             migrationBuilder.CreateIndex(
@@ -593,23 +687,18 @@ namespace HousewareReviews.Server.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reports_CommentId",
-                table: "Reports",
-                column: "CommentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reports_ConsumerId",
-                table: "Reports",
+                name: "IX_Reviewreports_ConsumerId",
+                table: "Reviewreports",
                 column: "ConsumerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reports_ReviewId",
-                table: "Reports",
+                name: "IX_Reviewreports_ReviewId",
+                table: "Reviewreports",
                 column: "ReviewId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reports_StaffId",
-                table: "Reports",
+                name: "IX_Reviewreports_StaffId",
+                table: "Reviewreports",
                 column: "StaffId");
 
             migrationBuilder.CreateIndex(
@@ -621,40 +710,11 @@ namespace HousewareReviews.Server.Migrations
                 name: "IX_Reviews_ProductId",
                 table: "Reviews",
                 column: "ProductId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Comments_Consumers_ConsumerId",
-                table: "Comments",
-                column: "ConsumerId",
-                principalTable: "Consumers",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Comments_Reviews_ReviewId",
-                table: "Comments",
-                column: "ReviewId",
-                principalTable: "Reviews",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Consumers_Reviews_ReviewId",
-                table: "Consumers",
-                column: "ReviewId",
-                principalTable: "Reviews",
-                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Comments_Consumers_ConsumerId",
-                table: "Comments");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Reviews_Consumers_ConsumerId",
-                table: "Reviews");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -671,6 +731,9 @@ namespace HousewareReviews.Server.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Commentreports");
+
+            migrationBuilder.DropTable(
                 name: "DeviceCodes");
 
             migrationBuilder.DropTable(
@@ -680,7 +743,7 @@ namespace HousewareReviews.Server.Migrations
                 name: "PersistedGrants");
 
             migrationBuilder.DropTable(
-                name: "Reports");
+                name: "Reviewreports");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -689,16 +752,16 @@ namespace HousewareReviews.Server.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Staffs");
-
-            migrationBuilder.DropTable(
-                name: "Consumers");
-
-            migrationBuilder.DropTable(
                 name: "Comments");
 
             migrationBuilder.DropTable(
+                name: "Staffs");
+
+            migrationBuilder.DropTable(
                 name: "Reviews");
+
+            migrationBuilder.DropTable(
+                name: "Consumers");
 
             migrationBuilder.DropTable(
                 name: "Products");

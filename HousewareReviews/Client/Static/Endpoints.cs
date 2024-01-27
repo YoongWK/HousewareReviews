@@ -9,8 +9,9 @@
         public static readonly string CompaniesEndpoint = $"{Prefix}/companies";
         public static readonly string ConsumersEndpoint = $"{Prefix}/consumers";
         public static readonly string ProductsEndpoint = $"{Prefix}/products";
-        public static readonly string ReportsEndpoint = $"{Prefix}/reports";
-        public static readonly string ReviewsEndpoint = $"{Prefix}/reviews";
+        public static readonly string ReviewreportsEndpoint = $"{Prefix}/reviewreports";
+		public static readonly string CommentreportsEndpoint = $"{Prefix}/commentreports";
+		public static readonly string ReviewsEndpoint = $"{Prefix}/reviews";
         public static readonly string StaffsEndpoint = $"{Prefix}/staffs";
     }
 }

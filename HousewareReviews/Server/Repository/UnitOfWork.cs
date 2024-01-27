@@ -21,8 +21,9 @@ namespace HousewareReviews.Server.Repository
         private IGenericRepository<Company> _companies;
         private IGenericRepository<Consumer> _consumers;
         private IGenericRepository<Product> _products;
-        private IGenericRepository<Report> _reports;
-        private IGenericRepository<Review> _reviews;
+        private IGenericRepository<Reviewreport> _reviewreports;
+		private IGenericRepository<Commentreport> _commentreports;
+		private IGenericRepository<Review> _reviews;
         private IGenericRepository<Staff> _staffs;
 
         private UserManager<ApplicationUser> _userManager;
@@ -43,9 +44,11 @@ namespace HousewareReviews.Server.Repository
             => _consumers ??= new GenericRepository<Consumer>(_context);
         public IGenericRepository<Product> Products
             => _products ??= new GenericRepository<Product>(_context);
-        public IGenericRepository<Report> Reports
-            => _reports ??= new GenericRepository<Report>(_context);
-        public IGenericRepository<Review> Reviews
+        public IGenericRepository<Reviewreport> Reviewreports
+            => _reviewreports ??= new GenericRepository<Reviewreport>(_context);
+		public IGenericRepository<Commentreport> Commentreports
+			=> _commentreports ??= new GenericRepository<Commentreport>(_context);
+		public IGenericRepository<Review> Reviews
             => _reviews ??= new GenericRepository<Review>(_context);
         public IGenericRepository<Staff> Staffs
             => _staffs ??= new GenericRepository<Staff>(_context);
@@ -59,24 +62,6 @@ namespace HousewareReviews.Server.Repository
 
         public async Task Save(HttpContext httpContext)
         {
-            /*//To be implemented
-            string user = "System";
-
-            var entries = _context.ChangeTracker.Entries()
-                .Where(q => q.State == EntityState.Modified ||
-                    q.State == EntityState.Added);
-
-            foreach (var entry in entries)
-            {
-                ((BaseDomainModel)entry.Entity).DateUpdated = DateTime.Now;
-                ((BaseDomainModel)entry.Entity).UpdatedBy = user;
-                if (entry.State == EntityState.Added)
-                {
-                    ((BaseDomainModel)entry.Entity).DateCreated = DateTime.Now;
-                    ((BaseDomainModel)entry.Entity).CreatedBy = user;
-                }
-            }*/
-
             await _context.SaveChangesAsync();
         }
     }
