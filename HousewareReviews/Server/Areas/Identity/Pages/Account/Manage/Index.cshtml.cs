@@ -33,17 +33,17 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 			_context = context;
 		}
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        //public string Username { get; set; }
+		/// <summary>
+		///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+		///     directly from your code. This API may change or be removed in future releases.
+		/// </summary>
+		public string Username { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        [TempData]
+		/// <summary>
+		///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+		///     directly from your code. This API may change or be removed in future releases.
+		/// </summary>
+		[TempData]
         public string StatusMessage { get; set; }
 
         /// <summary>
@@ -74,11 +74,6 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 			[Display(Name = "Last Name")]
 			public string LastName { get; set; }
 
-			[Required(ErrorMessage = "NRIC is required.")]
-			[RegularExpression(@"^[STFGstfg]\d{7}[A-Za-z]", ErrorMessage = "NRIC is not valid.")]
-			[Display(Name = "NRIC")]
-			public string NRIC { get; set; }
-
 			[Required(ErrorMessage = "Email is required.")]
 			[EmailAddress(ErrorMessage = "Email is not valid.")]
 			[Display(Name = "Email")]
@@ -91,12 +86,14 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 			public string ContactNumber { get; set; }
 		}
 
-		private void Load(ApplicationUser user, Staff staff, Consumer consumer, string role)
+		private async Task LoadAsync(ApplicationUser user, Staff staff, Consumer consumer, string role)
 		{
+			var userName = await _userManager.GetUserNameAsync(user);
+			Username = userName;
+
 			var profileImgUri = "";
 			var firstName = "";
 			var lastName = "";
-			var nric = "";
 			var email = "";
 			var contactNumber = "";
 			if (role == "Staff")
@@ -104,7 +101,6 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 				profileImgUri = staff.ProfileImgUri;
 				firstName = staff.FirstName;
 				lastName = staff.LastName;
-				nric = staff.NRIC;
 				email = staff.Email;
 				contactNumber = staff.ContactNumber;
 			}
@@ -113,7 +109,6 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 				profileImgUri = consumer.ProfileImgUri;
 				firstName = consumer.FirstName;
 				lastName = consumer.LastName;
-				nric = consumer.NRIC;
 				email = consumer.Email;
 				contactNumber = consumer.ContactNumber;
 			}
@@ -122,7 +117,6 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 				ProfileImgUri = profileImgUri,
 				FirstName = firstName,
 				LastName = lastName,
-				NRIC = nric,
 				Email = email,
 				ContactNumber = contactNumber,
 			};
@@ -143,7 +137,7 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
                 {
                     return NotFound($"Unable to load staff with ID '{user.Id}'");
                 }
-                Load(user, staff, null, "Staff");
+                await LoadAsync(user, staff, null, "Staff");
 			}
             else if (User.IsInRole("Consumer"))
             {
@@ -152,7 +146,7 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
                 {
                     return NotFound($"Unable to load consumer with ID '{user.Id}'");
                 }
-				Load(user, null, consumer, "Consumer");
+				await LoadAsync(user, null, consumer, "Consumer");
 			}
             else
             {
@@ -179,13 +173,12 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 				}
 				if (!ModelState.IsValid)
                 {
-					Load(user, staff, null, "Staff");
+					await LoadAsync(user, staff, null, "Staff");
 					return Page();
 				}
 				staff.ProfileImgUri = Input.ProfileImgUri;
                 staff.FirstName = Input.FirstName;
                 staff.LastName = Input.LastName;
-                staff.NRIC = Input.NRIC;
                 staff.Email = Input.Email;
                 staff.ContactNumber = Input.ContactNumber;
 				_context.Entry(staff).State = EntityState.Modified;
@@ -199,13 +192,12 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 				}
 				if (!ModelState.IsValid)
 				{
-					Load(user, null, consumer, "Consumer");
+					await LoadAsync(user, null, consumer, "Consumer");
 					return Page();
 				}
 				consumer.ProfileImgUri= Input.ProfileImgUri;
 				consumer.FirstName = Input.FirstName;
 				consumer.LastName = Input.LastName;
-				consumer.NRIC = Input.NRIC;
 				consumer.Email = Input.Email;
 				consumer.ContactNumber = Input.ContactNumber;
 				_context.Entry(consumer).State = EntityState.Modified;
@@ -218,7 +210,6 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 			await _context.SaveChangesAsync();
 			await _userManager.SetPhoneNumberAsync(user, Input.ContactNumber);
 			await _userManager.SetEmailAsync(user, Input.Email);
-			await _userManager.SetUserNameAsync(user, Input.Email);
 			await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
