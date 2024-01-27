@@ -91,11 +91,6 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account
             [Display(Name = "Last Name")]
             public string LastName { get; set; }
 
-            [Required(ErrorMessage = "NRIC is required.")]
-            [RegularExpression(@"^[STFGstfg]\d{7}[A-Za-z]", ErrorMessage = "NRIC is not valid.")]
-            [Display(Name = "NRIC")]
-            public string NRIC { get; set; }
-
             [Required(ErrorMessage = "Email is required.")]
             [EmailAddress(ErrorMessage = "Email is not valid.")]
             [Display(Name = "Email")]
@@ -104,8 +99,13 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account
             [Required(ErrorMessage = "Contact Number is required.")]
             [DataType(DataType.PhoneNumber)]
             [RegularExpression(@"(6|8|9)\d{7}", ErrorMessage = "Contact Number is not valid.")]
-            [Display(Name = "Contact Numer")]
+            [Display(Name = "Contact Number")]
             public string ContactNumber { get; set; }
+
+            [Required(ErrorMessage = "NRIC is required.")]
+            [RegularExpression(@"^[STFGstfg]\d{7}[A-Za-z]", ErrorMessage = "NRIC is not valid.")]
+            [Display(Name = "NRIC")]
+            public string NRIC { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -140,7 +140,7 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _userStore.SetUserNameAsync(user, Input.NRIC, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 await _userManager.SetPhoneNumberAsync(user, Input.ContactNumber);
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -158,9 +158,9 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account
                     consumer.UserId = user.Id;
                     consumer.FirstName = Input.FirstName;
                     consumer.LastName = Input.LastName;
-                    consumer.NRIC = Input.NRIC;
                     consumer.Email = Input.Email;
                     consumer.ContactNumber = Input.ContactNumber;
+                    consumer.NRIC = Input.NRIC;
                     consumer.Password = Input.Password;
                     consumer.ProfileImgUri = "/images/users/default.jpg";
 

@@ -15,7 +15,7 @@ namespace HousewareReviews.Server.Configurations.Entities
                     UserId = "3781efa7-66dc-47f0-860f-e506d04102e4",
                     FirstName = "Andrina",
                     LastName = "Morrison",
-                    NRIC = "S9372136E",
+                    NRIC = "S1234567A",
                     Email = "staff@blazor.com",
                     ContactNumber = "91234567",
                     ProfileImgUri = "/images/users/andrina.jpg",

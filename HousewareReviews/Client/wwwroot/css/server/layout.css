@@ -33,6 +33,10 @@
     color: var(--black);
 }
 
+.form-validation > ul {
+    margin: 0;
+}
+
 .form-floating > .form-control-plaintext ~ label::after,
 .form-floating > .form-control:focus ~ label::after,
 .form-floating > .form-control:not(:placeholder-shown) ~ label::after,
@@ -51,6 +55,10 @@
 .form-input:active {
     box-shadow: none;
     border-bottom-color: var(--black);
+}
+
+.form-input:disabled {
+    border: none;
 }
 
 .form-input-label {
