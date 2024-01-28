@@ -1,5 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject IJSRuntime JS
+@inject HttpInterceptorService _interceptor
+@implements IDisposable
 
 <div class="page">
     <div>
@@ -14,5 +16,13 @@
 
 @code
 {
+    protected async override Task OnInitializedAsync()
+    {
+        _interceptor.MonitorEvent();
+    }
 
+    public void Dispose()
+    {
+        _interceptor.DisposeEvent();
+    }
 }
