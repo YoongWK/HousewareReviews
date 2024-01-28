@@ -5,25 +5,24 @@
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
-<partial name="_StatusMessage" for="StatusMessage" />
-
 <div class="col-xl-12 p-0">
 	<div class="px-5 py-4">
 		<h2 class="form-title text-center text-xl-start m-0">@ViewData["Title"]</h2>
 	</div>
 </div>
 
-<form id="profile-form" class="row align-items-center" method="post" enctype="multipart/form-data">
-<div class="col-xl-6 p-0">
-	<div class="px-5 pb-3 text-center">
-		<img id="profile-img" class="mt-xl-4 mt-3 mb-3 form-image" src="@Model.ProfileImgUri" />
-		<br />
-		<label asp-for="Input.ProfileImgFile" for="profile-image-input" class="form-input-button rounded-5">Upload Image</label>
-		<input asp-for="Input.ProfileImgFile" type="file" id="profile-image-input" class="d-none" accept="image/png, image/jpeg" onchange="previewProfileImg(this)" />
+<form id="profile-form" class="row align-items-center m-0" method="post" enctype="multipart/form-data">
+	<div class="col-xl-6 p-0">
+		<div class="px-5 pb-3 text-center">
+			<img id="profile-img" class="mt-xl-4 mt-3 mb-3 form-image" src="@Model.ProfileImgUri" />
+			<br />
+			<label asp-for="Input.ProfileImgFile" for="profile-image-input" class="form-input-button rounded-5">Upload Image</label>
+			<input asp-for="Input.ProfileImgFile" type="file" id="profile-image-input" class="d-none" accept="image/png, image/jpeg" onchange="previewProfileImg(this)" />
+		</div>
 	</div>
-</div>
-<div class="col-xl-6 p-0">
+	<div class="col-xl-6 p-0">
 		<div class="px-5 pb-3">
+			<partial name="_StatusMessage" for="StatusMessage" />
 			<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 			<div class="form-floating">
 				<input asp-for="Username" class="form-control form-input" placeholder="username" disabled />

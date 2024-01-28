@@ -3,8 +3,8 @@
 @if (!String.IsNullOrEmpty(Model))
 {
     var statusMessageClass = Model.StartsWith("Error") ? "danger" : "success";
-    <div class="alert alert-@statusMessageClass alert-dismissible m-0" role="alert">
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="alert alert-@statusMessageClass alert-dismissible py-2" style="font-size: 0.9rem;" role="alert">
+        <button type="button" class="btn-close shadow-none" style="padding-top: 12px;padding-bottom: 12px;" data-bs-dismiss="alert" aria-label="Close"></button>
         @Model
     </div>
 }
