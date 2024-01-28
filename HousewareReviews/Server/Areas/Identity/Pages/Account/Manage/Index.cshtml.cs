@@ -85,13 +85,13 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 			[DataType(DataType.PhoneNumber)]
 			[RegularExpression(@"(6|8|9)\d{7}", ErrorMessage = "Contact Number is not valid.")]
 			[Display(Name = "Contact Number")]
-
 			public string ContactNumber { get; set; }
+
 			[StringLength(100, ErrorMessage = "Password must be {2} to {1} characters long.", MinimumLength = 6)]
 			[DataType(DataType.Password)]
 			[Display(Name = "New password")]
-
 			public string NewPassword { get; set; }
+
 			[DataType(DataType.Password)]
 			[Display(Name = "Current password")]
 			public string OldPassword { get; set; }
@@ -165,8 +165,9 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 			return Page();
 		}
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(IFormCollection form)
         {
+			var buttonValue = form["submitButton"];
 			var user = await _userManager.GetUserAsync(User);
 
 			if (user == null)
@@ -174,79 +175,120 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-			if (Input.ProfileImgFile != null)
+			if (buttonValue == "deleteProfile")
 			{
-				using (var ms = new MemoryStream())
+				var result = await _userManager.DeleteAsync(user);
+				var userId = await _userManager.GetUserIdAsync(user);
+				if (!result.Succeeded)
 				{
-					Input.ProfileImgFile.CopyTo(ms);
-					var fileBytes = ms.ToArray();
-					ProfileImgUri = $"data:image/png;base64,{Convert.ToBase64String(fileBytes)}";
+					throw new InvalidOperationException($"Unexpected error occurred deleting user.");
 				}
-			}
 
-			if (Input.NewPassword != null)
-			{
-				var changePasswordResult = await _userManager.ChangePasswordAsync(user, Input.OldPassword == null? "" : Input.OldPassword, Input.NewPassword);
-				if (!changePasswordResult.Succeeded)
+				if (User.IsInRole("Staff"))
 				{
-					foreach (var error in changePasswordResult.Errors)
+					var staff = _context.Staffs.FirstOrDefault(u => u.UserId == user.Id);
+					if (staff == null)
 					{
-						ModelState.AddModelError(string.Empty, error.Description);
+						return NotFound($"Unable to load staff with ID '{user.Id}'");
+					}
+					_context.Staffs.Remove(staff);
+				}
+				else if (User.IsInRole("Consumer"))
+				{
+					var consumer = _context.Consumers.FirstOrDefault(u => u.UserId == user.Id);
+					if (consumer == null)
+					{
+						return NotFound($"Unable to load consumer with ID '{user.Id}'");
+					}
+					_context.Consumers.Remove(consumer);
+				}
+				else
+				{
+					return NotFound($"Unable to find role of user with ID '{user.Id}'.");
+				}
+
+				await _signInManager.SignOutAsync();
+				await _context.SaveChangesAsync();
+
+				return Redirect("~/");
+			}
+			else if (buttonValue == "updateProfile")
+			{
+				if (Input.ProfileImgFile != null)
+				{
+					using (var ms = new MemoryStream())
+					{
+						Input.ProfileImgFile.CopyTo(ms);
+						var fileBytes = ms.ToArray();
+						ProfileImgUri = $"data:image/png;base64,{Convert.ToBase64String(fileBytes)}";
 					}
 				}
-			}
 
-			if (User.IsInRole("Staff"))
-			{
-				var staff = _context.Staffs.FirstOrDefault(u => u.UserId == user.Id);
-				if (staff == null)
+				if (Input.NewPassword != null)
 				{
-					return NotFound($"Unable to load staff with ID '{user.Id}'");
+					var changePasswordResult = await _userManager.ChangePasswordAsync(user, Input.OldPassword == null? "" : Input.OldPassword, Input.NewPassword);
+					if (!changePasswordResult.Succeeded)
+					{
+						foreach (var error in changePasswordResult.Errors)
+						{
+							ModelState.AddModelError(string.Empty, error.Description);
+						}
+					}
 				}
-				if (!ModelState.IsValid)
-                {
-					await LoadAsync(user, staff, null, "Staff");
-					return Page();
-				}
-				staff.ProfileImgUri = ProfileImgUri == null? staff.ProfileImgUri : ProfileImgUri;
-                staff.FirstName = Input.FirstName;
-                staff.LastName = Input.LastName;
-                staff.Email = Input.Email;
-                staff.ContactNumber = Input.ContactNumber;
-				staff.Password = Input.NewPassword == null? staff.Password : Input.NewPassword;
-				_context.Entry(staff).State = EntityState.Modified;
-			}
-			else if (User.IsInRole("Consumer"))
-			{
-				var consumer = _context.Consumers.FirstOrDefault(u => u.UserId == user.Id);
-				if (consumer == null)
-				{
-					return NotFound($"Unable to load consumer with ID '{user.Id}'");
-				}
-				if (!ModelState.IsValid)
-				{
-					await LoadAsync(user, null, consumer, "Consumer");
-					return Page();
-				}
-				consumer.ProfileImgUri= ProfileImgUri == null ? consumer.ProfileImgUri : ProfileImgUri;
-				consumer.FirstName = Input.FirstName;
-				consumer.LastName = Input.LastName;
-				consumer.Email = Input.Email;
-				consumer.ContactNumber = Input.ContactNumber;
-				consumer.Password = Input.NewPassword == null ? consumer.Password : Input.NewPassword;
-				_context.Entry(consumer).State = EntityState.Modified;
-			}
-			else
-			{
-				return NotFound($"Unable to find role of user with ID '{user.Id}'.");
-			}
 
-			await _userManager.SetPhoneNumberAsync(user, Input.ContactNumber);
-			await _userManager.SetEmailAsync(user, Input.Email);
-			await _context.SaveChangesAsync();
-			await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
-            return RedirectToPage();
-        }
+				if (User.IsInRole("Staff"))
+				{
+					var staff = _context.Staffs.FirstOrDefault(u => u.UserId == user.Id);
+					if (staff == null)
+					{
+						return NotFound($"Unable to load staff with ID '{user.Id}'");
+					}
+					if (!ModelState.IsValid)
+					{
+						await LoadAsync(user, staff, null, "Staff");
+						return Page();
+					}
+					staff.ProfileImgUri = ProfileImgUri == null? staff.ProfileImgUri : ProfileImgUri;
+					staff.FirstName = Input.FirstName;
+					staff.LastName = Input.LastName;
+					staff.Email = Input.Email;
+					staff.ContactNumber = Input.ContactNumber;
+					staff.Password = Input.NewPassword == null? staff.Password : Input.NewPassword;
+					_context.Entry(staff).State = EntityState.Modified;
+				}
+				else if (User.IsInRole("Consumer"))
+				{
+					var consumer = _context.Consumers.FirstOrDefault(u => u.UserId == user.Id);
+					if (consumer == null)
+					{
+						return NotFound($"Unable to load consumer with ID '{user.Id}'");
+					}
+					if (!ModelState.IsValid)
+					{
+						await LoadAsync(user, null, consumer, "Consumer");
+						return Page();
+					}
+					consumer.ProfileImgUri= ProfileImgUri == null ? consumer.ProfileImgUri : ProfileImgUri;
+					consumer.FirstName = Input.FirstName;
+					consumer.LastName = Input.LastName;
+					consumer.Email = Input.Email;
+					consumer.ContactNumber = Input.ContactNumber;
+					consumer.Password = Input.NewPassword == null ? consumer.Password : Input.NewPassword;
+					_context.Entry(consumer).State = EntityState.Modified;
+				}
+				else
+				{
+					return NotFound($"Unable to find role of user with ID '{user.Id}'.");
+				}
+
+				await _userManager.SetPhoneNumberAsync(user, Input.ContactNumber);
+				await _userManager.SetEmailAsync(user, Input.Email);
+				await _context.SaveChangesAsync();
+				await _signInManager.RefreshSignInAsync(user);
+				StatusMessage = "Your profile has been updated";
+				return RedirectToPage();
+			}
+			return RedirectToPage();
+		}
     }
 }
