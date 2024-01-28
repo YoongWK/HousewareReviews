@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HousewareReviews.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240127205314_newDB")]
+    [Migration("20240128035241_newDB")]
     partial class newDB
     {
         /// <inheritdoc />
@@ -235,16 +235,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "3781efa7-66dc-47f0-860f-e506d04102e4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f62ed5b3-956d-4a76-a4f6-ebe6475ba59e",
+                            ConcurrencyStamp = "8f488644-c07f-41fb-876b-ecb84b22facb",
                             Email = "staff@blazor.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "STAFF@BLAZOR.COM",
                             NormalizedUserName = "S1234567A",
-                            PasswordHash = "AQAAAAIAAYagAAAAEI2lHYNcnazXFq9LWUXedrkVEz+bHFby+GfqW5fdodLH0C5PJ7XH0DVaRB7STy0IRA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBigObR90muYTekVeyoMxid7GwIv0dZWNbIou/J2QiFxl3XLcoQI3a1cTriqpufttA==",
                             PhoneNumber = "91234567",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ca7062d5-25b3-4943-826e-aaaf4bbc718d",
+                            SecurityStamp = "209a02f7-e750-4168-a841-6219ce8dc4e2",
                             TwoFactorEnabled = false,
                             UserName = "S1234567A"
                         },
@@ -252,16 +252,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "1ce40de7-b2a7-4cf4-a8f3-c811191a664d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6cd6bf1e-7687-452d-827f-68b3e209d1ea",
+                            ConcurrencyStamp = "387cbae0-3d66-4a37-991e-68cb5061d08b",
                             Email = "consumer@blazor.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "CONSUMER@BLAZOR.COM",
                             NormalizedUserName = "T1234567A",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMz64if13AoR9EKNlI9hiEccea/nwhSRm1lDqKrHqxHu2hR2kq1ceu9vkMJqDSdiPw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJA7I9H8Ij0dybyZInTuJoCna/8mBGh+VZTt2vjkeTlvPN3a13osdyjkkNz08aTfKg==",
                             PhoneNumber = "98765432",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "19242ad7-b684-4eca-a98f-7092fc6ae316",
+                            SecurityStamp = "e492ed2a-0b3f-4192-a17a-0b04c53a22b1",
                             TwoFactorEnabled = false,
                             UserName = "T1234567A"
                         },
@@ -269,16 +269,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "9du2ii40-h7d9-8sj2-j98s-is0dh83jk48s",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "35db25d6-56b6-4a96-af9b-2e6c0022f3bc",
+                            ConcurrencyStamp = "11615762-0610-4a0e-af15-f8a248b006b3",
                             Email = "maymorrison@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "MAYMORRISON@GMAIL.COM",
                             NormalizedUserName = "S6523489J",
-                            PasswordHash = "AQAAAAIAAYagAAAAEA09KgY5Bm7Sx4GZ+jXOMwVMdtrCvxIsAaLW23dCQyINaxHAMBQanQEqeLafMcN7iw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAfJdChv4j/XISuiOV/Imnwa03k7aqYtHrQrIgE9DUW1y3KGDZFvRChjVMtdv2iFgg==",
                             PhoneNumber = "92438900",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "bcc942e0-a1a2-424b-be2f-059595fea4a8",
+                            SecurityStamp = "005d30df-623e-40b7-84d8-7b82ebc7cb30",
                             TwoFactorEnabled = false,
                             UserName = "S6523489J"
                         },
@@ -286,16 +286,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "2oh7diw9-0or5-3jf9-8ss6-ks8ya5h297bd",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "69a2dcf0-f000-42f8-a4b8-afc4cb8520af",
+                            ConcurrencyStamp = "ec40f65f-b3b7-4099-8ecf-4331e8d6d038",
                             Email = "joshuatan@outlook.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "JOSHUATAN@OUTLOOK.COM",
                             NormalizedUserName = "T9366538J",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOUQKqlAFAKFJwDRPp3q5Um27XlZA3OO2ROJtAs1S4JwNs34qHAC0mj21VkDasJWjw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFB3OsCTein32v+mEl5DVQa8saLeqjtQoRF07dMA+NsPmuvOgg0GzQus/lHuTpHb8w==",
                             PhoneNumber = "83072245",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "51b299e8-8dfd-4ed3-bee4-4822aadd271e",
+                            SecurityStamp = "d8cc5637-0845-49af-866d-404d89d6a49c",
                             TwoFactorEnabled = false,
                             UserName = "T9366538J"
                         },
@@ -303,16 +303,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "5di8sy83-2i9r-f56h-s8d9-s09njsh7dd53",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b977d0b6-cb0a-4edc-a413-07c2c0ee29f5",
+                            ConcurrencyStamp = "77220a40-c264-44df-8913-6a23f1e00a07",
                             Email = "ethanlim@hotmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ETHANLIM@HOTMAIL.COM",
                             NormalizedUserName = "S9812704F",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHOlRxLJ/R5nyum9i5owf+MXOqOgTY0X40O+k/qjr6MXBNmHavCLxeQFMNwAVmcERQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAqYSlIUG3O7i+x2T9axGPIiJOVwOJ1Ll6nIPFWm5Zctlgh03LHRQ70AOJ5oNMJ9OQ==",
                             PhoneNumber = "87229044",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "dabdb9d0-7ab3-4fa4-9b5d-18d2e22dd494",
+                            SecurityStamp = "8da5cb4a-80cd-4698-80f0-7e1bd2ff83c5",
                             TwoFactorEnabled = false,
                             UserName = "S9812704F"
                         });
@@ -468,7 +468,7 @@ namespace HousewareReviews.Server.Migrations
                     b.Property<string>("Category")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CommentId")
+                    b.Property<int?>("CommentId")
                         .HasColumnType("int");
 
                     b.Property<int?>("ConsumerId")
@@ -913,7 +913,7 @@ namespace HousewareReviews.Server.Migrations
                     b.Property<string>("Outcome")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ReviewId")
+                    b.Property<int?>("ReviewId")
                         .HasColumnType("int");
 
                     b.Property<int?>("StaffId")
@@ -1193,8 +1193,7 @@ namespace HousewareReviews.Server.Migrations
                     b.HasOne("HousewareReviews.Shared.Domain.Comment", "Comment")
                         .WithMany()
                         .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("HousewareReviews.Shared.Domain.Consumer", "Consumer")
                         .WithMany()
@@ -1260,8 +1259,7 @@ namespace HousewareReviews.Server.Migrations
                     b.HasOne("HousewareReviews.Shared.Domain.Review", "Review")
                         .WithMany()
                         .HasForeignKey("ReviewId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("HousewareReviews.Shared.Domain.Staff", "Staff")
                         .WithMany()

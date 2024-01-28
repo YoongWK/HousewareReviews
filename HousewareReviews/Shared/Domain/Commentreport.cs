@@ -14,7 +14,7 @@ namespace HousewareReviews.Shared.Domain
         public string? Outcome {  get; set; }
         public int? ConsumerId { get; set; }
         public virtual Consumer? Consumer { get; set; }
-        public int CommentId { get; set; }
+        public int? CommentId { get; set; }
         public virtual Comment? Comment { get; set; }
         public int? StaffId { get; set; }
         public virtual Staff? Staff { get; set; }

@@ -6,7 +6,6 @@ using HousewareReviews.Shared.Domain;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System.Reflection.Emit;
 
 namespace HousewareReviews.Server.Data
 {
@@ -29,42 +28,54 @@ namespace HousewareReviews.Server.Data
 		protected override void OnModelCreating(ModelBuilder builder)
         {
 			builder.Entity<Review>()
-			.HasOne(s => s.Consumer)
+			.HasOne(e => e.Consumer)
 			.WithMany()
-			.HasForeignKey(s => s.ConsumerId)
+			.HasForeignKey(e => e.ConsumerId)
 			.OnDelete(DeleteBehavior.SetNull);
 
 			builder.Entity<Comment>()
-			.HasOne(s => s.Consumer)
+			.HasOne(e => e.Consumer)
 			.WithMany()
-			.HasForeignKey(s => s.ConsumerId)
+			.HasForeignKey(e => e.ConsumerId)
 			.OnDelete(DeleteBehavior.SetNull);
 
 			builder.Entity<Reviewreport>()
-			.HasOne(s => s.Consumer)
+			.HasOne(e => e.Consumer)
 			.WithMany()
-			.HasForeignKey(s => s.ConsumerId)
+			.HasForeignKey(e => e.ConsumerId)
 			.OnDelete(DeleteBehavior.SetNull);
 
 			builder.Entity<Reviewreport>()
-		    .HasOne(s => s.Staff)
+		    .HasOne(e => e.Staff)
 		    .WithMany()
-		    .HasForeignKey(s => s.StaffId)
+		    .HasForeignKey(e => e.StaffId)
 		    .OnDelete(DeleteBehavior.SetNull);
 
-			builder.Entity<Commentreport>()
-			.HasOne(s => s.Consumer)
+            builder.Entity<Reviewreport>()
+            .HasOne(e => e.Review)
+            .WithMany()
+            .HasForeignKey(e => e.ReviewId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<Commentreport>()
+			.HasOne(e => e.Consumer)
 			.WithMany()
-			.HasForeignKey(s => s.ConsumerId)
+			.HasForeignKey(e => e.ConsumerId)
 			.OnDelete(DeleteBehavior.SetNull);
 
 			builder.Entity<Commentreport>()
-			.HasOne(s => s.Staff)
+			.HasOne(e => e.Staff)
 			.WithMany()
-			.HasForeignKey(s => s.StaffId)
+			.HasForeignKey(e => e.StaffId)
 			.OnDelete(DeleteBehavior.SetNull);
 
-			base.OnModelCreating(builder);
+            builder.Entity<Commentreport>()
+            .HasOne(e => e.Comment)
+            .WithMany()
+            .HasForeignKey(e => e.CommentId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+            base.OnModelCreating(builder);
             builder.ApplyConfiguration(new CategorySeedConfiguration());
             builder.ApplyConfiguration(new CompanySeedConfiguration());
             builder.ApplyConfiguration(new ProductSeedConfiguration());

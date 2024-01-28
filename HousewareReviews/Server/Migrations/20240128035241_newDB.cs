@@ -391,7 +391,7 @@ namespace HousewareReviews.Server.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Outcome = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConsumerId = table.Column<int>(type: "int", nullable: true),
-                    ReviewId = table.Column<int>(type: "int", nullable: false),
+                    ReviewId = table.Column<int>(type: "int", nullable: true),
                     StaffId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -408,7 +408,7 @@ namespace HousewareReviews.Server.Migrations
                         column: x => x.ReviewId,
                         principalTable: "Reviews",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Reviewreports_Staffs_StaffId",
                         column: x => x.StaffId,
@@ -427,7 +427,7 @@ namespace HousewareReviews.Server.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Outcome = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConsumerId = table.Column<int>(type: "int", nullable: true),
-                    CommentId = table.Column<int>(type: "int", nullable: false),
+                    CommentId = table.Column<int>(type: "int", nullable: true),
                     StaffId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -438,7 +438,7 @@ namespace HousewareReviews.Server.Migrations
                         column: x => x.CommentId,
                         principalTable: "Comments",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Commentreports_Consumers_ConsumerId",
                         column: x => x.ConsumerId,
@@ -467,11 +467,11 @@ namespace HousewareReviews.Server.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "1ce40de7-b2a7-4cf4-a8f3-c811191a664d", 0, "6cd6bf1e-7687-452d-827f-68b3e209d1ea", "consumer@blazor.com", false, false, null, "CONSUMER@BLAZOR.COM", "T1234567A", "AQAAAAIAAYagAAAAEMz64if13AoR9EKNlI9hiEccea/nwhSRm1lDqKrHqxHu2hR2kq1ceu9vkMJqDSdiPw==", "98765432", false, "19242ad7-b684-4eca-a98f-7092fc6ae316", false, "T1234567A" },
-                    { "2oh7diw9-0or5-3jf9-8ss6-ks8ya5h297bd", 0, "69a2dcf0-f000-42f8-a4b8-afc4cb8520af", "joshuatan@outlook.com", false, false, null, "JOSHUATAN@OUTLOOK.COM", "T9366538J", "AQAAAAIAAYagAAAAEOUQKqlAFAKFJwDRPp3q5Um27XlZA3OO2ROJtAs1S4JwNs34qHAC0mj21VkDasJWjw==", "83072245", false, "51b299e8-8dfd-4ed3-bee4-4822aadd271e", false, "T9366538J" },
-                    { "3781efa7-66dc-47f0-860f-e506d04102e4", 0, "f62ed5b3-956d-4a76-a4f6-ebe6475ba59e", "staff@blazor.com", false, false, null, "STAFF@BLAZOR.COM", "S1234567A", "AQAAAAIAAYagAAAAEI2lHYNcnazXFq9LWUXedrkVEz+bHFby+GfqW5fdodLH0C5PJ7XH0DVaRB7STy0IRA==", "91234567", false, "ca7062d5-25b3-4943-826e-aaaf4bbc718d", false, "S1234567A" },
-                    { "5di8sy83-2i9r-f56h-s8d9-s09njsh7dd53", 0, "b977d0b6-cb0a-4edc-a413-07c2c0ee29f5", "ethanlim@hotmail.com", false, false, null, "ETHANLIM@HOTMAIL.COM", "S9812704F", "AQAAAAIAAYagAAAAEHOlRxLJ/R5nyum9i5owf+MXOqOgTY0X40O+k/qjr6MXBNmHavCLxeQFMNwAVmcERQ==", "87229044", false, "dabdb9d0-7ab3-4fa4-9b5d-18d2e22dd494", false, "S9812704F" },
-                    { "9du2ii40-h7d9-8sj2-j98s-is0dh83jk48s", 0, "35db25d6-56b6-4a96-af9b-2e6c0022f3bc", "maymorrison@gmail.com", false, false, null, "MAYMORRISON@GMAIL.COM", "S6523489J", "AQAAAAIAAYagAAAAEA09KgY5Bm7Sx4GZ+jXOMwVMdtrCvxIsAaLW23dCQyINaxHAMBQanQEqeLafMcN7iw==", "92438900", false, "bcc942e0-a1a2-424b-be2f-059595fea4a8", false, "S6523489J" }
+                    { "1ce40de7-b2a7-4cf4-a8f3-c811191a664d", 0, "387cbae0-3d66-4a37-991e-68cb5061d08b", "consumer@blazor.com", false, false, null, "CONSUMER@BLAZOR.COM", "T1234567A", "AQAAAAIAAYagAAAAEJA7I9H8Ij0dybyZInTuJoCna/8mBGh+VZTt2vjkeTlvPN3a13osdyjkkNz08aTfKg==", "98765432", false, "e492ed2a-0b3f-4192-a17a-0b04c53a22b1", false, "T1234567A" },
+                    { "2oh7diw9-0or5-3jf9-8ss6-ks8ya5h297bd", 0, "ec40f65f-b3b7-4099-8ecf-4331e8d6d038", "joshuatan@outlook.com", false, false, null, "JOSHUATAN@OUTLOOK.COM", "T9366538J", "AQAAAAIAAYagAAAAEFB3OsCTein32v+mEl5DVQa8saLeqjtQoRF07dMA+NsPmuvOgg0GzQus/lHuTpHb8w==", "83072245", false, "d8cc5637-0845-49af-866d-404d89d6a49c", false, "T9366538J" },
+                    { "3781efa7-66dc-47f0-860f-e506d04102e4", 0, "8f488644-c07f-41fb-876b-ecb84b22facb", "staff@blazor.com", false, false, null, "STAFF@BLAZOR.COM", "S1234567A", "AQAAAAIAAYagAAAAEBigObR90muYTekVeyoMxid7GwIv0dZWNbIou/J2QiFxl3XLcoQI3a1cTriqpufttA==", "91234567", false, "209a02f7-e750-4168-a841-6219ce8dc4e2", false, "S1234567A" },
+                    { "5di8sy83-2i9r-f56h-s8d9-s09njsh7dd53", 0, "77220a40-c264-44df-8913-6a23f1e00a07", "ethanlim@hotmail.com", false, false, null, "ETHANLIM@HOTMAIL.COM", "S9812704F", "AQAAAAIAAYagAAAAEAqYSlIUG3O7i+x2T9axGPIiJOVwOJ1Ll6nIPFWm5Zctlgh03LHRQ70AOJ5oNMJ9OQ==", "87229044", false, "8da5cb4a-80cd-4698-80f0-7e1bd2ff83c5", false, "S9812704F" },
+                    { "9du2ii40-h7d9-8sj2-j98s-is0dh83jk48s", 0, "11615762-0610-4a0e-af15-f8a248b006b3", "maymorrison@gmail.com", false, false, null, "MAYMORRISON@GMAIL.COM", "S6523489J", "AQAAAAIAAYagAAAAEAfJdChv4j/XISuiOV/Imnwa03k7aqYtHrQrIgE9DUW1y3KGDZFvRChjVMtdv2iFgg==", "92438900", false, "005d30df-623e-40b7-84d8-7b82ebc7cb30", false, "S6523489J" }
                 });
 
             migrationBuilder.InsertData(
