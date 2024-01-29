@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Reports\" />
+    <Folder Include="Pages\Comments\" />
   </ItemGroup>
 
 </Project>
