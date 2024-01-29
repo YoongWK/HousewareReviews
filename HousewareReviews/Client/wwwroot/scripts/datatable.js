@@ -1,6 +1,8 @@
 ﻿function AddDataTable(table) {
     $(document).ready(function () {
-        $(table).DataTable();
+        $(table).DataTable({
+            "dom": 'ftip'
+        });
     })
 }
 function DataTablesDispose(table) {
