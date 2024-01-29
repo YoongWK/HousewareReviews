@@ -37,14 +37,16 @@
     [Parameter] public EventCallback OnValidSubmit { get; set; }
     //product and consumer
     [Parameter] public int ProductId { get; set; }
-    
+    [Parameter] public int ReviewId { get; set; }
+    Review rev = new Review();
+
 
     private HttpClient _client;
     // private IList<Category>? Categories;
 
     protected override void OnInitialized()
     {
-        _client = ClientFactory.CreateClient("private");
+        _client = ClientFactory.CreateClient("public");
         // product.CompanyId = CompanyId;
     }
 
