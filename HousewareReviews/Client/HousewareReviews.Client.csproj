@@ -25,7 +25,6 @@
 
   <ItemGroup>
     <Folder Include="Pages\Commentreports\" />
-    <Folder Include="Pages\Comments\" />
     <Folder Include="Pages\Reviewreports\" />
   </ItemGroup>
 

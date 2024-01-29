@@ -116,8 +116,10 @@
                             </div>
 
                             <div>
-                                <span class="oi oi-comment-square" aria-hidden="true"></span>
-                                <small>Comment</small>
+                                <a href="/reviews/@review.Id/comments/create" style="text-decoration: none; color: var(--black);">
+                                    <span class="oi oi-comment-square" aria-hidden="true"></span>
+                                    <small>Comment</small>
+                                </a>
                                 &nbsp;
                                 <span class="oi oi-thumb-up" aria-hidden="true"></span>
                                 <small>Helpful</small>
@@ -147,7 +149,7 @@
                                 </div>
                             }
 
-                            @foreach (var comment in Comments)
+                            @foreach (var comment in Comments.OrderBy(c => c.ConsumerId == currentconsumerid ? 0 : 1))
                             {
                                 if (comment.ReviewId == review.Id)
                                 {
@@ -166,7 +168,23 @@
                                         <hr />
                                         <p>@comment.Description</p>
                                         <br />
-                                        <h6><b>Date Commented: @comment.DateCreated.Date.ToShortDateString()</b></h6>
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-auto">
+                                                <h6><b>Date Commented: @comment.DateCreated.Date.ToShortDateString()</b></h6>
+                                            </div>
+                                            @if (comment.ConsumerId == currentconsumerid)
+                                            {
+                                                <div>
+                                                    <a href="/reviews/@review.Id/comments/@comment.Id/edit" style="text-decoration: none;">
+                                                        <span class="oi oi-pencil" aria-hidden="true"></span>
+                                                        <small><b>Edit Comment</b></small>
+                                                    </a>
+                                                    <button class="btn btn-danger" @onclick="@(()=>deleteComment(comment.Id))">
+                                                        <span class="oi oi-delete"></span>
+                                                    </button>
+                                                </div>
+                                            }
+                                        </div>
                                         <hr />
                                     </div>
                                 }
@@ -268,8 +286,10 @@
                                 </div>
 
                                 <div>
-                                    <span class="oi oi-comment-square" aria-hidden="true"></span>
-                                    <small>Comment</small>
+                                    <a href="/reviews/@review.Id/comments/create" style="text-decoration: none; color: var(--black);">
+                                        <span class="oi oi-comment-square" aria-hidden="true"></span>
+                                        <small>Comment</small>
+                                    </a>
                                     &nbsp;
                                     <span class="oi oi-thumb-up" aria-hidden="true"></span>
                                     <small>Helpful</small>
@@ -401,6 +421,23 @@
             if (confirm)
             {
                 await _client.DeleteAsync($"{Endpoints.ReviewsEndpoint}/{reviewId}");
+                _navManager.NavigateTo(_navManager.Uri, forceLoad: true);
+                //await OnInitializedAsync();
+                //StateHasChanged();
+                //_navManager.NavigateTo($"/products/{ProductId}");
+            }
+        }
+    }
+
+    async Task deleteComment(int commentId)
+    {
+        if (Comments != null)
+        {
+            var comment = Comments.First(q => q.Id == commentId);
+            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete your comment?");
+            if (confirm)
+            {
+                await _client.DeleteAsync($"{Endpoints.CommentsEndpoint}/{commentId}");
                 _navManager.NavigateTo(_navManager.Uri, forceLoad: true);
                 //await OnInitializedAsync();
                 //StateHasChanged();

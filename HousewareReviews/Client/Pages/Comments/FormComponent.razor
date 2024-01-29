@@ -1,0 +1,57 @@
+﻿@inject IHttpClientFactory ClientFactory
+
+<EditForm Model="@comment" OnValidSubmit=@OnValidSubmit>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <fieldset disabled="@Disabled">
+       <div class="form-group">
+            <label></label>
+            <div>
+                <InputTextArea @bind-Value="@comment.Description" class="form-control" />
+                <ValidationMessage For="@(() => comment.Description)" />
+            </div>
+        </div>
+    </fieldset>
+    <br />
+    @if (!Disabled)
+    {
+        <button type="submit" class="btn btn-success btn-block">
+            @ButtonText
+        </button>
+    }
+    <BackToList Target="@GetTarget()" />
+</EditForm>
+
+@code {
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public Comment? comment { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+    //product and consumer
+    //[Parameter] public int ProductId { get; set; }
+    [Parameter] public int ReviewId { get; set; }
+    Review? review = new Review();
+    //Comment? comment = new Comment();
+
+
+    private HttpClient _client;
+    // private IList<Category>? Categories;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("public");
+        // product.CompanyId = CompanyId;
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        //comment = await _client.GetFromJsonAsync<Comment>($"{Endpoints.CommentsEndpoint}/{Id}");
+        review = await _client.GetFromJsonAsync<Review>($"{Endpoints.ReviewsEndpoint}/{ReviewId}");
+        //Categories = await _client.GetFromJsonAsync<List<Category>>($"{Endpoints.CategoriesEndpoint}");
+    }
+
+    private string GetTarget()
+    {
+        return $"products/{review.ProductId}";
+    }
+}
