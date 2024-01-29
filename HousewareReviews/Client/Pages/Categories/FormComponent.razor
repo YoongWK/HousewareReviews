@@ -1,47 +1,56 @@
 ﻿@inject IHttpClientFactory ClientFactory
+@attribute [Authorize(Roles = "Staff")]
 
-<EditForm Model="@category" OnValidSubmit=@OnValidSubmit>
+<EditForm Model="@category" OnValidSubmit="@(() => OnValidSubmitCallback(category))">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <fieldset disabled="@Disabled">
-        <div class="form-group">
-            <label>Name:</label>
-            <div>
-                <InputText @bind-Value="@category.Name" class="form-control" />
-                <ValidationMessage For="@(() => category.Name)" />
-            </div>
-        </div>
+    <div class="modal-body text-start">
+		<fieldset disabled="@Disabled">
+			<div class="form-group pb-3">
+				<label>Name:</label>
+				<div>
+					<InputText @bind-Value="@category.Name" class="form-control shadow-none" />
+					<ValidationMessage For="@(() => category.Name)" />
+				</div>
+			</div>
 
-        <div class="form-group">
-            <label>Logo URI:</label>
-            <div class="d-flex flex-column">
-                <InputFile OnChange="OnFileSelection" accept="image/png, image/jpeg" />
-                <ValidationMessage For="@(() => category.ImgUri)" />
-            </div>
-            <img class="w-100 pt-2" src="@category.ImgUri" onerror="this.style.display='none'" />
-        </div>
-    </fieldset>
-    <br />
-    @if (!Disabled)
-    {
-        <button type="submit" class="btn btn-success btn-block">
-            @ButtonText
-        </button>
-    }
-    <BackToList Target="categories" />
+			<div class="form-group">
+				<label>Image:</label>
+				@if (!Disabled)
+				{
+					<div class="d-flex flex-column pb-1">
+						<InputFile OnChange="OnFileSelection" class="file-upload" accept="image/png, image/jpeg" />
+						<ValidationMessage For="@(() => category.ImgUri)" />
+					</div>
+				}
+                <img class="w-100" src="@category.ImgUri" onerror="this.style.display='none'" />
+			</div>
+		</fieldset>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal" @onclick="OnInitAsync">Close</button>
+        @if (!Disabled)
+        {
+            <button type="submit" class="btn btn-success shadow-none">
+                @ButtonText
+            </button>
+        }
+    </div>
 </EditForm>
 
 @code {
     [Parameter] public bool Disabled { get; set; } = false;
     [Parameter] public Category? category { get; set; }
     [Parameter] public string ButtonText { get; set; } = "Save";
-    [Parameter] public EventCallback OnValidSubmit { get; set; }
+    [Parameter] public EventCallback<Category> OnValidSubmit { get; set; }
+    [Parameter] public Func<Task> OnInitAsync { get; set; }
 
-    private HttpClient _client;
-
-    protected override void OnInitialized()
+    private async Task OnValidSubmitCallback(Category cat)
     {
-        _client = ClientFactory.CreateClient("private");
+        if (OnValidSubmit.HasDelegate)
+        {
+            await OnValidSubmit.InvokeAsync(cat);
+        }
     }
 
     private async Task OnFileSelection(InputFileChangeEventArgs e)

@@ -52,11 +52,23 @@
         </AuthorizeView>
 
         <AuthorizeView Roles="Staff">
-            <a href="/categories/create" class="btn btn-secondary">
+            <button type="button" class="btn btn-success btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#create">
                 <span class="oi oi-plus"></span>
                 Create New Category
-            </a>
+            </button>
 
+            <div class="modal fade" id="create" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="create-label" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="create-label">Create New Category</h1>
+                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                        </div>
+                        <FormComponent ButtonText="Create" OnValidSubmit="@((cat)=>CreateCategory(cat))" OnInitAsync="OnInitializedAsync" category="new Category()" />
+                    </div>
+                </div>
+            </div>
+            
             <table class="table table-responsive w-100 py-2 m-0" id="categoriesTable">
                 <thead>
                     <tr>
@@ -71,18 +83,63 @@
                         <tr>
                             <td>@category.Name</td>
                             <td>
-                                <img src="@category.ImgUri" style="height:100px;width:200px;object-fit:cover;" />
+                                <img src="@category.ImgUri" style="height:70px;width:140px;object-fit:cover;" />
                             </td>
                             <td>
-                                <a href="/categories/view/@category.Id" class="btn btn-primary">
-                                    <span class="oi oi-book"></span>
-                                </a>
-                                <a href="/categories/edit/@category.Id" class="btn btn-warning">
+                                <button type="button" class="btn btn-primary btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#view-@category.Id">
+                                    <span class="oi oi-eye"></span>
+                                </button>
+                                <div class="modal fade" id="view-@category.Id" tabindex="-1" aria-labelledby="view-label-@category.Id" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="view-label-@category.Id">View @category.Name</h1>
+                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <FormComponent category="category" Disabled="true" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <a href="/categories/edit/@category.Id" class="btn btn-warning btn-sm shadow-none">
                                     <span class="oi oi-pencil"></span>
                                 </a>
-                                <button class="btn btn-danger" @onclick="@(()=>Delete(category.Id))">
+
+@*                                 <button type="button" class="btn btn-warning btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#edit-@category.Id">
+                                    <span class="oi oi-pencil"></span>
+                                </button>
+                                <div class="modal fade" id="edit-@category.Id" tabindex="-1" aria-labelledby="edit-label-@category.Id" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="edit-label-@category.Id">Edit @category.Name</h1>
+                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <FormComponent ButtonText="Update" OnValidSubmit="EditCategory" category="category" />
+                                        </div>
+                                    </div>
+                                </div> *@
+
+                                <button type="button" class="btn btn-danger btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#delete-@category.Id">
                                     <span class="oi oi-delete"></span>
                                 </button>
+                                <div class="modal fade" id="delete-@category.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete-label-@category.Id" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="delete-label-@category.Id">Delete @category.Name?</h1>
+                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-start">
+                                                This action cannot be undone.
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-danger shadow-none" data-bs-dismiss="modal" @onclick="@(()=>DeleteCategory(category.Id))">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     }
@@ -107,26 +164,30 @@
         var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         userIsStaff = authstate.User.IsInRole("Staff");
     }
-    async Task Delete(int categoryId)
+
+    private async Task DeleteCategory(int categoryId)
     {
         if (Categories != null)
         {
             var category = Categories.First(q => q.Id == categoryId);
-            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {category.Name}?");
-            if (confirm)
-            {
-                await _client.DeleteAsync($"{Endpoints.CategoriesEndpoint}/{categoryId}");
-                await OnInitializedAsync();
-            }
+            await _client.DeleteAsync($"{Endpoints.CategoriesEndpoint}/{categoryId}");
+            await OnInitializedAsync();
         }
     }
+
+    private async Task CreateCategory(Category cat)
+    {
+        await _client.PostAsJsonAsync(Endpoints.CategoriesEndpoint, cat);
+        await js.InvokeVoidAsync("hideModal", "#create");
+        await OnInitializedAsync();
+    }
+
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         if (userIsStaff)
         {
             await js.InvokeVoidAsync("AddDataTable", "#categoriesTable", "Search Categories");
         }
-
     }
 
     public void Dispose()

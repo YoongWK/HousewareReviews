@@ -48,6 +48,18 @@ html, body {
     text-align: center;
 }
 
+.file-upload {
+    cursor: pointer;
+}
+
+.file-upload::-webkit-file-upload-button {
+    cursor: pointer;
+}
+
+.validation-errors {
+    margin: 1rem 0rem 0rem 0rem;
+}
+
 h1:focus {
     outline: none;
 }

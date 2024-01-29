@@ -24,3 +24,9 @@ function showRepliesNComments(reviewId) {
         container.style.display = container.style.display === 'none' ? 'block' : 'none';
     }
 }
+
+function hideModal(modalSelector) {
+    let modal = document.querySelector(modalSelector);
+    let bsModal = bootstrap.Modal.getOrCreateInstance(modal);
+    bsModal.hide();
+}
