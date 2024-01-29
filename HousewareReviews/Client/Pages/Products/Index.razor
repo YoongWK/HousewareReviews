@@ -65,7 +65,8 @@
                     <div class="d-flex">
                         <div class="me-auto">
                             <h4>
-                                <span class="oi"><span class="profile oi-person" aria-hidden="true"></span></span>
+                                <img class="profile" src="@review.Consumer?.ProfileImgUri" style="width: 30px; height: 30px;" />
+                                @* <span class="oi"><span class="profile oi-person" aria-hidden="true"></span></span> *@
                                 <b>@review.Consumer.FirstName @review.Consumer.LastName</b>
                             </h4>
                         </div>
@@ -83,16 +84,48 @@
                     <div class="d-flex container">
                         
                         @* <a href="/reply/@review.Id" style="text-decoration: none; color: var(--black)"> *@ @* </a> *@
-                        <div class="dropdown me-auto" id="repliesncomments">
+                        @* <div class="dropdown me-auto" id="repliesncomments">
                             <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <small>View Replies & Comments</small>
-                                @* <span class="oi oi-chevron-bottom" aria-hidden="true"></span> *@
                             </button>
                             <div class="dropdown-menu" style="position:relative;">
+                                <div class="d-flex align-items-center m-4 p-3 row bg-light rounded-4">
+                                    <h5>Reply: @review.Reply</h5>
+                                </div>
+                                @foreach (var comment in Comments)
+                                {
+                                    if (comment.ReviewId == review.Id)
+                                    {
+                                        //simple card layout displaying comment
+                                        <div class="d-flex align-items-center m-4 p-3 row bg-light rounded-4">
+                                            <h5>@comment.Consumer.FirstName @comment.Consumer.LastName</h5>
+                                            <p>@comment.Description</p>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div> *@
+                        <div class="me-auto">
+                            <button class="btn" type="button" data-toggle="collapse" data-target="#collapseReview" aria-expanded="false">
+                                <small>View Replies & Comments</small>
+                            </button>
+                        </div>
+
+                        <div class="collapse" id="collapseReview">
                             <div class="d-flex align-items-center m-4 p-3 row bg-light rounded-4">
-                                    <p>No comments or replies yet.</p>
+                                <h5>Reply: @review.Reply</h5>
+                                @* <p>No comments or replies yet.</p> *@
                             </div>
-                            </div>
+                            @foreach (var comment in Comments)
+                            {
+                                if (comment.ReviewId == review.Id)
+                                {
+                                    <div class="d-flex align-items-center m-4 p-3 row bg-light rounded-4">
+                                        <h5>@comment.Consumer.FirstName @comment.Consumer.LastName</h5>
+                                        <p>@comment.Description</p>
+                                    </div>
+                                }
+                            }
                         </div>
                         
                         <div>
@@ -129,6 +162,7 @@
     private List<Product>? products;
     private Product? product = new Product();
     private IList<Review> Reviews;
+    private IList<Comment> Comments;
     private List<Review>? reviews;
     int productreviewCount = 0;
     int companyreviewCount = 0;
@@ -143,6 +177,7 @@
         product = await _client.GetFromJsonAsync<Product>($"{Endpoints.ProductsEndpoint}/{id}");
         products = await _client.GetFromJsonAsync<List<Product>>($"{Endpoints.ProductsEndpoint}");
         Reviews = await _client.GetFromJsonAsync<List<Review>>($"{Endpoints.ReviewsEndpoint}");
+        Comments = await _client.GetFromJsonAsync<List<Comment>>($"{Endpoints.CommentsEndpoint}");
     }
 
     protected async override Task OnParametersSetAsync()
