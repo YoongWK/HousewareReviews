@@ -124,8 +124,10 @@
                                 <span class="oi oi-thumb-up" aria-hidden="true"></span>
                                 <small>Helpful</small>
                                 &nbsp;
-                                <span class="oi oi-flag" aria-hidden="true"></span>
-                                <small>Report</small>
+                                <a href="/reviews/@review.Id/report" style="text-decoration: none; color: var(--black)">
+                                    <span class="oi oi-flag" aria-hidden="true"></span>
+                                    <small>Report</small>
+                                </a>
                             </div>
                         </div>
 
@@ -186,6 +188,18 @@
                                             }
                                         </div>
                                         <hr />
+                                        <div class="d-flex">
+                                            <div class="me-auto"></div>
+                                            <div>
+                                                <span class="oi oi-thumb-up" aria-hidden="true"></span>
+                                                <small>Helpful</small>
+                                                &nbsp;
+                                                <a href="/comments/@comment.Id/report" style="text-decoration: none; color: var(--black)">
+                                                    <span class="oi oi-flag" aria-hidden="true"></span>
+                                                    <small>Report</small>
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
                                 }
                             }
@@ -294,8 +308,10 @@
                                     <span class="oi oi-thumb-up" aria-hidden="true"></span>
                                     <small>Helpful</small>
                                     &nbsp;
-                                    <span class="oi oi-flag" aria-hidden="true"></span>
-                                    <small>Report</small>
+                                    <a href="/reviews/@review.Id/report" style="text-decoration: none; color: var(--black)">
+                                        <span class="oi oi-flag" aria-hidden="true"></span>
+                                        <small>Report</small>
+                                    </a>
                                 </div>
                             </div>
 
@@ -340,6 +356,18 @@
                                             <br />
                                             <h6><b>Date Commented: @comment.DateCreated.Date.ToShortDateString()</b></h6>
                                             <hr />
+                                            <div class="d-flex">
+                                                <div class="me-auto"></div>
+                                                <div>
+                                                    <span class="oi oi-thumb-up" aria-hidden="true"></span>
+                                                    <small>Helpful</small>
+                                                    &nbsp;
+                                                    <a href="/comments/@comment.Id/report" style="text-decoration: none; color: var(--black)">
+                                                        <span class="oi oi-flag" aria-hidden="true"></span>
+                                                        <small>Report</small>
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </div>
                                     }
                                 }
@@ -417,7 +445,7 @@
         if (Reviews != null)
         {
             var review = Reviews.First(q => q.Id == reviewId);
-            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {review.Consumer?.FirstName}'s review?");
+            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete your review?");
             if (confirm)
             {
                 await _client.DeleteAsync($"{Endpoints.ReviewsEndpoint}/{reviewId}");

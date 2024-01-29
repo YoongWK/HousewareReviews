@@ -1,0 +1,119 @@
+﻿@page "/reviews/{ReviewId:int}/report/"
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize]
+
+<AuthorizeView Roles="Consumer">
+	<!--if there are no reports that belong to this review, form for creation-->
+	@if (reportCreated == false)
+	{
+		<div class="container-fluid px-4">
+			<h3 class="card-title mt-4 mb-3">Make a report</h3>
+			<FormComponentConsumer ButtonText="Create Report" OnValidSubmit="CreateReport" reviewreport="reviewreport" ReviewId="ReviewId" />
+		</div>
+	}
+	else //report already created
+	{
+		<div class="container-fluid px-4">
+			<h3 class="card-title mt-4 mb-3">Edit your report</h3>
+			<FormComponentConsumer ButtonText="Edit Report" OnValidSubmit="EditReport" reviewreport="existingreviewreport" ReviewId="ReviewId" />
+			<button class="btn btn-danger" @onclick="@(()=>deleteReviewreport(existingreviewreport.Id))">
+				<span class="oi oi-delete"></span>
+			</button>
+		</div>
+	}
+
+</AuthorizeView>
+
+@code {
+	[Parameter] public int ReviewId { get; set; }
+	private HttpClient _client;
+	Product? product = new Product();
+	Review? review = new Review();
+	Reviewreport? reviewreport = new Reviewreport();
+	Reviewreport? existingreviewreport = new Reviewreport();
+	Reviewreport? staffhandlereport = new Reviewreport();
+	private IList<Reviewreport> Reviewreports;
+	private IList<Consumer> Consumers;
+	private int consumerid;
+	bool reportCreated = false;
+
+	protected override void OnInitialized()
+	{
+		_client = ClientFactory.CreateClient("private");
+	}
+
+	protected async override Task OnInitializedAsync()
+	{
+		Consumers = await _client.GetFromJsonAsync<List<Consumer>>($"{Endpoints.ConsumersEndpoint}");
+		Reviewreports = await _client.GetFromJsonAsync<List<Reviewreport>>($"{Endpoints.ReviewreportsEndpoint}");
+		var context = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		if (context.User.IsInRole("Consumer"))
+		{
+			var consumer = Consumers.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value));
+			consumerid = consumer.Id;
+		}
+		foreach (var rr in Reviewreports)
+		{
+			//if consumer already made a report on the review
+			if (rr.ConsumerId == consumerid && rr.ReviewId ==ReviewId)
+			{
+				reportCreated = true;
+				existingreviewreport = rr;
+			}
+		}
+	}
+
+	protected async override Task OnParametersSetAsync()
+	{
+		//product = await _client.GetFromJsonAsync<Product>($"{Endpoints.ProductsEndpoint}/{ProductId}");
+		review = await _client.GetFromJsonAsync<Review>($"{Endpoints.ReviewsEndpoint}/{ReviewId}");
+
+	}
+
+	private async Task CreateReport()
+	{
+		// fill in the other details over here
+		// var DateCreated = DateTime.Now;
+		// var DateUpdated = DateTime.Now;
+		// outcome and staffid to be left null for consumer creating report
+		reviewreport.ConsumerId = consumerid;
+		reviewreport.ReviewId = ReviewId;
+
+		await _client.PostAsJsonAsync(Endpoints.ReviewreportsEndpoint, reviewreport);
+		_navManager.NavigateTo($"/products/{review.ProductId}");
+	}
+
+	private async Task EditReport()
+	{
+		// fill in the other details over here
+		// var DateCreated = DateTime.Now;
+		// var DateUpdated = DateTime.Now;
+		// outcome and staffid to be left null for consumer creating report
+		existingreviewreport.ConsumerId = consumerid;
+		existingreviewreport.ReviewId = ReviewId;
+
+		//await _client.PutAsJsonAsync(Endpoints.ReviewreportsEndpoint, existingreviewreport);
+		await _client.PutAsJsonAsync($"{Endpoints.ReviewreportsEndpoint}/{existingreviewreport.Id}", existingreviewreport);
+		_navManager.NavigateTo($"/products/{review.ProductId}");
+	}
+
+	private async Task deleteReviewreport(int reviewreportid)
+	{
+		if (Reviewreports != null)
+		{
+			var reviewreport = Reviewreports.First(q => q.Id == reviewreportid);
+			var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete your report?");
+			if (confirm)
+			{
+				await _client.DeleteAsync($"{Endpoints.ReviewreportsEndpoint}/{reviewreportid}");
+				//_navManager.NavigateTo(_navManager.Uri, forceLoad: true);
+				//await OnInitializedAsync();
+				//StateHasChanged();
+				_navManager.NavigateTo($"/products/{review.ProductId}");
+			}
+		}
+	}
+}
