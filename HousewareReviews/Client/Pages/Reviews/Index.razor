@@ -1,4 +1,4 @@
-﻿@page "/reviews/{id:int}"
+﻿@page "/reviews/"
 @inject IHttpClientFactory ClientFactory
 @inject NavigationManager _navManager
 @inject IJSRuntime js
@@ -6,8 +6,50 @@
 @* @implements IDisposable *@
 @attribute [Authorize]
 
-<FormComponent ButtonText="Finish" OnValidSubmit="CreateReview" company="company" />
+@* <AuthorizeView Roles="Staff">
+    <a href="/reviews/create" class="btn btn-secondary">
+        <span class="oi oi-plus"></span>
+        Create New Review
+    </a>
 
+    <table class="table table-responsive w-100 mt-3" id="reviewsTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>UEN</th>
+                <th>Products</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var company in Companies)
+            {
+                <tr>
+                    <td>@company.Name</td>
+                    <td>@company.UEN</td>
+                    <td>
+                        <a href="/products/company/@company.Id" class="btn btn-info">
+                            <span class="oi oi-eye"></span>
+                            View
+                        </a>
+                    </td>
+                    <td>
+                        <a href="/companies/view/@company.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/companies/edit/@company.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(()=>Delete(company.Id))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</AuthorizeView>
+ *@
 @code {
     private HttpClient _client;
     [Parameter] public int id { get; set; }
