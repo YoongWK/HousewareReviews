@@ -1,6 +1,8 @@
 ﻿@page "/products/{id:int}"
 @inject IHttpClientFactory ClientFactory
 @inject IJSRuntime js
+@inject NavigationManager _navManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <AuthorizeView Roles="Consumer">
     <div class="container-fluid">
@@ -20,7 +22,7 @@
             <div class="d-lg-none p-2"></div>
             <div class="col-lg d-flex justify-content-end">
                 <a href="/products/@product.Id/reviews/create" class="btn rounded-5 text-white" style="background-color: var(--blue)">
-				    <small><b>Write A Review</b></small>
+                    <small><b>Write A Review</b></small>
                     <span class="oi oi-share"></span>
                 </a>
             </div>
@@ -30,7 +32,7 @@
                 <img src="@product.Company?.LogoUri" class="rounded-4 w-100">
             </div>
             <div class="col-lg-3">
-			    <h5 class="m-0">@product.Company?.Name</h5>
+                <h5 class="m-0">@product.Company?.Name</h5>
             </div>
             <div class="col-lg">
                 <h6>Total Reviews:</h6>
@@ -59,14 +61,15 @@
 
         @if (reviews != null)
         {
-            @foreach (var review in reviews)
+            //logged in consumer reviews displayed at the top
+            //not working
+            @foreach (var review in reviews.OrderBy(r => r.ConsumerId == currentconsumerid ? 0 :1))
             {
                 <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
                     <div class="d-flex">
                         <div class="me-auto">
                             <h4>
                                 <img class="profile" src="@review.Consumer?.ProfileImgUri" style="width: 30px; height: 30px;" />
-                                @* <span class="oi"><span class="profile oi-person" aria-hidden="true"></span></span> *@
                                 <b>@review.Consumer.FirstName @review.Consumer.LastName</b>
                             </h4>
                         </div>
@@ -74,77 +77,102 @@
                             <h6><b>Last Updated: @review.DateUpdated.Date.ToShortDateString()</b></h6>
                         </div>
                     </div>
-                        <hr />
-                        <p>Rating: @review.Rating Star</p>
-                        <br />
-                        <p>@review.Description</p>
-                        <br />
-                        <h6><b>Date Reviewed: @review.DateCreated.Date.ToShortDateString()</b></h6>
-                        <hr />
-                    <div class="d-flex container">
-                        
-                        @* <a href="/reply/@review.Id" style="text-decoration: none; color: var(--black)"> *@ @* </a> *@
-                        @* <div class="dropdown me-auto" id="repliesncomments">
-                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <small>View Replies & Comments</small>
-                            </button>
-                            <div class="dropdown-menu" style="position:relative;">
-                                <div class="d-flex align-items-center m-4 p-3 row bg-light rounded-4">
-                                    <h5>Reply: @review.Reply</h5>
-                                </div>
-                                @foreach (var comment in Comments)
-                                {
-                                    if (comment.ReviewId == review.Id)
-                                    {
-                                        //simple card layout displaying comment
-                                        <div class="d-flex align-items-center m-4 p-3 row bg-light rounded-4">
-                                            <h5>@comment.Consumer.FirstName @comment.Consumer.LastName</h5>
-                                            <p>@comment.Description</p>
-                                        </div>
-                                    }
-                                }
-                            </div>
-                        </div> *@
+                    <hr />
+                    <p>Rating: @review.Rating Star</p>
+                    <br />
+                    <p>@review.Description</p>
+                    <br />
+                    <div class="d-flex align-items-center">
                         <div class="me-auto">
-                            <button class="btn" type="button" data-toggle="collapse" data-target="#collapseReview" aria-expanded="false">
-                                <small>View Replies & Comments</small>
-                            </button>
+                            <h6><b>Date Reviewed: @review.DateCreated.Date.ToShortDateString()</b></h6>
+                        </div>
+                        @if (review.ConsumerId == currentconsumerid)
+                        {
+                            <div>
+                                <a href="/products/@review.ProductId/reviews/@review.Id/edit" style="text-decoration: none;">
+                                    <span class="oi oi-pencil" aria-hidden="true"></span>
+                                    <small><b>Edit Review</b></small>
+                                </a>
+                                @* <span class="oi oi-delete" aria-hidden="true" style="cursor: pointer;" onclick="deleteReview(@review.Id)">Delete Review</span> *@
+                                @* <a href="" style="text-decoration: none;" onclick="deleteReview('@review.Id')">
+                                    <span class="oi oi-delete" aria-hidden="true"></span>
+                                    <small><b>Delete Review</b></small>
+                                </a> *@
+                                <button class="btn btn-danger" @onclick="@(()=>deleteReview(review.Id))">
+                                    <span class="oi oi-delete"></span>
+                                </button>
+                            </div>
+                        }
+                    </div>
+                    <hr />
+
+                    <div class="d-flex flex-column container">
+                        <div class="d-flex">
+                            <div class="me-auto">
+                                <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReview-@review.Id" aria-expanded="false" aria-controls="collapseReview-@review.Id">
+                                    <small>View Replies & Comments</small>
+                                    <span class="oi oi-chevron-bottom" aria-hidden="true"></span>
+                                </button>
+                            </div>
+
+                            <div>
+                                <span class="oi oi-comment-square" aria-hidden="true"></span>
+                                <small>Comment</small>
+                                &nbsp;
+                                <span class="oi oi-thumb-up" aria-hidden="true"></span>
+                                <small>Helpful</small>
+                                &nbsp;
+                                <span class="oi oi-flag" aria-hidden="true"></span>
+                                <small>Report</small>
+                            </div>
                         </div>
 
-                        <div class="collapse" id="collapseReview">
-                            <div class="d-flex align-items-center m-4 p-3 row bg-light rounded-4">
-                                <h5>Reply: @review.Reply</h5>
-                                @* <p>No comments or replies yet.</p> *@
-                            </div>
+                        <div class="collapse" id="collapseReview-@review.Id">
+                            @if (review.Reply != null)
+                            {
+                                <div class="d-flex align-items-center m-4 p-3 row bg-light rounded-4" style="background-color:#ADD8E6">
+                                    <div class="d-flex">
+                                        <div class="me-auto">
+                                            <h4>
+                                                <span class="oi"><span class="oi-arrow-thick-right" aria-hidden="true"></span></span>
+                                                <b>Reply from @product.Company.Name</b>
+                                            </h4>
+                                        </div>
+                                        <div>
+                                            <h6><b>Date Replied: @review.DateReplied?.Date.ToShortDateString()</b></h6>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <p>@review.Reply</p>
+                                </div>
+                            }
+
                             @foreach (var comment in Comments)
                             {
                                 if (comment.ReviewId == review.Id)
                                 {
-                                    <div class="d-flex align-items-center m-4 p-3 row bg-light rounded-4">
-                                        <h5>@comment.Consumer.FirstName @comment.Consumer.LastName</h5>
+                                    <div class="d-flex align-items-center m-4 p-3 row bg-light rounded-4" style="background-color:#ADD8E6">
+                                        <div class="d-flex">
+                                            <div class="me-auto">
+                                                <h4>
+                                                    <img class="profile" src="@comment.Consumer?.ProfileImgUri" style="width: 30px; height: 30px;" />
+                                                    <b>@comment.Consumer.FirstName @comment.Consumer.LastName</b>
+                                                </h4>
+                                            </div>
+                                            <div>
+                                                <h6><b>Last Updated: @comment.DateUpdated.Date.ToShortDateString()</b></h6>
+                                            </div>
+                                        </div>
+                                        <hr />
                                         <p>@comment.Description</p>
+                                        <br />
+                                        <h6><b>Date Commented: @comment.DateCreated.Date.ToShortDateString()</b></h6>
+                                        <hr />
                                     </div>
                                 }
                             }
                         </div>
-                        
-                        <div>
-                            <span class="oi oi-comment-square" aria-hidden="true"></span>
-                            <small>Comment</small>
-                            &nbsp;
-                            <span class="oi oi-thumb-up" aria-hidden="true"></span>
-                            <small>Helpful</small>
-                            &nbsp;
-                            <span class="oi oi-flag" aria-hidden="true"></span>
-                            <small>Report</small>
-                        </div>
                     </div>
-
-
-                    @* <div id="rncContainer-@review.Id" class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4" style="display: @displayRnC">
-                        <!-- Placeholder for comments and replies -->
-                        <p>No comments or replies yet.</p>
-                    </div> *@
                 </div>
             }
         }
@@ -152,7 +180,155 @@
 </AuthorizeView>
 <AuthorizeView>
     <NotAuthorized>
+        <div class="container-fluid">
+            <div class="d-flex align-items-center p-4 row column-gap-2" style="background-color: var(--lightblue)">
+                <div class="col-lg">
+                    <img src="@product.ImgUri" class="rounded-4 w-100">
+                </div>
+                <div class="d-lg-none p-2"></div>
+                <div class="col-lg-7 d-flex flex-column">
+                    <h4><b>@product.Name</b></h4>
+                    <span>@product.Description</span>
+                    <br />
+                    <span>$@String.Format("{0:F2}", product.Price)</span>
+                    <span>Company: <span style="color: var(--blue)">@product.Company?.Name</span></span>
+                    <span>Category: <span style="color: var(--blue)">@product.Category?.Name</span></span>
+                </div>
+                <div class="d-lg-none p-2"></div>
+                <div class="col-lg d-flex justify-content-end">
+                    <a href="/products/@product.Id/reviews/create" class="btn rounded-5 text-white" style="background-color: var(--blue)">
+                        <small><b>Write A Review</b></small>
+                        <span class="oi oi-share"></span>
+                    </a>
+                </div>
+            </div>
+            <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
+                <div class="col-lg">
+                    <img src="@product.Company?.LogoUri" class="rounded-4 w-100">
+                </div>
+                <div class="col-lg-3">
+                    <h5 class="m-0">@product.Company?.Name</h5>
+                </div>
+                <div class="col-lg">
+                    <h6>Total Reviews:</h6>
+                    <span>
+                        @companyreviewCount
+                    </span>
+                </div>
+                <div class="col-lg">
+                    <h6>Overall Rating:</h6>
+                    <span>
+                        2
+                    </span>
+                </div>
+                <div class="col-lg d-flex justify-content-end">
+                    <a href="/companies/view/@product.CompanyId" class="btn rounded-5 text-white" style="background-color: var(--blue)">
+                        <small><b>View Page</b></small>
+                        <span class="oi oi-arrow-right"></span>
+                    </a>
+                </div>
+            </div>
 
+            <!--Card for progress bars for Reviews-->
+            <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
+                <h3 class="card-title" style="color: var(--black)"><b>Reviews (@productreviewCount)</b></h3>
+            </div>
+
+            @if (reviews != null)
+            {
+                @foreach (var review in reviews)
+                {
+                    <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
+                        <div class="d-flex">
+                            <div class="me-auto">
+                                <h4>
+                                    <img class="profile" src="@review.Consumer?.ProfileImgUri" style="width: 30px; height: 30px;" />
+                                    <b>@review.Consumer.FirstName @review.Consumer.LastName</b>
+                                </h4>
+                            </div>
+                            <div>
+                                <h6><b>Last Updated: @review.DateUpdated.Date.ToShortDateString()</b></h6>
+                            </div>
+                        </div>
+                        <hr />
+                        <p>Rating: @review.Rating Star</p>
+                        <br />
+                        <p>@review.Description</p>
+                        <br />
+                        <h6><b>Date Reviewed: @review.DateCreated.Date.ToShortDateString()</b></h6>
+                        <hr />
+
+                        <div class="d-flex flex-column container">
+                            <div class="d-flex">
+                                <div class="me-auto">
+                                    <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReview-@review.Id" aria-expanded="false" aria-controls="collapseReview-@review.Id">
+                                        <small>View Replies & Comments</small>
+                                        <span class="oi oi-chevron-bottom" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+
+                                <div>
+                                    <span class="oi oi-comment-square" aria-hidden="true"></span>
+                                    <small>Comment</small>
+                                    &nbsp;
+                                    <span class="oi oi-thumb-up" aria-hidden="true"></span>
+                                    <small>Helpful</small>
+                                    &nbsp;
+                                    <span class="oi oi-flag" aria-hidden="true"></span>
+                                    <small>Report</small>
+                                </div>
+                            </div>
+
+                            <div class="collapse" id="collapseReview-@review.Id">
+                                @if (review.Reply != null)
+                                {
+                                    <div class="d-flex align-items-center m-4 p-3 row bg-light rounded-4" style="background-color:#ADD8E6">
+                                        <div class="d-flex">
+                                            <div class="me-auto">
+                                                <h4>
+                                                    <span class="oi"><span class="oi-arrow-thick-right" aria-hidden="true"></span></span>
+                                                    <b>Reply from @product.Company.Name</b>
+                                                </h4>
+                                            </div>
+                                            <div>
+                                                <h6><b>Date Replied: @review.DateReplied?.Date.ToShortDateString()</b></h6>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <p>@review.Reply</p>
+                                    </div>
+                                }
+
+                                @foreach (var comment in Comments)
+                                {
+                                    if (comment.ReviewId == review.Id)
+                                    {
+                                        <div class="d-flex align-items-center m-4 p-3 row bg-light rounded-4" style="background-color:#ADD8E6">
+                                            <div class="d-flex">
+                                                <div class="me-auto">
+                                                    <h4>
+                                                        <img class="profile" src="@comment.Consumer?.ProfileImgUri" style="width: 30px; height: 30px;" />
+                                                        <b>@comment.Consumer.FirstName @comment.Consumer.LastName</b>
+                                                    </h4>
+                                                </div>
+                                                <div>
+                                                    <h6><b>Last Updated: @comment.DateUpdated.Date.ToShortDateString()</b></h6>
+                                                </div>
+                                            </div>
+                                            <hr />
+                                            <p>@comment.Description</p>
+                                            <br />
+                                            <h6><b>Date Commented: @comment.DateCreated.Date.ToShortDateString()</b></h6>
+                                            <hr />
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
     </NotAuthorized>
 </AuthorizeView>
 
@@ -161,9 +337,12 @@
     [Parameter] public int id { get; set; }
     private List<Product>? products;
     private Product? product = new Product();
+    //private Consumer? currentConsumer = new Consumer();
     private IList<Review> Reviews;
     private IList<Comment> Comments;
+    private IList<Consumer> Consumers;
     private List<Review>? reviews;
+    private int currentconsumerid;
     int productreviewCount = 0;
     int companyreviewCount = 0;
 
@@ -178,6 +357,13 @@
         products = await _client.GetFromJsonAsync<List<Product>>($"{Endpoints.ProductsEndpoint}");
         Reviews = await _client.GetFromJsonAsync<List<Review>>($"{Endpoints.ReviewsEndpoint}");
         Comments = await _client.GetFromJsonAsync<List<Comment>>($"{Endpoints.CommentsEndpoint}");
+        Consumers = await _client.GetFromJsonAsync<List<Consumer>>($"{Endpoints.ConsumersEndpoint}");
+        var context = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (context.User.IsInRole("Consumer"))
+        {
+            var consumer = Consumers.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value));
+            currentconsumerid = consumer.Id;
+        }
     }
 
     protected async override Task OnParametersSetAsync()
@@ -206,5 +392,20 @@
         reviews = productReviews;
     }
 
-
+    async Task deleteReview(int reviewId)
+    {
+        if (Reviews != null)
+        {
+            var review = Reviews.First(q => q.Id == reviewId);
+            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {review.Consumer?.FirstName}'s review?");
+            if (confirm)
+            {
+                await _client.DeleteAsync($"{Endpoints.ReviewsEndpoint}/{reviewId}");
+                _navManager.NavigateTo(_navManager.Uri, forceLoad: true);
+                //await OnInitializedAsync();
+                //StateHasChanged();
+                //_navManager.NavigateTo($"/products/{ProductId}");
+            }
+        }
+    }
 }

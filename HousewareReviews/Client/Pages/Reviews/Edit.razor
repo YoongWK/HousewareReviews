@@ -26,6 +26,7 @@
 	protected async override Task OnInitializedAsync()
 	{
 		Consumers = await _client.GetFromJsonAsync<List<Consumer>>($"{Endpoints.ConsumersEndpoint}");
+		review = await _client.GetFromJsonAsync<Review>($"{Endpoints.ReviewsEndpoint}/{ReviewId}");
 		var context = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 		if (context.User.IsInRole("Consumer"))
 		{
@@ -49,7 +50,7 @@
 		// review.DateCreated = DateCreated;
 		review.DateUpdated = DateUpdated;
 
-		await _client.PutAsJsonAsync(Endpoints.ReviewsEndpoint, review);
+		await _client.PutAsJsonAsync($"{Endpoints.ReviewsEndpoint}/{ReviewId}", review);
 		_navManager.NavigateTo($"/products/{ProductId}");
 	}
 }

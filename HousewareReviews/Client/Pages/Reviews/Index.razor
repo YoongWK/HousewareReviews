@@ -1,23 +1,91 @@
-﻿@* @page "/reviews/{id:int}"
+﻿@page "/reviews/"
 @inject IHttpClientFactory ClientFactory
 @inject NavigationManager _navManager
+@inject IJSRuntime js
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@* @implements IDisposable *@
 @attribute [Authorize]
 
-<FormComponent ButtonText="Finish" OnValidSubmit="CreateReview" company="company" /> *@
+@* <AuthorizeView Roles="Staff">
+    <a href="/reviews/create" class="btn btn-secondary">
+        <span class="oi oi-plus"></span>
+        Create New Review
+    </a>
 
+    <table class="table table-responsive w-100 mt-3" id="reviewsTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>UEN</th>
+                <th>Products</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var company in Companies)
+            {
+                <tr>
+                    <td>@company.Name</td>
+                    <td>@company.UEN</td>
+                    <td>
+                        <a href="/products/company/@company.Id" class="btn btn-info">
+                            <span class="oi oi-eye"></span>
+                            View
+                        </a>
+                    </td>
+                    <td>
+                        <a href="/companies/view/@company.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/companies/edit/@company.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(()=>Delete(company.Id))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</AuthorizeView>
+ *@
 @code {
-    // private HttpClient _client;
-    // [Parameter] public int id { get; set; }
-    // Review? review = new Review();
+    private HttpClient _client;
+    [Parameter] public int id { get; set; }
+    bool userIsStaff = false;
+    Review? review = new Review();
+    private List<Review>? Reviews;
 
-    // protected override void OnInitialized()
-    // {
-    //     _client = ClientFactory.CreateClient("private");
-    // }
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("private");
+    }
 
-    // private async Task CreateReview()
-    // {
-    //     await _client.PostAsJsonAsync(Endpoints.CompaniesEndpoint, review);
-    //     _navManager.NavigateTo("/companies/{id:int}");
-    // }
+    protected async override Task OnInitializedAsync()
+    {
+        Reviews = await _client.GetFromJsonAsync<List<Review>>($"{Endpoints.ReviewsEndpoint}");
+        var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        userIsStaff = authstate.User.IsInRole("Staff");
+    }
+
+    async Task Delete(int reviewId)
+    {
+        if (Reviews != null)
+        {
+            var review = Reviews.First(q => q.Id == reviewId);
+            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {review.Consumer?.FirstName}'s review?");
+            if (confirm)
+            {
+                await _client.DeleteAsync($"{Endpoints.ReviewsEndpoint}/{reviewId}");
+                await OnInitializedAsync();
+            }
+        }
+    }
+
+    private async Task CreateReview()
+    {
+        await _client.PostAsJsonAsync(Endpoints.CompaniesEndpoint, review);
+        _navManager.NavigateTo("/companies/{id:int}");
+    }
 }
