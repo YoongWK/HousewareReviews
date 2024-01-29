@@ -1,0 +1,121 @@
+﻿@page "/comments/{CommentId:int}/report/"
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize]
+
+<AuthorizeView Roles="Consumer">
+	<!--if there are no reports that belong to this comment, form for creation-->
+	@if (reportCreated == false)
+	{
+		<div class="container-fluid px-4">
+			<h3 class="card-title mt-4 mb-3">Make a report</h3>
+			<FormComponentConsumer ButtonText="Create Report" OnValidSubmit="CreateReport" commentreport="commentreport" CommentId="CommentId" />
+		</div>
+	}
+	else //report already created
+	{
+		<div class="container-fluid px-4">
+			<h3 class="card-title mt-4 mb-3">Edit your report</h3>
+			<FormComponentConsumer ButtonText="Edit Report" OnValidSubmit="EditReport" commentreport="existingcommentreport" CommentId="CommentId" />
+			<button class="btn btn-danger" @onclick="@(()=>deleteCommentreport(existingcommentreport.Id))">
+				<span class="oi oi-delete"></span>
+			</button>
+		</div>
+	}
+
+</AuthorizeView>
+
+@code {
+	[Parameter] public int CommentId { get; set; }
+	private HttpClient _client;
+	Product? product = new Product();
+	Review? review = new Review();
+	Comment? comment = new Comment();
+	Commentreport? commentreport = new Commentreport();
+	Commentreport? existingcommentreport = new Commentreport();
+	Commentreport? staffhandlereport = new Commentreport();
+	private IList<Commentreport> Commentreports;
+	private IList<Consumer> Consumers;
+	private int consumerid;
+	bool reportCreated = false;
+
+	protected override void OnInitialized()
+	{
+		_client = ClientFactory.CreateClient("private");
+	}
+
+	protected async override Task OnInitializedAsync()
+	{
+		Consumers = await _client.GetFromJsonAsync<List<Consumer>>($"{Endpoints.ConsumersEndpoint}");
+		Commentreports = await _client.GetFromJsonAsync<List<Commentreport>>($"{Endpoints.CommentreportsEndpoint}");
+		var context = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		if (context.User.IsInRole("Consumer"))
+		{
+			var consumer = Consumers.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value));
+			consumerid = consumer.Id;
+		}
+		foreach (var cr in Commentreports)
+		{
+			//if consumer already made a report on the review
+			if (cr.ConsumerId == consumerid && cr.CommentId ==CommentId)
+			{
+				reportCreated = true;
+				existingcommentreport = cr;
+			}
+		}
+	}
+
+	protected async override Task OnParametersSetAsync()
+	{
+		//product = await _client.GetFromJsonAsync<Product>($"{Endpoints.ProductsEndpoint}/{ProductId}");
+		comment = await _client.GetFromJsonAsync<Comment>($"{Endpoints.CommentsEndpoint}/{CommentId}");
+		review = await _client.GetFromJsonAsync<Review>($"{Endpoints.ReviewsEndpoint}/{comment.ReviewId}");
+
+	}
+
+	private async Task CreateReport()
+	{
+		// fill in the other details over here
+		// var DateCreated = DateTime.Now;
+		// var DateUpdated = DateTime.Now;
+		// outcome and staffid to be left null for consumer creating report
+		commentreport.ConsumerId = consumerid;
+		commentreport.CommentId = CommentId;
+
+		await _client.PostAsJsonAsync(Endpoints.CommentreportsEndpoint, commentreport);
+		_navManager.NavigateTo($"/products/{review.ProductId}");
+	}
+
+	private async Task EditReport()
+	{
+		// fill in the other details over here
+		// var DateCreated = DateTime.Now;
+		// var DateUpdated = DateTime.Now;
+		// outcome and staffid to be left null for consumer creating report
+		existingcommentreport.ConsumerId = consumerid;
+		existingcommentreport.CommentId = CommentId;
+
+		//await _client.PutAsJsonAsync(Endpoints.ReviewreportsEndpoint, existingreviewreport);
+		await _client.PutAsJsonAsync($"{Endpoints.CommentreportsEndpoint}/{existingcommentreport.Id}", existingcommentreport);
+		_navManager.NavigateTo($"/products/{review.ProductId}");
+	}
+
+	private async Task deleteCommentreport(int commentreportid)
+	{
+		if (Commentreports != null)
+		{
+			var reviewreport = Commentreports.First(q => q.Id == commentreportid);
+			var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete your report?");
+			if (confirm)
+			{
+				await _client.DeleteAsync($"{Endpoints.CommentreportsEndpoint}/{commentreportid}");
+				//_navManager.NavigateTo(_navManager.Uri, forceLoad: true);
+				//await OnInitializedAsync();
+				//StateHasChanged();
+				_navManager.NavigateTo($"/products/{review.ProductId}");
+			}
+		}
+	}
+}

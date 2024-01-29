@@ -1,0 +1,69 @@
+﻿@inject IHttpClientFactory ClientFactory
+
+<EditForm Model="@commentreport" OnValidSubmit=@OnValidSubmit>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <fieldset disabled="@Disabled">
+        <div class="form-group">
+            <label>Category of report:</label>
+            <div>
+                <InputSelect @bind-Value="commentreport.Category" class="form-control">
+                    <option value="">-- Select Category --</option>
+                    <option value="Spam">Spam</option>
+                    <option value="InappropriateContent">Inappropriate Content</option>
+                    <option value="FalseInfo">False Information</option>
+                    <option value="COI">Conflict of Interest</option>
+                    <option value="Others">Others</option>
+                </InputSelect>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Describe more on why you are making a report: </label>
+            <div>
+                <InputTextArea @bind-Value="@commentreport.Description" class="form-control" />
+                @* <ValidationMessage For="@(() => reviewreport.Description)" /> *@
+            </div>
+        </div>
+    </fieldset>
+    <br />
+    @if (!Disabled)
+    {
+        <button type="submit" class="btn btn-success btn-block">
+            @ButtonText
+        </button>
+    }
+    <BackToList Target="@GetTarget()" />
+</EditForm>
+
+@code {
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public Commentreport? commentreport { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+    //product and consumer
+    //[Parameter] public int ProductId { get; set; }
+    [Parameter] public int CommentId { get; set; }
+    Review? review = new Review();
+    Comment? comment = new Comment();
+
+    private HttpClient _client;
+    // private IList<Category>? Categories;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("public");
+        // product.CompanyId = CompanyId;
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        comment = await _client.GetFromJsonAsync<Comment>($"{Endpoints.CommentsEndpoint}/{CommentId}");
+        review = await _client.GetFromJsonAsync<Review>($"{Endpoints.ReviewsEndpoint}/{comment.ReviewId}");
+    }
+
+    private string GetTarget()
+    {
+        return $"products/{review.ProductId}";
+    }
+}
