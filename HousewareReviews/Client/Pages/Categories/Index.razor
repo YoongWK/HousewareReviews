@@ -5,7 +5,7 @@
 @implements IDisposable
 
 <div class="container-fluid p-4">
-    <h3 class="card-title mb-3">Categories</h3>
+    <h3 class="card-title pb-3">Categories</h3>
 
     @if (Categories==null)
     {
@@ -57,7 +57,7 @@
                 Create New Category
             </a>
 
-            <table class="table table-responsive w-100 mt-3" id="categoriesTable">
+            <table class="table table-responsive w-100 py-2 m-0" id="categoriesTable">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -71,7 +71,7 @@
                         <tr>
                             <td>@category.Name</td>
                             <td>
-                                <img src="@category.ImgUri" style="max-width: 50%"/>
+                                <img src="@category.ImgUri" style="height:100px;width:200px;object-fit:cover;" />
                             </td>
                             <td>
                                 <a href="/categories/view/@category.Id" class="btn btn-primary">
@@ -124,7 +124,7 @@
     {
         if (userIsStaff)
         {
-            await js.InvokeVoidAsync("AddDataTable", "#categoriesTable");
+            await js.InvokeVoidAsync("AddDataTable", "#categoriesTable", "Search Categories");
         }
 
     }
