@@ -17,6 +17,8 @@
 	else //report already created
 	{
 		<div class="container-fluid px-4">
+			<h3 class="card-title mt-4 mb-3">A report has been made for this review</h3>
+			<hr />
 			<h3 class="card-title mt-4 mb-3">Edit your report</h3>
 			<FormComponentConsumer ButtonText="Edit Report" OnValidSubmit="EditReport" reviewreport="existingreviewreport" ReviewId="ReviewId" />
 			<button class="btn btn-danger" @onclick="@(()=>deleteReviewreport(existingreviewreport.Id))">

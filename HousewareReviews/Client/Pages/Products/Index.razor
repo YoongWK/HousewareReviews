@@ -43,7 +43,19 @@
             <div class="col-lg">
                 <h6>Overall Rating:</h6>
                 <span>
-                    2
+                    @{
+                        if (companyreviews != null && companyreviewCount >0)
+                        {
+                            int? sumofRatings = 0;
+                            foreach (var rev in companyreviews)
+                            {
+                                sumofRatings += rev.Rating;
+                            }
+                            overallRating = Math.Round(((decimal)sumofRatings / companyreviewCount), 1);
+                        }
+                    }
+                    @overallRating
+                    <span class="oi oi-star" style="color:orange"></span>
                 </span>
             </div>
             <div class="col-lg d-flex justify-content-end">
@@ -56,14 +68,35 @@
 
         <!--Card for progress bars for Reviews-->
         <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
-            <h3 class="card-title" style="color: var(--black)"><b>Reviews (@productreviewCount)</b></h3>
+            <div class="d-flex">
+                <div class="me-auto">
+                    <h3 class="card-title" style="color: var(--black)"><b>Reviews (@productreviewCount)</b></h3>
+                </div>
+                <div>
+                    <small><b>Sort: </b></small>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Most Recent
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item">Most Recent</a></li>
+                            <li><a class="dropdown-item">Most Useful</a></li>
+                            <li><a class="dropdown-item">Most Commented</a></li>
+                        </ul>
+                    </div>
+                    @* <small style="color: var(--blue)"><b>Most Recent</b></small> *@
+                </div>
+            </div>
+
         </div>
 
         @if (reviews != null)
         {
             //logged in consumer reviews displayed at the top
-            //not working
-            @foreach (var review in reviews.OrderBy(r => r.ConsumerId == currentconsumerid ? 0 :1))
+            @foreach (var review in reviews
+                @* .OrderBy<Review, int>(r => r.ConsumerId == currentconsumerid ? 0 :1)) *@
+                .OrderByDescending(r => r.ConsumerId == currentconsumerid)
+                .ThenByDescending(r => r.DateUpdated))
             {
                 <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
                     <div class="d-flex">
@@ -78,7 +111,17 @@
                         </div>
                     </div>
                     <hr />
-                    <p>Rating: @review.Rating Star</p>
+                    <h4 class="align-items-center">
+                        @{
+                            int maxRating = 5; // Assuming a maximum of 5 stars
+                            int? rating = review.Rating; 
+
+                            for (int i = 1; i <= maxRating; i++)
+                            {
+                                <span class="oi oi-star" style="color: @(i <= rating ? "orange" : "gray")"></span>
+                            }
+                        }
+                    </h4>
                     <br />
                     <p>@review.Description</p>
                     <br />
@@ -151,7 +194,7 @@
                                 </div>
                             }
 
-                            @foreach (var comment in Comments.OrderBy(c => c.ConsumerId == currentconsumerid ? 0 : 1))
+                            @foreach (var comment in Comments.OrderBy<Comment, int>(c => c.ConsumerId == currentconsumerid ? 0 : 1))
                             {
                                 if (comment.ReviewId == review.Id)
                                 {
@@ -250,8 +293,20 @@
                 <div class="col-lg">
                     <h6>Overall Rating:</h6>
                     <span>
-                        2
+                        @{
+                            if (companyreviews != null && companyreviewCount > 0)
+                            {
+                                int? sumofRatings = 0;
+                                foreach (var rev in companyreviews)
+                                {
+                                    sumofRatings += rev.Rating;
+                                }
+                                overallRating = Math.Round(((decimal)sumofRatings / companyreviewCount), 1);
+                            }
+                        }
+                        @overallRating
                     </span>
+                    <span class="oi oi-star" style="color:orange"></span>
                 </div>
                 <div class="col-lg d-flex justify-content-end">
                     <a href="/companies/view/@product.CompanyId" class="btn rounded-5 text-white" style="background-color: var(--blue)">
@@ -263,7 +318,16 @@
 
             <!--Card for progress bars for Reviews-->
             <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
-                <h3 class="card-title" style="color: var(--black)"><b>Reviews (@productreviewCount)</b></h3>
+                <div class="d-flex">
+                    <div class="me-auto">
+                        <h3 class="card-title" style="color: var(--black)"><b>Reviews (@productreviewCount)</b></h3>
+                    </div>
+                    <div>
+                        <small><b>Sort: </b></small>
+                        <small style="color: var(--blue)"><b>Most Recent</b></small>
+                    </div>
+                </div>
+
             </div>
 
             @if (reviews != null)
@@ -283,7 +347,17 @@
                             </div>
                         </div>
                         <hr />
-                        <p>Rating: @review.Rating Star</p>
+                        <h4 class="align-items-center">
+                            @{
+                                int maxRating = 5; // Assuming a maximum of 5 stars
+                                int? rating = review.Rating;
+
+                                for (int i = 1; i <= maxRating; i++)
+                                {
+                                    <span class="oi oi-star" style="color: @(i <= rating ? "orange" : "gray")"></span>
+                                }
+                            }
+                        </h4>
                         <br />
                         <p>@review.Description</p>
                         <br />
@@ -390,9 +464,11 @@
     private IList<Comment> Comments;
     private IList<Consumer> Consumers;
     private List<Review>? reviews;
+    private List<Review>? companyreviews;
     private int currentconsumerid;
     int productreviewCount = 0;
     int companyreviewCount = 0;
+    decimal? overallRating = 0;
 
     protected override void OnInitialized()
     {
@@ -420,7 +496,7 @@
         companyreviewCount = 0;
         // hideRnC = true;
         var productReviews = new List<Review>();
-
+        var companyReviews = new List<Review>();
         if (Reviews != null)
         {
             foreach (var review in Reviews)
@@ -433,11 +509,13 @@
 
                 if (review.Product.CompanyId == product.CompanyId)
                 {
+                    companyReviews.Add(review);
                     companyreviewCount++;
                 }
             }
         }
         reviews = productReviews;
+        companyreviews = companyReviews;
     }
 
     async Task deleteReview(int reviewId)
