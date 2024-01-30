@@ -2,7 +2,7 @@
 
 <EditForm Model="@company" OnValidSubmit="@(() => OnValidSubmitCallback(company))">
     <DataAnnotationsValidator />
-    <ValidationSummary />
+	<ValidationSummary class="text-start mb-0 pt-3" />
     <div class="modal-body text-start">
 		<fieldset disabled="@Disabled">
 			<div class="form-group pb-3">
