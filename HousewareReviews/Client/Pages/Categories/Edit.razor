@@ -1,4 +1,4 @@
-﻿@page "/categories/edit/{id:int}"
+﻿@* @page "/categories/edit/{id:int}"
 @inject IHttpClientFactory ClientFactory
 @inject NavigationManager _navManager
 @attribute [Authorize(Roles = "Staff")]
@@ -29,3 +29,4 @@
 		_navManager.NavigateTo("/categories/");
 	}
 }
+ *@

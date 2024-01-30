@@ -54,7 +54,7 @@
         <AuthorizeView Roles="Staff">
             <button type="button" class="btn btn-success btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#create">
                 <span class="oi oi-plus"></span>
-                Create New Category
+                Create Category
             </button>
 
             <div class="modal fade" id="create" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="create-label" aria-hidden="true">
@@ -101,24 +101,21 @@
                                     </div>
                                 </div>
 
-                                <a href="/categories/edit/@category.Id" class="btn btn-warning btn-sm shadow-none">
-                                    <span class="oi oi-pencil"></span>
-                                </a>
-
-@*                                 <button type="button" class="btn btn-warning btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#edit-@category.Id">
+                                <button type="button" class="btn btn-warning btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#edit-@category.Id">
                                     <span class="oi oi-pencil"></span>
                                 </button>
-                                <div class="modal fade" id="edit-@category.Id" tabindex="-1" aria-labelledby="edit-label-@category.Id" aria-hidden="true">
+
+                                <div class="modal fade" id="edit-@category.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit-label-@category.Id" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h1 class="modal-title fs-5" id="edit-label-@category.Id">Edit @category.Name</h1>
-                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
                                             </div>
-                                            <FormComponent ButtonText="Update" OnValidSubmit="EditCategory" category="category" />
+                                            <FormComponent ButtonText="Edit" OnValidSubmit="@((cat)=>EditCategory(cat))" OnInitAsync="OnInitializedAsync" category="category" />
                                         </div>
                                     </div>
-                                </div> *@
+                                </div>
 
                                 <button type="button" class="btn btn-danger btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#delete-@category.Id">
                                     <span class="oi oi-delete"></span>
@@ -127,7 +124,7 @@
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="delete-label-@category.Id">Delete @category.Name?</h1>
+                                                <h1 class="modal-title fs-5" id="delete-label-@category.Id">Confirm Delete @category.Name?</h1>
                                                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body text-start">
@@ -148,6 +145,7 @@
         </AuthorizeView>
     }
 </div>
+
 @code {
     private HttpClient _client;
     private List<Category>? Categories;
@@ -165,6 +163,20 @@
         userIsStaff = authstate.User.IsInRole("Staff");
     }
 
+    private async Task CreateCategory(Category cat)
+    {
+        await _client.PostAsJsonAsync(Endpoints.CategoriesEndpoint, cat);
+        await js.InvokeVoidAsync("hideModal", "#create");
+        await OnInitializedAsync();
+    }
+
+    private async Task EditCategory(Category cat)
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.CategoriesEndpoint}/{cat.Id}", cat);
+        await js.InvokeVoidAsync("hideModal", $"#edit-{cat.Id}");
+        await OnInitializedAsync();
+    }
+
     private async Task DeleteCategory(int categoryId)
     {
         if (Categories != null)
@@ -173,13 +185,6 @@
             await _client.DeleteAsync($"{Endpoints.CategoriesEndpoint}/{categoryId}");
             await OnInitializedAsync();
         }
-    }
-
-    private async Task CreateCategory(Category cat)
-    {
-        await _client.PostAsJsonAsync(Endpoints.CategoriesEndpoint, cat);
-        await js.InvokeVoidAsync("hideModal", "#create");
-        await OnInitializedAsync();
     }
 
     protected async override Task OnAfterRenderAsync(bool firstRender)

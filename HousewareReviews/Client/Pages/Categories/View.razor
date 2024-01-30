@@ -1,4 +1,4 @@
-﻿@page "/categories/view/{id:int}"
+﻿@* @page "/categories/view/{id:int}"
 @inject IHttpClientFactory ClientFactory
 @inject NavigationManager _navManager
 @attribute [Authorize(Roles = "Staff")]
@@ -22,4 +22,4 @@
 	{
 		category = await _client.GetFromJsonAsync<Category>($"{Endpoints.CategoriesEndpoint}/{id}");
 	}
-}
+} *@
