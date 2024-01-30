@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,8 @@ namespace HousewareReviews.Shared.Domain
     public class Comment
     {
         public int Id { get; set; }
+        [Required(ErrorMessage ="Comment required")]
+        [StringLength(300, ErrorMessage = "Description must not exceed {1} characters.")]
         public string? Description {  get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }

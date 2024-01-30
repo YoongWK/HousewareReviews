@@ -3,6 +3,7 @@
 @inject NavigationManager _navManager
 @inject IJSRuntime js
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@implements IDisposable
 
 <!-- This page is for staff to view reviews of a certain product-->
 <AuthorizeView Roles="Staff">
@@ -70,7 +71,7 @@
     //Review? review = new Review();
     Product? product = new Product();
     // private int reviewid;
-    private List<Review>? Reviews;
+    private List<Review>? Reviews = new List<Review>();
 
     protected override void OnInitialized()
     {
