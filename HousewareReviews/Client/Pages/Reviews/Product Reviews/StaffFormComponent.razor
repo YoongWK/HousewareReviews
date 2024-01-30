@@ -1,0 +1,123 @@
+﻿@inject IHttpClientFactory ClientFactory
+@attribute [Authorize(Roles = "Staff")]
+
+<EditForm Model="@review" OnValidSubmit="@(() => OnValidSubmitCallback(review))">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-start mb-0 pt-3" />
+    <div class="modal-body text-start">
+        <fieldset disabled="@Disabled">
+            <div class="form-group pb-3">
+                <label>Consumer:</label>
+                <div>
+                    <InputSelect @bind-Value="review.ConsumerId" class="form-control shadow-none">
+                        <option>-- Select Consumer --</option>
+                        @if (Consumers != null)
+                        {
+                            foreach (var consumer in Consumers)
+                            {
+                                <option value="@consumer.Id">@consumer.FirstName @consumer.LastName</option>
+                            }
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => review.ConsumerId)" />
+                </div>
+            </div>
+            <div class="form-group pb-3">
+                <label>Rating:</label>
+                <div>
+                    <InputNumber @bind-Value="@review.Rating" class="form-control shadow-none" />
+                    <ValidationMessage For="@(() => review.Rating)" />
+                </div>
+            </div>
+
+            <div class="form-group pb-3">
+                <label>Description:</label>
+                <div>
+                    <InputTextArea @bind-Value="@review.Description" class="form-control shadow-none" style="resize:none;" rows="4" maxlength="301" />
+                    <ValidationMessage For="@(() => review.Description)" />
+                </div>
+            </div>
+
+            <div class="form-group pb-3">
+                <label>Reply:</label>
+                <div>
+                    <InputTextArea @bind-Value="@review.Reply" class="form-control shadow-none" style="resize:none;" rows="4" maxlength="301" />
+                    <ValidationMessage For="@(() => review.Reply)" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Useful Count:</label>
+                <div>
+                    <InputNumber @bind-Value="@review.UsefulCnt" class="form-control shadow-none" />
+                    <ValidationMessage For="@(() => review.UsefulCnt)" />
+                </div>
+            </div>
+
+            <div class="form-group py-3">
+                <label>Date Created:</label>
+                <div>
+                    <InputDate @bind-Value="@review.DateCreated" class="form-control" />
+                    <ValidationMessage For="@(() => review.DateCreated)" />
+                </div>
+            </div>
+
+            <div class="form-group pb-3">
+                <label>Date Updated:</label>
+                <div>
+                    <InputDate @bind-Value="@review.DateUpdated" class="form-control" />
+                    <ValidationMessage For="@(() => review.DateUpdated)" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Date Replied:</label>
+                <div>
+                    <InputDate @bind-Value="@review.DateReplied" class="form-control" />
+                    <ValidationMessage For="@(() => review.DateReplied)" />
+                </div>
+            </div>
+        </fieldset>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal" @onclick="OnInitAsync">Close</button>
+        @if (!Disabled)
+        {
+            <button type="submit" class="btn btn-success shadow-none">
+                @ButtonText
+            </button>
+        }
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public Review? review { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback<Review> OnValidSubmit { get; set; }
+    [Parameter] public Func<Task> OnInitAsync { get; set; }
+
+
+    private HttpClient _client;
+    private IList<Consumer> Consumers;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("public");
+    }
+
+    private async Task OnValidSubmitCallback(Review rev)
+    {
+        if (OnValidSubmit.HasDelegate)
+        {
+            rev.Consumer = null;
+            await OnValidSubmit.InvokeAsync(rev);
+        }
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        Consumers = await _client.GetFromJsonAsync<List<Consumer>>($"{Endpoints.ConsumersEndpoint}");
+    }
+}

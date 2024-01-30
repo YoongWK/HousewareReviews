@@ -1,0 +1,144 @@
+﻿@page "/products/{ProductId:int}/reviews/"
+@inject IHttpClientFactory ClientFactory
+@inject IJSRuntime js
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@implements IDisposable
+
+<div class="container-fluid p-4">
+    <h3 class="card-title pb-3">@product?.Name Reviews</h3>
+    
+    @if (Reviews == null)
+    {
+        <div class="alert alert-info">Loading Reviews...</div>
+    }
+    else
+    {
+        <!-- This page is for staff to view reviews of a certain product-->
+        <AuthorizeView Roles="Staff">
+            <button type="button" class="btn btn-success btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#create-review">
+                <span class="oi oi-plus"></span>
+                Create Review
+            </button>
+            <div class="modal fade" id="create-review" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="create-review-label" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="create-review-label">Create New @product.Name Review</h1>
+                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                        </div>
+                        <StaffFormComponent ButtonText="Create" OnValidSubmit="@((rev)=>CreateReview(rev))" OnInitAsync="OnInitializedAsync" review="new Review{ProductId=ProductId}" />
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-responsive w-100 py-2 m-0" id="reviewsTable">
+                <thead>
+                    <tr>
+                        <th>Review Rating</th>
+                        <th>Review Description</th>
+                        <th>Review Reply</th>
+                        <th>Comments</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var review in Reviews)
+                    {
+                        <tr>
+                            <td>@review.Rating</td>
+                            <td>@review.Description</td>
+                            <td>@review.Reply</td>
+                            <td>
+                                <a href="/reviews/@review.Id/comments" class="btn btn-info">
+                                    <span class="oi oi-eye"></span>
+                                    View
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/reviews/@review.Id/view" class="btn btn-primary">
+                                    <span class="oi oi-book"></span>
+                                </a>
+                                <a href="/reviews/@review.Id/edit" class="btn btn-warning">
+                                    <span class="oi oi-pencil"></span>
+                                </a>
+                                <button class="btn btn-danger" @onclick="@(()=>Delete(review.Id))">
+                                    <span class="oi oi-delete"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </AuthorizeView>
+        }
+</div>
+
+@code {
+    [Parameter] public int ProductId { get; set; }
+    private HttpClient _client;
+    Product? product;
+    private List<Review>? Reviews;
+    bool userIsStaff = false;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("public");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        product = await _client.GetFromJsonAsync<Product>($"{Endpoints.ProductsEndpoint}/{ProductId}");
+        var allReviews = await _client.GetFromJsonAsync<List<Review>>($"{Endpoints.ReviewsEndpoint}");
+        var productReviews = new List<Review>();
+        if (allReviews != null)
+        {
+            foreach (var rev in allReviews)
+            {
+                if (rev.ProductId == ProductId)
+                {
+                    productReviews.Add(rev);
+                }
+            }
+        }
+        Reviews = productReviews;
+        var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        userIsStaff = authstate.User.IsInRole("Staff");
+    }
+
+    private async Task CreateReview(Review rev)
+    {
+        await _client.PostAsJsonAsync(Endpoints.ReviewsEndpoint, rev);
+        await js.InvokeVoidAsync("hideModal", "#create-review");
+        await OnInitializedAsync();
+    }
+
+    async Task Delete(int reviewId)
+    {
+        if (Reviews != null)
+        {
+            var review = Reviews.First(q => q.Id == reviewId);
+            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {review.Consumer?.FirstName}'s review?");
+            if (confirm)
+            {
+                await _client.DeleteAsync($"{Endpoints.ReviewsEndpoint}/{reviewId}");
+                await OnInitializedAsync();
+            }
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (userIsStaff)
+        {
+            await js.InvokeVoidAsync("AddDataTable", "#reviewsTable", "Search Reviews");
+        }
+    }
+
+    public void Dispose()
+    {
+        if (userIsStaff)
+        {
+            js.InvokeVoidAsync("DataTablesDispose", "#reviewsTable");
+        }
+    }
+}

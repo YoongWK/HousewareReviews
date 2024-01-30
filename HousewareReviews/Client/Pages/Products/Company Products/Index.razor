@@ -1,4 +1,4 @@
-﻿@page "/products/company/{id:int}"
+﻿@page "/companies/{CompanyId:int}/products/"
 @inject IHttpClientFactory ClientFactory
 @inject IJSRuntime js
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -25,7 +25,7 @@
                             <h1 class="modal-title fs-5" id="create-product-label">Create New @company.Name Product</h1>
                             <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
                         </div>
-                        <FormComponent ButtonText="Create" OnValidSubmit="@((prod)=>CreateProduct(prod))" OnInitAsync="OnInitializedAsync" product="new Product{CompanyId=id}" />
+                        <FormComponent ButtonText="Create" OnValidSubmit="@((prod)=>CreateProduct(prod))" OnInitAsync="OnInitializedAsync" product="new Product{CompanyId=CompanyId}" />
                     </div>
                 </div>
             </div>
@@ -34,7 +34,8 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Price</th>
+                        <th class="d-none d-md-table-cell">Price</th>
+                        <th class="d-none d-lg-table-cell">Image</th>
                         <th>Reviews</th>
                         <th>Actions</th>
                     </tr>
@@ -44,7 +45,10 @@
                     {
                         <tr>
                             <td>@product.Name</td>
-                            <td>@product.Price</td>
+                            <td class="d-none d-md-table-cell">@product.Price</td>
+                            <td class="d-none d-lg-table-cell">
+                                <img src="@product.ImgUri" style="height:70px;width:70px;object-fit:cover;" />
+                            </td>
                             <td>
                                 <a href="/products/@product.Id/reviews" class="btn btn-info btn-sm shadow-none">
                                     <span class="oi oi-eye"></span>&nbsp;
@@ -125,7 +129,7 @@
 </div>
 
 @code {
-    [Parameter] public int id { get; set; }
+    [Parameter] public int CompanyId { get; set; }
     private HttpClient _client;
     private Company? company;
     private List<Product>? Products;
@@ -139,7 +143,7 @@
 
     protected async override Task OnInitializedAsync()
     {
-        company = await _client.GetFromJsonAsync<Company>($"{Endpoints.CompaniesEndpoint}/{id}");
+        company = await _client.GetFromJsonAsync<Company>($"{Endpoints.CompaniesEndpoint}/{CompanyId}");
         var allProducts = await _client.GetFromJsonAsync<List<Product>>($"{Endpoints.ProductsEndpoint}");
         Reviews = await _client.GetFromJsonAsync<List<Review>>($"{Endpoints.ReviewsEndpoint}");
         var companyProducts = new List<Product>();
@@ -147,7 +151,7 @@
         {
             foreach (var product in allProducts)
             {
-                if (product.CompanyId == id)
+                if (product.CompanyId == CompanyId)
                 {
                     companyProducts.Add(product);
                 }
@@ -186,7 +190,7 @@
     {
         if (userIsStaff)
         {
-            await js.InvokeVoidAsync("AddDataTable", "#productsTable");
+            await js.InvokeVoidAsync("AddDataTable", "#productsTable", "Search Products");
         }
     }
 
