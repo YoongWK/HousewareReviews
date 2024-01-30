@@ -22,6 +22,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Price</th>
+                        <th>Reviews</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -31,6 +32,12 @@
                         <tr>
                             <td>@product.Name</td>
                             <td>@product.Price</td>
+                            <td>
+                                <a href="/products/@product.Id/reviews" class="btn btn-info">
+                                    <span class="oi oi-eye"></span>
+                                    View
+                                </a>
+                            </td>
                             <td>
                                 <a href="/products/company/@id/view/@product.Id" class="btn btn-primary">
                                     <span class="oi oi-book"></span>
