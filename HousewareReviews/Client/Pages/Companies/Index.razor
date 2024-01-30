@@ -56,7 +56,6 @@
                 <span class="oi oi-plus"></span>
                 Create Company
             </button>
-
             <div class="modal fade" id="create-company" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="create-label-company" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -198,20 +197,6 @@
         await _client.PutAsJsonAsync($"{Endpoints.CompaniesEndpoint}/{comp.Id}", comp);
         await js.InvokeVoidAsync("hideModal", $"#edit-company-{comp.Id}");
         await OnInitializedAsync();
-    }
-
-    private async Task Delete(int companyId)
-    {
-        if (Companies != null)
-        {
-            var company = Companies.First(q => q.Id == companyId);
-            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {company.Name}?");
-            if (confirm)
-            {
-                await _client.DeleteAsync($"{Endpoints.CompaniesEndpoint}/{companyId}");
-                await OnInitializedAsync();
-            }
-        }
     }
 
     private async Task DeleteCompany(int companyId)

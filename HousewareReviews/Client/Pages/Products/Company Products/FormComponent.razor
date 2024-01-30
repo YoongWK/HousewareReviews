@@ -1,93 +1,104 @@
 ﻿@inject IHttpClientFactory ClientFactory
+@attribute [Authorize(Roles = "Staff")]
 
-<EditForm Model="@product" OnValidSubmit=@OnValidSubmit>
+<EditForm Model="@product" OnValidSubmit="@(() => OnValidSubmitCallback(product))">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <fieldset disabled="@Disabled">
-        <div class="form-group">
-            <label>Name:</label>
-            <div>
-                <InputText @bind-Value="@product.Name" class="form-control" />
-                <ValidationMessage For="@(() => product.Name)" />
-            </div>
-        </div>
+    <div class="modal-body text-start">
+		<fieldset disabled="@Disabled">
+			<div class="form-group pb-3">
+				<label>Name:</label>
+				<div>
+					<InputText @bind-Value="@product.Name" class="form-control shadow-none" />
+					<ValidationMessage For="@(() => product.Name)" />
+				</div>
+			</div>
 
-        <div class="form-group">
-            <label>Price: </label>
-            <div>
-                <InputNumber @bind-Value="@product.Price" class="form-control" />
-                <ValidationMessage For="@(() => product.Price)" />
-            </div>
-        </div>
+			<div class="form-group pb-3">
+				<label>Price:</label>
+				<div>
+					<InputNumber @bind-Value="@product.Price" class="form-control shadow-none" />
+					<ValidationMessage For="@(() => product.Price)" />
+				</div>
+			</div>
 
-        <div class="form-group">
-            <label>Category: </label>
-            <div>
-                <InputSelect @bind-Value="product.CategoryId" class="form-control">
-                    <option value="">-- Select Category --</option>
-                    @if (Categories != null)
-                    {
-                        foreach (var category in Categories)
-                        {
-                            <option value="@category.Id">@category.Name</option>
-                        }
-                    }
-                </InputSelect>
-                <ValidationMessage For="@(() => product.CategoryId)" />
-            </div>
-        </div>
+			<div class="form-group pb-3">
+				<label>Category:</label>
+				<div>
+					<InputSelect @bind-Value="product.CategoryId" class="form-control shadow-none">
+						<option>-- Select Category --</option>
+						@if (Categories != null)
+						{
+							foreach (var category in Categories)
+							{
+								<option value="@category.Id">@category.Name</option>
+							}
+						}
+					</InputSelect>
+					<ValidationMessage For="@(() => product.CategoryId)" />
+				</div>
+			</div>
 
-        <div class="form-group">
-            <label>Description:</label>
-            <div>
-                <InputTextArea @bind-Value="@product.Description" class="form-control" />
-                <ValidationMessage For="@(() => product.Description)" />
-            </div>
-        </div>
+			<div class="form-group pb-3">
+				<label>Description:</label>
+				<div>
+					<InputTextArea @bind-Value="@product.Description" class="form-control shadow-none" style="resize:none;" rows="4" maxlength="301" />
+					<ValidationMessage For="@(() => product.Description)" />
+				</div>
+			</div>
 
-        <div class="form-group">
-            <label>Logo URI:</label>
-            <div class="d-flex flex-column">
-                <InputFile OnChange="OnFileSelection" accept="image/png, image/jpeg" />
-                <ValidationMessage For="@(() => product.ImgUri)" />
-            </div>
-            <img class="w-100 pt-2" src="@product.ImgUri" onerror="this.style.display='none'" />
-        </div>
-    </fieldset>
-    <br />
-    @if (!Disabled)
-    {
-        <button type="submit" class="btn btn-success btn-block">
-            @ButtonText
-        </button>
-    }
-    <BackToList Target="@GetTarget()" />
+			<div class="form-group">
+				<label>Image:</label>
+				@if (!Disabled)
+				{
+					<div class="d-flex flex-column pb-1">
+						<InputFile OnChange="OnFileSelection" accept="image/png, image/jpeg" />
+						<ValidationMessage For="@(() => product.ImgUri)" />
+					</div>
+				}
+				<img class="w-100" src="@product.ImgUri" onerror="this.style.display='none'" />
+			</div>
+		</fieldset>
+    </div>
+    
+	<div class="modal-footer">
+		<button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal" @onclick="OnInitAsync">Close</button>
+		@if (!Disabled)
+		{
+			<button type="submit" class="btn btn-success shadow-none">
+				@ButtonText
+			</button>
+		}
+	</div>
 </EditForm>
 
 @code {
-    [Parameter] public bool Disabled { get; set; } = false;
-    [Parameter] public Product? product { get; set; }
-    [Parameter] public string ButtonText { get; set; } = "Save";
-    [Parameter] public EventCallback OnValidSubmit { get; set; }
-    [Parameter] public int CompanyId { get; set; }
+	[Parameter] public bool Disabled { get; set; } = false;
+	[Parameter] public Product? product { get; set; }
+	[Parameter] public string ButtonText { get; set; } = "Save";
+	[Parameter] public EventCallback<Product> OnValidSubmit { get; set; }
+	[Parameter] public Func<Task> OnInitAsync { get; set; }
 
-    private HttpClient _client;
-    private IList<Category>? Categories;
+	private HttpClient _client;
+	private IList<Category> Categories;
 
-    protected override void OnInitialized()
-    {
-        _client = ClientFactory.CreateClient("private");
-        product.CompanyId = CompanyId;
-    }
+	protected override void OnInitialized()
+	{
+		_client = ClientFactory.CreateClient("private");
+	}
+
+	private async Task OnValidSubmitCallback(Product prod)
+	{
+		if (OnValidSubmit.HasDelegate)
+		{
+			prod.Category = null;
+			await OnValidSubmit.InvokeAsync(prod);
+		}
+	}
 
     protected async override Task OnInitializedAsync()
     {
         Categories = await _client.GetFromJsonAsync<List<Category>>($"{Endpoints.CategoriesEndpoint}");
-    }
-
-    private string GetTarget()
-    {
-        return $"products/company/{CompanyId}";
     }
 
     private async Task OnFileSelection(InputFileChangeEventArgs e)
@@ -96,6 +107,5 @@
         var buffers = new byte[imgFile.Size];
         await imgFile.OpenReadStream().ReadAsync(buffers);
         product.ImgUri = $"data:image/png;base64,{Convert.ToBase64String(buffers)}";
-        Console.WriteLine(product.ImgUri);
     }
 }

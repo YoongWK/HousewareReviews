@@ -56,12 +56,11 @@
                 <span class="oi oi-plus"></span>
                 Create Category
             </button>
-
-            <div class="modal fade" id="create-category" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="create-label-category" aria-hidden="true">
+            <div class="modal fade" id="create-category" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="create-category-label" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="create-label-category">Create New Category</h1>
+                            <h1 class="modal-title fs-5" id="create-category-label">Create New Category</h1>
                             <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
                         </div>
                         <FormComponent ButtonText="Create" OnValidSubmit="@((cat)=>CreateCategory(cat))" OnInitAsync="OnInitializedAsync" category="new Category()" />
