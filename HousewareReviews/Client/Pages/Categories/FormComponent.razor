@@ -1,5 +1,4 @@
-﻿@inject IHttpClientFactory ClientFactory
-@attribute [Authorize(Roles = "Staff")]
+﻿@attribute [Authorize(Roles = "Staff")]
 
 <EditForm Model="@category" OnValidSubmit="@(() => OnValidSubmitCallback(category))">
     <DataAnnotationsValidator />
@@ -27,6 +26,7 @@
 			</div>
 		</fieldset>
     </div>
+
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal" @onclick="OnInitAsync">Close</button>
         @if (!Disabled)

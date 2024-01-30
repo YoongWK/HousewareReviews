@@ -9,7 +9,7 @@
 
     @if (Categories==null)
     {
-        <div class="alert alert-info">Loading Categories</div>
+        <div class="alert alert-info">Loading Categories...</div>
     }
     else
     {
@@ -52,16 +52,16 @@
         </AuthorizeView>
 
         <AuthorizeView Roles="Staff">
-            <button type="button" class="btn btn-success btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#create">
+            <button type="button" class="btn btn-success btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#create-category">
                 <span class="oi oi-plus"></span>
                 Create Category
             </button>
 
-            <div class="modal fade" id="create" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="create-label" aria-hidden="true">
+            <div class="modal fade" id="create-category" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="create-label-category" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="create-label">Create New Category</h1>
+                            <h1 class="modal-title fs-5" id="create-label-category">Create New Category</h1>
                             <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
                         </div>
                         <FormComponent ButtonText="Create" OnValidSubmit="@((cat)=>CreateCategory(cat))" OnInitAsync="OnInitializedAsync" category="new Category()" />
@@ -86,14 +86,14 @@
                                 <img src="@category.ImgUri" style="height:70px;width:140px;object-fit:cover;" />
                             </td>
                             <td>
-                                <button type="button" class="btn btn-primary btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#view-@category.Id">
-                                    <span class="oi oi-eye"></span>
+                                <button type="button" class="btn btn-primary btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#view-category-@category.Id">
+                                    <span class="oi oi-book"></span>
                                 </button>
-                                <div class="modal fade" id="view-@category.Id" tabindex="-1" aria-labelledby="view-label-@category.Id" aria-hidden="true">
+                                <div class="modal fade" id="view-category-@category.Id" tabindex="-1" aria-labelledby="view-category-label-@category.Id" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="view-label-@category.Id">View @category.Name</h1>
+                                                <h1 class="modal-title fs-5" id="view-category-label-@category.Id">View @category.Name</h1>
                                                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <FormComponent category="category" Disabled="true" />
@@ -101,30 +101,29 @@
                                     </div>
                                 </div>
 
-                                <button type="button" class="btn btn-warning btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#edit-@category.Id">
+                                <button type="button" class="btn btn-warning btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#edit-category-@category.Id">
                                     <span class="oi oi-pencil"></span>
                                 </button>
-
-                                <div class="modal fade" id="edit-@category.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit-label-@category.Id" aria-hidden="true">
+                                <div class="modal fade" id="edit-category-@category.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit-category-label-@category.Id" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="edit-label-@category.Id">Edit @category.Name</h1>
+                                                <h1 class="modal-title fs-5" id="edit-category-label-@category.Id">Edit @category.Name</h1>
                                                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
                                             </div>
-                                            <FormComponent ButtonText="Edit" OnValidSubmit="@((cat)=>EditCategory(cat))" OnInitAsync="OnInitializedAsync" category="category" />
+                                            <FormComponent OnValidSubmit="@((cat)=>EditCategory(cat))" OnInitAsync="OnInitializedAsync" category="category" />
                                         </div>
                                     </div>
                                 </div>
 
-                                <button type="button" class="btn btn-danger btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#delete-@category.Id">
+                                <button type="button" class="btn btn-danger btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#delete-category-@category.Id">
                                     <span class="oi oi-delete"></span>
                                 </button>
-                                <div class="modal fade" id="delete-@category.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete-label-@category.Id" aria-hidden="true">
+                                <div class="modal fade" id="delete-category-@category.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete-category-label-@category.Id" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="delete-label-@category.Id">Confirm Delete @category.Name?</h1>
+                                                <h1 class="modal-title fs-5" id="delete-category-label-@category.Id">Confirm Delete @category.Name?</h1>
                                                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body text-start">
@@ -166,14 +165,14 @@
     private async Task CreateCategory(Category cat)
     {
         await _client.PostAsJsonAsync(Endpoints.CategoriesEndpoint, cat);
-        await js.InvokeVoidAsync("hideModal", "#create");
+        await js.InvokeVoidAsync("hideModal", "#create-category");
         await OnInitializedAsync();
     }
 
     private async Task EditCategory(Category cat)
     {
         await _client.PutAsJsonAsync($"{Endpoints.CategoriesEndpoint}/{cat.Id}", cat);
-        await js.InvokeVoidAsync("hideModal", $"#edit-{cat.Id}");
+        await js.InvokeVoidAsync("hideModal", $"#edit-category-{cat.Id}");
         await OnInitializedAsync();
     }
 

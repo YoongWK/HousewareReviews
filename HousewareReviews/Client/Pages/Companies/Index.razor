@@ -4,32 +4,15 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @implements IDisposable
 
-<div class="container-fluid px-4">
-    <h3 class="card-title mt-4 mb-3">Companies</h3>
+<div class="container-fluid p-4">
+    <h3 class="card-title pb-3">Companies</h3>
+
     @if (Companies == null)
     {
         <div class="alert alert-info">Loading Companies...</div>
     }
     else
     {
-        <AuthorizeView Roles="Consumer">
-            <div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
-                @foreach (var company in Companies)
-                {
-                    <div class="col">
-                        <a href="/companies/view/@company.Id" style="text-decoration: none;">
-                            <div class="card text-center h-100 rounded-5">
-                                <img src="@company.LogoUri" class="card-img-top rounded-top-5" alt="@company.Name Image">
-                                <div class="card-body p-2 m-0">
-                                    <h5 class="card-title">@company.Name</h5>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                }
-            </div>
-        </AuthorizeView>
-
         <AuthorizeView>
             <NotAuthorized>
                 <div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
@@ -50,17 +33,48 @@
             </NotAuthorized>
         </AuthorizeView>
 
-        <AuthorizeView Roles="Staff">
-            <a href="/companies/create" class="btn btn-secondary">
-                <span class="oi oi-plus"></span>
-                Create New Company
-            </a>
+        <AuthorizeView Roles="Consumer">
+            <div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
+                @foreach (var company in Companies)
+                {
+                    <div class="col">
+                        <a href="/companies/view/@company.Id" style="text-decoration: none;">
+                            <div class="card text-center h-100 rounded-5">
+                                <img src="@company.LogoUri" class="card-img-top rounded-top-5" alt="@company.Name Image">
+                                <div class="card-body p-2 m-0">
+                                    <h5 class="card-title">@company.Name</h5>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        </AuthorizeView>
 
-            <table class="table table-responsive w-100 mt-3" id="companiesTable">
+        <AuthorizeView Roles="Staff">
+            <button type="button" class="btn btn-success btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#create-company">
+                <span class="oi oi-plus"></span>
+                Create Company
+            </button>
+
+            <div class="modal fade" id="create-company" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="create-label-company" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="create-label-company">Create New Company</h1>
+                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                        </div>
+                        <FormComponent ButtonText="Create" OnValidSubmit="@((comp)=>CreateCompany(comp))" OnInitAsync="OnInitializedAsync" company="new Company()" />
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-responsive w-100 py-2 m-0" id="companiesTable">
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>UEN</th>
+                        <th class="d-none d-sm-table-cell">UEN</th>
+                        <th class="d-none d-md-table-cell">Logo</th>
                         <th>Products</th>
                         <th>Actions</th>
                     </tr>
@@ -70,23 +84,80 @@
                     {
                         <tr>
                             <td>@company.Name</td>
-                            <td>@company.UEN</td>
+                            <td class="d-none d-sm-table-cell">@company.UEN</td>
+                            <td class="d-none d-md-table-cell">
+                                <img src="@company.LogoUri" style="height:70px;width:140px;object-fit:cover;" />
+                            </td>
                             <td>
-                                <a href="/products/company/@company.Id" class="btn btn-info">
-                                    <span class="oi oi-eye"></span>
-                                    View
+                                <a href="/products/company/@company.Id" class="btn btn-info btn-sm shadow-none">
+                                    <span class="oi oi-eye"></span>&nbsp;
+                                    @{
+                                        var productCount = 0;
+                                        if (Products != null)
+                                        {
+                                            @foreach (var product in Products)
+                                            {
+                                                if (product.CompanyId == company.Id)
+                                                {
+                                                    productCount++;
+                                                }
+                                            }
+                                        }
+                                        @productCount
+                                    }
                                 </a>
                             </td>
                             <td>
-                                <a href="/companies/view/@company.Id" class="btn btn-primary">
+                                <button type="button" class="btn btn-primary btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#view-company-@company.Id">
                                     <span class="oi oi-book"></span>
-                                </a>
-                                <a href="/companies/edit/@company.Id" class="btn btn-warning">
+                                </button>
+                                <div class="modal fade" id="view-company-@company.Id" tabindex="-1" aria-labelledby="view-company-label-@company.Id" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="view-company-label-@company.Id">View @company.Name</h1>
+                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <FormComponent company="company" Disabled="true" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="button" class="btn btn-warning btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#edit-company-@company.Id">
                                     <span class="oi oi-pencil"></span>
-                                </a>
-                                <button class="btn btn-danger" @onclick="@(()=>Delete(company.Id))">
+                                </button>
+                                <div class="modal fade" id="edit-company-@company.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit-company-label-@company.Id" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="edit-company-label-@company.Id">Edit @company.Name</h1>
+                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                                            </div>
+                                            <FormComponent OnValidSubmit="@((comp)=>EditCompany(comp))" OnInitAsync="OnInitializedAsync" company="company" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="button" class="btn btn-danger btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#delete-company-@company.Id">
                                     <span class="oi oi-delete"></span>
                                 </button>
+                                <div class="modal fade" id="delete-company-@company.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete-company-label-@company.Id" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="delete-company-label-@company.Id">Confirm Delete @company.Name?</h1>
+                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-start">
+                                                This action cannot be undone.
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-danger shadow-none" data-bs-dismiss="modal" @onclick="@(()=>DeleteCompany(company.Id))">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     }
@@ -99,6 +170,7 @@
 @code {
     private HttpClient _client;
     private List<Company>? Companies;
+    private List<Product>? Products;
     bool userIsStaff = false;
 
     protected override void OnInitialized()
@@ -109,11 +181,26 @@
     protected async override Task OnInitializedAsync()
     {
         Companies = await _client.GetFromJsonAsync<List<Company>>($"{Endpoints.CompaniesEndpoint}");
+        Products = await _client.GetFromJsonAsync<List<Product>>($"{Endpoints.ProductsEndpoint}");
         var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         userIsStaff = authstate.User.IsInRole("Staff");
     }
 
-    async Task Delete(int companyId)
+    private async Task CreateCompany(Company comp)
+    {
+        await _client.PostAsJsonAsync(Endpoints.CompaniesEndpoint, comp);
+        await js.InvokeVoidAsync("hideModal", "#create-company");
+        await OnInitializedAsync();
+    }
+
+    private async Task EditCompany(Company comp)
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.CompaniesEndpoint}/{comp.Id}", comp);
+        await js.InvokeVoidAsync("hideModal", $"#edit-company-{comp.Id}");
+        await OnInitializedAsync();
+    }
+
+    private async Task Delete(int companyId)
     {
         if (Companies != null)
         {
@@ -127,13 +214,22 @@
         }
     }
 
+    private async Task DeleteCompany(int companyId)
+    {
+        if (Companies != null)
+        {
+            var company = Companies.First(q => q.Id == companyId);
+            await _client.DeleteAsync($"{Endpoints.CompaniesEndpoint}/{companyId}");
+            await OnInitializedAsync();
+        }
+    }
+
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         if (userIsStaff)
         {
-            await js.InvokeVoidAsync("AddDataTable", "#companiesTable");
+            await js.InvokeVoidAsync("AddDataTable", "#companiesTable", "Search Companies");
         }
-
     }
 
     public void Dispose()
