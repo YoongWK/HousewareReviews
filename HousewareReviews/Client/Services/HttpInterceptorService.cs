@@ -32,13 +32,14 @@ namespace HousewareReviews.Client.Services
 					case HttpStatusCode.Unauthorized:
 					case HttpStatusCode.Forbidden:
 						navManager.NavigateTo("/unauthorized");
-						message = "You are not authorized to access this resource. ";
+						message = "You are not authorized to access this resource.";
 						break;
 					default:
 						navManager.NavigateTo("/500");
-						message = "Something went wrong, please contact Administrator";
+						message = "Something went wrong, please contact Administrator.";
 						break;
 				}
+				throw new Exception(message);
 			}
 		}
 

@@ -9,7 +9,16 @@
     </div>
     <main>
         <article class="content">
-            @Body
+            @try
+            {
+                @Body
+            }
+            catch (Exception ex)
+            {
+                <script>
+                    console.error("@ex.Message");
+                </script>
+            }
         </article>
     </main>
 </div>
