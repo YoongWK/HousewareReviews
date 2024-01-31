@@ -2,11 +2,10 @@
 @inject IHttpClientFactory ClientFactory
 @inject NavigationManager _navManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@* @attribute [Authorize(Roles = "Staff")] *@
 
 <AuthorizeView Roles="Staff">
 	<div class="container-fluid px-4">
-		<h3 class="card-title mt-4 mb-3">View Company</h3>
+		<h4 class="card-title mt-4 mb-3">View Company</h4>
 		<FormComponent company="company" Disabled="true" />
 	</div>
 </AuthorizeView>

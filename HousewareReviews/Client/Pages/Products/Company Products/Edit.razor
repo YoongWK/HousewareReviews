@@ -4,7 +4,7 @@
 @attribute [Authorize(Roles = "Staff")]
 
 <div class="container-fluid px-4">
-	<h3 class="card-title mt-4 mb-3">Edit @company.Name Product</h3>
+	<h4 class="card-title mt-4 mb-3">Edit @company.Name Product</h4>
 	<FormComponent ButtonText="Update" OnValidSubmit="EditProduct" product="product" CompanyId="CompanyId" />
 </div>
 

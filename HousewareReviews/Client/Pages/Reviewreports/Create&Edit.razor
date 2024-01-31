@@ -10,16 +10,16 @@
 	@if (reportCreated == false)
 	{
 		<div class="container-fluid px-4">
-			<h3 class="card-title mt-4 mb-3">Make a report</h3>
+			<h4 class="card-title mt-4 mb-3">Make a report</h4>
 			<FormComponentConsumer ButtonText="Create Report" OnValidSubmit="CreateReport" reviewreport="reviewreport" ReviewId="ReviewId" />
 		</div>
 	}
 	else //report already created
 	{
 		<div class="container-fluid px-4">
-			<h3 class="card-title mt-4 mb-3">A report has been made for this review</h3>
+			<h4 class="card-title mt-4 mb-3">A report has been made for this review</h4>
 			<hr />
-			<h3 class="card-title mt-4 mb-3">Edit your report</h3>
+			<h4 class="card-title mt-4 mb-3">Edit your report</h4>
 			<FormComponentConsumer ButtonText="Edit Report" OnValidSubmit="EditReport" reviewreport="existingreviewreport" ReviewId="ReviewId" />
 			<button class="btn btn-danger" @onclick="@(()=>deleteReviewreport(existingreviewreport.Id))">
 				<span class="oi oi-delete"></span>

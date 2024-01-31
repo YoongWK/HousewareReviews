@@ -5,7 +5,7 @@
 @implements IDisposable
 
 <div class="container-fluid p-4">
-    <h3 class="card-title pb-3">@product?.Name Reviews</h3>
+    <h4 class="card-title pb-3">@product?.Name Reviews</h4>
     
     @if (Reviews == null)
     {
@@ -34,6 +34,7 @@
             <table class="table table-responsive w-100 py-2 m-0" id="reviewsTable">
                 <thead>
                     <tr>
+                        <th>Id</th>
                         <th>Rating</th>
                         <th>Status</th>
                         <th class="d-none d-md-table-cell">Consumer</th>
@@ -45,6 +46,7 @@
                     @foreach (var review in Reviews)
                     {
                         <tr>
+                            <td>@review.Id</td>
                             <td>@review.Rating</td>
                             <td>@(String.IsNullOrEmpty(review.Reply) ? "Not Replied" : "Replied")</td>
                             <td class="d-none d-md-table-cell">@((review.Consumer != null) ? $"{review.Consumer.FirstName} {review.Consumer.LastName}" : "[Deleted Consumer]")</td>

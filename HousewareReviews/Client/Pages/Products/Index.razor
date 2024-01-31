@@ -91,7 +91,7 @@
             //logged in consumer reviews displayed at the top
             @foreach (var review in reviews
                 @* .OrderBy<Review, int>(r => r.ConsumerId == currentconsumerid ? 0 :1)) *@
-                .OrderByDescending(r => r.ConsumerId == currentconsumerid)
+           .OrderByDescending(r => (r.ConsumerId == currentconsumerid || r.ConsumerId == null))
                 .ThenByDescending(GetSortExpression(selectedSortOption)))@* r => r.DateUpdated) *@
             {
                 <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
@@ -99,7 +99,7 @@
                         <div class="me-auto">
                             <h4>
                                 <img class="profile" src="@review.Consumer?.ProfileImgUri" style="width: 30px; height: 30px;" />
-                                <b>@review.Consumer.FirstName @review.Consumer.LastName</b>
+                                <b>@((review.Consumer != null) ? $"{review.Consumer.FirstName} {review.Consumer.LastName}" : "Deleted Consumer")</b>
                             </h4>
                         </div>
                         <div>
@@ -201,7 +201,7 @@
                                             <div class="me-auto">
                                                 <h4>
                                                     <img class="profile" src="@comment.Consumer?.ProfileImgUri" style="width: 30px; height: 30px;" />
-                                                    <b>@comment.Consumer.FirstName @comment.Consumer.LastName</b>
+                                                    <b>@((comment.Consumer != null) ? $"{comment.Consumer.FirstName} {comment.Consumer.LastName}" : "Deleted Consumer")</b>
                                                 </h4>
                                             </div>
                                             <div>
@@ -337,7 +337,7 @@
                             <div class="me-auto">
                                 <h4>
                                     <img class="profile" src="@review.Consumer?.ProfileImgUri" style="width: 30px; height: 30px;" />
-                                    <b>@review.Consumer.FirstName @review.Consumer.LastName</b>
+                                    <b>@((review.Consumer != null) ? $"{review.Consumer.FirstName} {review.Consumer.LastName}" : "Deleted Consumer")</b>
                                 </h4>
                             </div>
                             <div>
@@ -416,7 +416,7 @@
                                                 <div class="me-auto">
                                                     <h4>
                                                         <img class="profile" src="@comment.Consumer?.ProfileImgUri" style="width: 30px; height: 30px;" />
-                                                        <b>@comment.Consumer.FirstName @comment.Consumer.LastName</b>
+                                                        <b>@((comment.Consumer != null) ? $"{comment.Consumer.FirstName} {comment.Consumer.LastName}" : "Deleted Consumer")</b>
                                                     </h4>
                                                 </div>
                                                 <div>

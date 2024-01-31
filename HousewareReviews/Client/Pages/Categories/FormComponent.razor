@@ -1,6 +1,6 @@
 ﻿@attribute [Authorize(Roles = "Staff")]
 
-<EditForm Model="@category" OnValidSubmit="@(() => OnValidSubmitCallback(category))">
+<EditForm Model="@category" OnValidSubmit="@(() => OnValidSubmitCallback(category))" style="font-size:1rem;">
     <DataAnnotationsValidator />
     <ValidationSummary class="text-start mb-0 pt-3" />
     <div class="modal-body text-start">

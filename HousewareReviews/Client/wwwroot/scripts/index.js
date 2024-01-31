@@ -30,3 +30,16 @@ function hideModal(modalSelector) {
     let bsModal = bootstrap.Modal.getOrCreateInstance(modal);
     bsModal.hide();
 }
+
+function updateCharCount(inputField, maxlLength) {
+    var formGroupDiv = inputField.closest('.form-group');
+    var pElement = formGroupDiv.querySelector('p');
+    var charCountSpan = pElement.querySelector('span');
+    var charCount = inputField.value.length;
+    charCountSpan.textContent = charCount;
+    if (charCount > maxlLength) {
+        charCountSpan.classList.add("text-danger");
+    } else {
+        charCountSpan.classList.remove("text-danger");
+    }
+}
