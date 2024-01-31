@@ -15,7 +15,10 @@
             drawCallback: function () {
                 $('.dataTables_paginate ul li a').addClass('shadow-none');
                 if (!$('.dataTables_paginate ul li a').prop('disabled')) {
-                    $('.dataTables_paginate ul li a').css('cursor', 'pointer');
+                    $('.dataTables_paginate ul li a').css({
+                        'cursor': 'pointer',
+                        'font-size': '0.9rem'
+                    });
                 };
             },
             initComplete: function () {

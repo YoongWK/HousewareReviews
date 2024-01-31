@@ -41,13 +41,21 @@ html, body {
 .table tbody tr td {
     vertical-align: middle;
     text-align: center;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
 }
 
 .table.dataTable thead th {
     vertical-align: middle;
     text-align: center;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+}
+
+.table.dataTable thead > tr > th.sorting,
+.table.dataTable thead > tr > th.sorting_asc,
+.table.dataTable thead > tr > th.sorting_desc,
+.table.dataTable thead > tr > th.sorting_asc_disabled,
+.table.dataTable thead > tr > th.sorting_desc_disabled {
+    padding-right: 22px;
 }
 
 .file-upload {

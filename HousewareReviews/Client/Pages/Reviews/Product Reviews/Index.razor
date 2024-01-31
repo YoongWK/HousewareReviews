@@ -35,7 +35,7 @@
                 <thead>
                     <tr>
                         <th>Id</th>
-                        <th>Rating</th>
+                        <th><span class="oi oi-star"></span></th>
                         <th>Status</th>
                         <th class="d-none d-md-table-cell">Consumer</th>
                         <th>Comments</th>
@@ -77,7 +77,7 @@
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="view-review-label-@review.Id">View Review</h1>
+                                                <h1 class="modal-title fs-5" id="view-review-label-@review.Id">View Review @review.Id</h1>
                                                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <StaffFormComponent review="review" Disabled="true" ShowDate="true" />
@@ -92,7 +92,7 @@
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="edit-review-label-@review.Id">Edit Review</h1>
+                                                <h1 class="modal-title fs-5" id="edit-review-label-@review.Id">Edit Review @review.Id</h1>
                                                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
                                             </div>
                                             <StaffFormComponent OnValidSubmit="@((revData)=>EditReview(revData))" OnInitAsync="OnInitializedAsync" review="review" />
@@ -107,7 +107,7 @@
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="delete-review-label-@review.Id">Confirm Delete Review?</h1>
+                                                <h1 class="modal-title fs-5" id="delete-review-label-@review.Id">Confirm Delete Review @review.Id?</h1>
                                                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body text-start">
