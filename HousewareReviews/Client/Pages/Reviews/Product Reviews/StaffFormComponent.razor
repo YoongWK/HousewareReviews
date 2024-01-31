@@ -9,17 +9,27 @@
             <div class="form-group pb-3">
                 <label>Consumer:</label>
                 <div>
-                    <InputSelect @bind-Value="review.ConsumerId" class="form-control shadow-none">
-                        <option>-- Select Consumer --</option>
-                        @if (Consumers != null)
-                        {
-                            foreach (var consumer in Consumers)
+                    @if (DisallowConsumer)
+                    {
+                        <input type="text" value="@((review.Consumer != null) ? $"{review.Consumer.FirstName} {review.Consumer.LastName}" : "Deleted Consumer")" class="form-control shadow-none" disabled />
+                    }
+                    else
+                    {
+                        <InputSelect @bind-Value="review.ConsumerId" class="form-control shadow-none">
+                            <option value="">-- Select Consumer --</option>
+                            @if (Consumers != null)
                             {
-                                <option value="@consumer.Id">@consumer.FirstName @consumer.LastName</option>
+                                foreach (var consumer in Consumers)
+                                {
+                                    if (consumer.UserId == null)
+                                    {
+                                        <option value="@consumer.Id">@consumer.FirstName @consumer.LastName</option>
+                                    }
+                                }
                             }
-                        }
-                    </InputSelect>
-                    <ValidationMessage For="@(() => review.ConsumerId)" />
+                        </InputSelect>
+                        <ValidationMessage For="@(() => review.ConsumerId)" />
+                    }
                 </div>
             </div>
             <div class="form-group pb-3">
@@ -54,29 +64,30 @@
                 </div>
             </div>
 
-            <div class="form-group py-3">
-                <label>Date Created:</label>
-                <div>
-                    <InputDate @bind-Value="@review.DateCreated" class="form-control" />
-                    <ValidationMessage For="@(() => review.DateCreated)" />
-                </div>
-            </div>
+            @if (ShowDate)
+            {
+                <div class="form-group py-3">
+                    <label>Date Created:</label>
+                    <div>
+                        <input type="text" value="@review.DateCreated.ToString("d MMM yyyy")" class="form-control shadow-none" disabled />
 
-            <div class="form-group pb-3">
-                <label>Date Updated:</label>
-                <div>
-                    <InputDate @bind-Value="@review.DateUpdated" class="form-control" />
-                    <ValidationMessage For="@(() => review.DateUpdated)" />
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label>Date Replied:</label>
-                <div>
-                    <InputDate @bind-Value="@review.DateReplied" class="form-control" />
-                    <ValidationMessage For="@(() => review.DateReplied)" />
+                <div class="form-group pb-3">
+                    <label>Date Updated:</label>
+                    <div>
+                        <input type="text" value="@review.DateUpdated.ToString("d MMM yyyy")" class="form-control shadow-none" disabled />
+                    </div>
                 </div>
-            </div>
+
+                <div class="form-group">
+                    <label>Date Replied:</label>
+                    <div>
+                        <input type="text" value="@(review.DateReplied?.ToString("d MMM yyyy") ?? "Not Replied")" class="form-control shadow-none" disabled />
+                    </div>
+                </div>
+            }
         </fieldset>
     </div>
 
@@ -93,18 +104,21 @@
 
 @code {
     [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public bool ShowDate { get; set; } = false;
+    [Parameter] public bool DisallowConsumer { get; set; } = true;
     [Parameter] public Review? review { get; set; }
     [Parameter] public string ButtonText { get; set; } = "Save";
-    [Parameter] public EventCallback<Review> OnValidSubmit { get; set; }
+    [Parameter] public EventCallback<(Review, bool, bool)> OnValidSubmit { get; set; }
     [Parameter] public Func<Task> OnInitAsync { get; set; }
-
 
     private HttpClient _client;
     private IList<Consumer> Consumers;
+    public Review orgReview;
 
     protected override void OnInitialized()
     {
         _client = ClientFactory.CreateClient("public");
+        orgReview = review;
     }
 
     private async Task OnValidSubmitCallback(Review rev)
@@ -112,7 +126,17 @@
         if (OnValidSubmit.HasDelegate)
         {
             rev.Consumer = null;
-            await OnValidSubmit.InvokeAsync(rev);
+            var revChanged = false;
+            var revReplyChanged = false;
+            if ((rev.Rating != orgReview.Rating) || (rev.Description != orgReview.Description))
+            {
+                revChanged = true;
+            }
+            if (rev.Reply != orgReview.Reply)
+            {
+                revReplyChanged = true;
+            }
+            await OnValidSubmit.InvokeAsync((rev, revChanged, revReplyChanged));
         }
     }
 

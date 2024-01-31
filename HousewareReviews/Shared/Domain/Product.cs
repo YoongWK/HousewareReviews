@@ -28,9 +28,7 @@ namespace HousewareReviews.Shared.Domain
         [Range(1, int.MaxValue, ErrorMessage = "Company is required.")]
         public int CompanyId { get; set; }
         public virtual Company? Company { get; set; }
-        [Required(ErrorMessage = "Category is required.")]
-        [Range(1, int.MaxValue, ErrorMessage = "Category is required.")]
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         public virtual Category? Category { get; set;}
     }
 }

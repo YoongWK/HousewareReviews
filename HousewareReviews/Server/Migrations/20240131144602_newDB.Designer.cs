@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HousewareReviews.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240128035241_newDB")]
+    [Migration("20240131144602_newDB")]
     partial class newDB
     {
         /// <inheritdoc />
@@ -235,16 +235,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "3781efa7-66dc-47f0-860f-e506d04102e4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8f488644-c07f-41fb-876b-ecb84b22facb",
+                            ConcurrencyStamp = "97470b6f-bbb2-4ddb-a3b5-332ae6766524",
                             Email = "staff@blazor.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "STAFF@BLAZOR.COM",
                             NormalizedUserName = "S1234567A",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBigObR90muYTekVeyoMxid7GwIv0dZWNbIou/J2QiFxl3XLcoQI3a1cTriqpufttA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDGDwkQS0XTRuIKmgG4R7qO/K81Ae2VurJ2AHUQFoXhgDexw7IoTwa7EUuJIJzmifA==",
                             PhoneNumber = "91234567",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "209a02f7-e750-4168-a841-6219ce8dc4e2",
+                            SecurityStamp = "403d5c9b-930e-4587-9187-bdc0b7c0baca",
                             TwoFactorEnabled = false,
                             UserName = "S1234567A"
                         },
@@ -252,16 +252,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "1ce40de7-b2a7-4cf4-a8f3-c811191a664d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "387cbae0-3d66-4a37-991e-68cb5061d08b",
+                            ConcurrencyStamp = "41e9dd9c-50de-4750-a9d1-f0d489c88065",
                             Email = "consumer@blazor.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "CONSUMER@BLAZOR.COM",
                             NormalizedUserName = "T1234567A",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJA7I9H8Ij0dybyZInTuJoCna/8mBGh+VZTt2vjkeTlvPN3a13osdyjkkNz08aTfKg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIcsPhToDcXLmZoDVW8d0fFg9a2EILAwZbHHV1L3bzhPdQOTFix3L2JAqKH+31ySAw==",
                             PhoneNumber = "98765432",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e492ed2a-0b3f-4192-a17a-0b04c53a22b1",
+                            SecurityStamp = "5778eeaa-9306-4740-b8d2-3c0248f8c398",
                             TwoFactorEnabled = false,
                             UserName = "T1234567A"
                         },
@@ -269,16 +269,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "9du2ii40-h7d9-8sj2-j98s-is0dh83jk48s",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "11615762-0610-4a0e-af15-f8a248b006b3",
+                            ConcurrencyStamp = "ef24ed58-bdf9-43a8-8fc6-2f8bddd961ce",
                             Email = "maymorrison@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "MAYMORRISON@GMAIL.COM",
                             NormalizedUserName = "S6523489J",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAfJdChv4j/XISuiOV/Imnwa03k7aqYtHrQrIgE9DUW1y3KGDZFvRChjVMtdv2iFgg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAs9aw0kK1TXHuvaPphyf3TmSKE2Ib5xYiqdLv+K6JRgJbkgDQeq3d7HGwL9JSCrfg==",
                             PhoneNumber = "92438900",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "005d30df-623e-40b7-84d8-7b82ebc7cb30",
+                            SecurityStamp = "0d16db48-63d3-4888-84da-be9a3bd1f622",
                             TwoFactorEnabled = false,
                             UserName = "S6523489J"
                         },
@@ -286,16 +286,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "2oh7diw9-0or5-3jf9-8ss6-ks8ya5h297bd",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ec40f65f-b3b7-4099-8ecf-4331e8d6d038",
+                            ConcurrencyStamp = "6769c662-85d6-486f-8d1f-1a2b8996899d",
                             Email = "joshuatan@outlook.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "JOSHUATAN@OUTLOOK.COM",
                             NormalizedUserName = "T9366538J",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFB3OsCTein32v+mEl5DVQa8saLeqjtQoRF07dMA+NsPmuvOgg0GzQus/lHuTpHb8w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHtK+oeEAKpTWHEUenHK5izN40Ptahx+zMl+Gdt+fNhEDMhx0LQyzeeqU7EhgwdIxQ==",
                             PhoneNumber = "83072245",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d8cc5637-0845-49af-866d-404d89d6a49c",
+                            SecurityStamp = "9a6fa8f3-aa10-4c4c-b524-7d9c13a90d87",
                             TwoFactorEnabled = false,
                             UserName = "T9366538J"
                         },
@@ -303,16 +303,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "5di8sy83-2i9r-f56h-s8d9-s09njsh7dd53",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "77220a40-c264-44df-8913-6a23f1e00a07",
+                            ConcurrencyStamp = "f99e6447-23c3-40ca-8737-c1edff02399f",
                             Email = "ethanlim@hotmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ETHANLIM@HOTMAIL.COM",
                             NormalizedUserName = "S9812704F",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAqYSlIUG3O7i+x2T9axGPIiJOVwOJ1Ll6nIPFWm5Zctlgh03LHRQ70AOJ5oNMJ9OQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMITpsAI1AiqR6N/l101FMBe9veU+pmejilxYcwlZjJf0IjQA/AAhNCEPt61Dnd+Ew==",
                             PhoneNumber = "87229044",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "8da5cb4a-80cd-4698-80f0-7e1bd2ff83c5",
+                            SecurityStamp = "e127a7b1-bdc2-4018-a91f-7501285b8f0f",
                             TwoFactorEnabled = false,
                             UserName = "S9812704F"
                         });
@@ -327,9 +327,11 @@ namespace HousewareReviews.Server.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ImgUri")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -411,7 +413,9 @@ namespace HousewareReviews.Server.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<int>("ReviewId")
                         .HasColumnType("int");
@@ -466,6 +470,7 @@ namespace HousewareReviews.Server.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Category")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("CommentId")
@@ -475,7 +480,8 @@ namespace HousewareReviews.Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("Outcome")
                         .HasColumnType("nvarchar(max)");
@@ -514,24 +520,32 @@ namespace HousewareReviews.Server.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ContactNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LogoUri")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UEN")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("WebsiteUrl")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -680,22 +694,27 @@ namespace HousewareReviews.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("ImgUri")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double?>("Price")
+                        .IsRequired()
                         .HasColumnType("float");
 
                     b.HasKey("Id");
@@ -800,12 +819,14 @@ namespace HousewareReviews.Server.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int?>("Rating")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("Reply")
@@ -902,13 +923,15 @@ namespace HousewareReviews.Server.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Category")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ConsumerId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("Outcome")
                         .HasColumnType("nvarchar(max)");
@@ -1217,8 +1240,7 @@ namespace HousewareReviews.Server.Migrations
                     b.HasOne("HousewareReviews.Shared.Domain.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("HousewareReviews.Shared.Domain.Company", "Company")
                         .WithMany()

@@ -58,8 +58,8 @@ namespace HousewareReviews.Server.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImgUri = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImgUri = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -72,13 +72,13 @@ namespace HousewareReviews.Server.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UEN = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ContactNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LogoUri = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    WebsiteUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UEN = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ContactNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    LogoUri = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    WebsiteUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -294,12 +294,12 @@ namespace HousewareReviews.Server.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Price = table.Column<double>(type: "float", nullable: true),
-                    ImgUri = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    ImgUri = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CompanyId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                    CategoryId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -309,7 +309,7 @@ namespace HousewareReviews.Server.Migrations
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Products_Companies_CompanyId",
                         column: x => x.CompanyId,
@@ -324,8 +324,8 @@ namespace HousewareReviews.Server.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Rating = table.Column<int>(type: "int", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Rating = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     Reply = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UsefulCnt = table.Column<int>(type: "int", nullable: true),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -357,7 +357,7 @@ namespace HousewareReviews.Server.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UsefulCnt = table.Column<int>(type: "int", nullable: true),
@@ -387,8 +387,8 @@ namespace HousewareReviews.Server.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     Outcome = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConsumerId = table.Column<int>(type: "int", nullable: true),
                     ReviewId = table.Column<int>(type: "int", nullable: true),
@@ -423,8 +423,8 @@ namespace HousewareReviews.Server.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     Outcome = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConsumerId = table.Column<int>(type: "int", nullable: true),
                     CommentId = table.Column<int>(type: "int", nullable: true),
@@ -467,11 +467,11 @@ namespace HousewareReviews.Server.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "1ce40de7-b2a7-4cf4-a8f3-c811191a664d", 0, "387cbae0-3d66-4a37-991e-68cb5061d08b", "consumer@blazor.com", false, false, null, "CONSUMER@BLAZOR.COM", "T1234567A", "AQAAAAIAAYagAAAAEJA7I9H8Ij0dybyZInTuJoCna/8mBGh+VZTt2vjkeTlvPN3a13osdyjkkNz08aTfKg==", "98765432", false, "e492ed2a-0b3f-4192-a17a-0b04c53a22b1", false, "T1234567A" },
-                    { "2oh7diw9-0or5-3jf9-8ss6-ks8ya5h297bd", 0, "ec40f65f-b3b7-4099-8ecf-4331e8d6d038", "joshuatan@outlook.com", false, false, null, "JOSHUATAN@OUTLOOK.COM", "T9366538J", "AQAAAAIAAYagAAAAEFB3OsCTein32v+mEl5DVQa8saLeqjtQoRF07dMA+NsPmuvOgg0GzQus/lHuTpHb8w==", "83072245", false, "d8cc5637-0845-49af-866d-404d89d6a49c", false, "T9366538J" },
-                    { "3781efa7-66dc-47f0-860f-e506d04102e4", 0, "8f488644-c07f-41fb-876b-ecb84b22facb", "staff@blazor.com", false, false, null, "STAFF@BLAZOR.COM", "S1234567A", "AQAAAAIAAYagAAAAEBigObR90muYTekVeyoMxid7GwIv0dZWNbIou/J2QiFxl3XLcoQI3a1cTriqpufttA==", "91234567", false, "209a02f7-e750-4168-a841-6219ce8dc4e2", false, "S1234567A" },
-                    { "5di8sy83-2i9r-f56h-s8d9-s09njsh7dd53", 0, "77220a40-c264-44df-8913-6a23f1e00a07", "ethanlim@hotmail.com", false, false, null, "ETHANLIM@HOTMAIL.COM", "S9812704F", "AQAAAAIAAYagAAAAEAqYSlIUG3O7i+x2T9axGPIiJOVwOJ1Ll6nIPFWm5Zctlgh03LHRQ70AOJ5oNMJ9OQ==", "87229044", false, "8da5cb4a-80cd-4698-80f0-7e1bd2ff83c5", false, "S9812704F" },
-                    { "9du2ii40-h7d9-8sj2-j98s-is0dh83jk48s", 0, "11615762-0610-4a0e-af15-f8a248b006b3", "maymorrison@gmail.com", false, false, null, "MAYMORRISON@GMAIL.COM", "S6523489J", "AQAAAAIAAYagAAAAEAfJdChv4j/XISuiOV/Imnwa03k7aqYtHrQrIgE9DUW1y3KGDZFvRChjVMtdv2iFgg==", "92438900", false, "005d30df-623e-40b7-84d8-7b82ebc7cb30", false, "S6523489J" }
+                    { "1ce40de7-b2a7-4cf4-a8f3-c811191a664d", 0, "41e9dd9c-50de-4750-a9d1-f0d489c88065", "consumer@blazor.com", false, false, null, "CONSUMER@BLAZOR.COM", "T1234567A", "AQAAAAIAAYagAAAAEIcsPhToDcXLmZoDVW8d0fFg9a2EILAwZbHHV1L3bzhPdQOTFix3L2JAqKH+31ySAw==", "98765432", false, "5778eeaa-9306-4740-b8d2-3c0248f8c398", false, "T1234567A" },
+                    { "2oh7diw9-0or5-3jf9-8ss6-ks8ya5h297bd", 0, "6769c662-85d6-486f-8d1f-1a2b8996899d", "joshuatan@outlook.com", false, false, null, "JOSHUATAN@OUTLOOK.COM", "T9366538J", "AQAAAAIAAYagAAAAEHtK+oeEAKpTWHEUenHK5izN40Ptahx+zMl+Gdt+fNhEDMhx0LQyzeeqU7EhgwdIxQ==", "83072245", false, "9a6fa8f3-aa10-4c4c-b524-7d9c13a90d87", false, "T9366538J" },
+                    { "3781efa7-66dc-47f0-860f-e506d04102e4", 0, "97470b6f-bbb2-4ddb-a3b5-332ae6766524", "staff@blazor.com", false, false, null, "STAFF@BLAZOR.COM", "S1234567A", "AQAAAAIAAYagAAAAEDGDwkQS0XTRuIKmgG4R7qO/K81Ae2VurJ2AHUQFoXhgDexw7IoTwa7EUuJIJzmifA==", "91234567", false, "403d5c9b-930e-4587-9187-bdc0b7c0baca", false, "S1234567A" },
+                    { "5di8sy83-2i9r-f56h-s8d9-s09njsh7dd53", 0, "f99e6447-23c3-40ca-8737-c1edff02399f", "ethanlim@hotmail.com", false, false, null, "ETHANLIM@HOTMAIL.COM", "S9812704F", "AQAAAAIAAYagAAAAEMITpsAI1AiqR6N/l101FMBe9veU+pmejilxYcwlZjJf0IjQA/AAhNCEPt61Dnd+Ew==", "87229044", false, "e127a7b1-bdc2-4018-a91f-7501285b8f0f", false, "S9812704F" },
+                    { "9du2ii40-h7d9-8sj2-j98s-is0dh83jk48s", 0, "ef24ed58-bdf9-43a8-8fc6-2f8bddd961ce", "maymorrison@gmail.com", false, false, null, "MAYMORRISON@GMAIL.COM", "S6523489J", "AQAAAAIAAYagAAAAEAs9aw0kK1TXHuvaPphyf3TmSKE2Ib5xYiqdLv+K6JRgJbkgDQeq3d7HGwL9JSCrfg==", "92438900", false, "0d16db48-63d3-4888-84da-be9a3bd1f622", false, "S6523489J" }
                 });
 
             migrationBuilder.InsertData(

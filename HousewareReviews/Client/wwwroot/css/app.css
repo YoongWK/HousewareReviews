@@ -41,11 +41,13 @@ html, body {
 .table tbody tr td {
     vertical-align: middle;
     text-align: center;
+    font-size: 0.8rem;
 }
 
 .table.dataTable thead th {
     vertical-align: middle;
     text-align: center;
+    font-size: 0.85rem;
 }
 
 .file-upload {

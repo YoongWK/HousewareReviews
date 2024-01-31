@@ -26,7 +26,7 @@
                             <h1 class="modal-title fs-5" id="create-review-label">Create New @product.Name Review</h1>
                             <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
                         </div>
-                        <StaffFormComponent ButtonText="Create" OnValidSubmit="@((rev)=>CreateReview(rev))" OnInitAsync="OnInitializedAsync" review="new Review{ProductId=ProductId}" />
+                        <StaffFormComponent ButtonText="Create" OnValidSubmit="@((revData)=>CreateReview(revData))" OnInitAsync="OnInitializedAsync" review="new Review{ProductId=ProductId}" DisallowConsumer="false" />
                     </div>
                 </div>
             </div>
@@ -34,9 +34,9 @@
             <table class="table table-responsive w-100 py-2 m-0" id="reviewsTable">
                 <thead>
                     <tr>
-                        <th>Review Rating</th>
-                        <th>Review Description</th>
-                        <th>Review Reply</th>
+                        <th>Rating</th>
+                        <th>Status</th>
+                        <th class="d-none d-md-table-cell">Consumer</th>
                         <th>Comments</th>
                         <th>Actions</th>
                     </tr>
@@ -46,24 +46,78 @@
                     {
                         <tr>
                             <td>@review.Rating</td>
-                            <td>@review.Description</td>
-                            <td>@review.Reply</td>
+                            <td>@(String.IsNullOrEmpty(review.Reply) ? "Not Replied" : "Replied")</td>
+                            <td class="d-none d-md-table-cell">@((review.Consumer != null) ? $"{review.Consumer.FirstName} {review.Consumer.LastName}" : "[Deleted Consumer]")</td>
                             <td>
-                                <a href="/reviews/@review.Id/comments" class="btn btn-info">
-                                    <span class="oi oi-eye"></span>
-                                    View
+                                <a href="/reviews/@review.Id/comments" class="btn btn-info btn-sm shadow-none">
+                                    <span class="oi oi-eye"></span>&nbsp;
+                                    @{
+                                        var commentCount = 0;
+                                        if (Comments != null)
+                                        {
+                                            @foreach (var comment in Comments)
+                                            {
+                                                if (comment.ReviewId == review.Id)
+                                                {
+                                                    commentCount++;
+                                                }
+                                            }
+                                        }
+                                        @commentCount
+                                    }
                                 </a>
                             </td>
                             <td>
-                                <a href="/reviews/@review.Id/view" class="btn btn-primary">
+                                <button type="button" class="btn btn-primary btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#view-review-@review.Id">
                                     <span class="oi oi-book"></span>
-                                </a>
-                                <a href="/reviews/@review.Id/edit" class="btn btn-warning">
+                                </button>
+                                <div class="modal fade" id="view-review-@review.Id" tabindex="-1" aria-labelledby="view-review-label-@review.Id" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="view-review-label-@review.Id">View Review</h1>
+                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <StaffFormComponent review="review" Disabled="true" ShowDate="true" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="button" class="btn btn-warning btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#edit-review-@review.Id">
                                     <span class="oi oi-pencil"></span>
-                                </a>
-                                <button class="btn btn-danger" @onclick="@(()=>Delete(review.Id))">
+                                </button>
+                                <div class="modal fade" id="edit-review-@review.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit-review-label-@review.Id" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="edit-review-label-@review.Id">Edit Review</h1>
+                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                                            </div>
+                                            <StaffFormComponent OnValidSubmit="@((revData)=>EditReview(revData))" OnInitAsync="OnInitializedAsync" review="review" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="button" class="btn btn-danger btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#delete-review-@review.Id">
                                     <span class="oi oi-delete"></span>
                                 </button>
+                                <div class="modal fade" id="delete-review-@review.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete-review-label-@review.Id" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="delete-review-label-@review.Id">Confirm Delete Review?</h1>
+                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-start">
+                                                This action cannot be undone.
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-danger shadow-none" data-bs-dismiss="modal" @onclick="@(()=>DeleteReview(review.Id))">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     }
@@ -78,6 +132,7 @@
     private HttpClient _client;
     Product? product;
     private List<Review>? Reviews;
+    private List<Comment>? Comments;
     bool userIsStaff = false;
 
     protected override void OnInitialized()
@@ -89,6 +144,7 @@
     {
         product = await _client.GetFromJsonAsync<Product>($"{Endpoints.ProductsEndpoint}/{ProductId}");
         var allReviews = await _client.GetFromJsonAsync<List<Review>>($"{Endpoints.ReviewsEndpoint}");
+        Comments = await _client.GetFromJsonAsync<List<Comment>>($"{Endpoints.CommentsEndpoint}");
         var productReviews = new List<Review>();
         if (allReviews != null)
         {
@@ -105,24 +161,33 @@
         userIsStaff = authstate.User.IsInRole("Staff");
     }
 
-    private async Task CreateReview(Review rev)
+    private async Task CreateReview((Review rev, bool revChanged, bool revReplyChanged) revData)
     {
-        await _client.PostAsJsonAsync(Endpoints.ReviewsEndpoint, rev);
+        var latestDateTime = DateTime.Now;
+        revData.rev.DateCreated = latestDateTime;
+        revData.rev.DateUpdated = latestDateTime;
+        revData.rev.DateReplied = String.IsNullOrEmpty(revData.rev.Reply) ? null : latestDateTime;
+        await _client.PostAsJsonAsync(Endpoints.ReviewsEndpoint, revData.rev);
         await js.InvokeVoidAsync("hideModal", "#create-review");
         await OnInitializedAsync();
     }
 
-    async Task Delete(int reviewId)
+    private async Task EditReview((Review rev, bool revChanged, bool revReplyChanged) revData)
+    {
+        var latestDateTime = DateTime.Now;
+        revData.rev.DateUpdated = revData.revChanged ? latestDateTime : revData.rev.DateUpdated;
+        revData.rev.DateReplied = revData.revReplyChanged ? (String.IsNullOrEmpty(revData.rev.Reply) ? null : latestDateTime) : revData.rev.DateReplied;
+        await _client.PutAsJsonAsync($"{Endpoints.ReviewsEndpoint}/{revData.rev.Id}", revData.rev);
+        await js.InvokeVoidAsync("hideModal", $"#edit-review-{revData.rev.Id}");
+        await OnInitializedAsync();
+    }
+
+    private async Task DeleteReview(int reviewId)
     {
         if (Reviews != null)
         {
-            var review = Reviews.First(q => q.Id == reviewId);
-            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {review.Consumer?.FirstName}'s review?");
-            if (confirm)
-            {
-                await _client.DeleteAsync($"{Endpoints.ReviewsEndpoint}/{reviewId}");
-                await OnInitializedAsync();
-            }
+            await _client.DeleteAsync($"{Endpoints.ReviewsEndpoint}/{reviewId}");
+            await OnInitializedAsync();
         }
     }
 

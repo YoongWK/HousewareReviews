@@ -26,7 +26,7 @@
 				<label>Category:</label>
 				<div>
 					<InputSelect @bind-Value="product.CategoryId" class="form-control shadow-none">
-						<option>-- Select Category --</option>
+						<option value="">-- Select Category --</option>
 						@if (Categories != null)
 						{
 							foreach (var category in Categories)

@@ -14,8 +14,12 @@ namespace HousewareReviews.Shared.Domain
         [Required(ErrorMessage = "Rating is required.")]
         [Range(1, 5, ErrorMessage = "Rating must be between 1 and 5.")]
         public int? Rating { get; set; }
+        [Required(ErrorMessage = "Description is required.")]
+        [DataType(DataType.MultilineText)]
         [StringLength(300, ErrorMessage = "Description must not exceed {1} characters.")]
         public string? Description { get; set; }
+        [DataType(DataType.MultilineText)]
+        [StringLength(300, ErrorMessage = "Reply must not exceed {1} characters.")]
         public string? Reply { get; set; }
         public int? UsefulCnt { get; set; }
         public DateTime DateCreated { get; set; }

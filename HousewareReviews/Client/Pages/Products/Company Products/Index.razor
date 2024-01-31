@@ -180,7 +180,6 @@
     {
         if (Products != null)
         {
-            var product = Products.First(q => q.Id == productId);
             await _client.DeleteAsync($"{Endpoints.ProductsEndpoint}/{productId}");
             await OnInitializedAsync();
         }

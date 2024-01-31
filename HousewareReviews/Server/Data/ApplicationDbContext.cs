@@ -27,7 +27,13 @@ namespace HousewareReviews.Server.Data
 		public DbSet<Commentreport> Commentreports { get; set; }
 		protected override void OnModelCreating(ModelBuilder builder)
         {
-			builder.Entity<Review>()
+            builder.Entity<Product>()
+            .HasOne(e => e.Category)
+            .WithMany()
+            .HasForeignKey(e => e.CategoryId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<Review>()
 			.HasOne(e => e.Consumer)
 			.WithMany()
 			.HasForeignKey(e => e.ConsumerId)

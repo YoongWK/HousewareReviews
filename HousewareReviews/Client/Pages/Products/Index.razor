@@ -17,7 +17,7 @@
                 <br />
                 <span>$@String.Format("{0:F2}", product.Price)</span>
                 <span>Company: <span style="color: var(--blue)">@product.Company?.Name</span></span>
-                <span>Category: <span style="color: var(--blue)">@product.Category?.Name</span></span>
+                <span>Category: <span style="color: var(--blue)">@(product.Category?.Name ?? "No Category")</span></span>
             </div>
             <div class="d-lg-none p-2"></div>
             <div class="col-lg d-flex justify-content-end">
@@ -103,7 +103,7 @@
                             </h4>
                         </div>
                         <div>
-                            <h6><b>Last Updated: @review.DateUpdated.Date.ToShortDateString()</b></h6>
+                            <h6><b>Last Updated: @review.DateUpdated.ToString("d MMM yyyy")</b></h6>
                         </div>
                     </div>
                     <hr />
@@ -123,7 +123,7 @@
                     <br />
                     <div class="d-flex align-items-center">
                         <div class="me-auto">
-                            <h6><b>Date Reviewed: @review.DateCreated.Date.ToShortDateString()</b></h6>
+                            <h6><b>Date Reviewed: @review.DateCreated.ToString("d MMM yyyy")</b></h6>
                         </div>
                         @if (review.ConsumerId == currentconsumerid)
                         {
@@ -184,7 +184,7 @@
                                             </h4>
                                         </div>
                                         <div>
-                                            <h6><b>Date Replied: @review.DateReplied?.Date.ToShortDateString()</b></h6>
+                                            <h6><b>Date Replied: @(review.DateReplied?.ToString("d MMM yyyy") ?? "Not Replied")</b></h6>
                                         </div>
                                     </div>
                                     <hr />
@@ -205,7 +205,7 @@
                                                 </h4>
                                             </div>
                                             <div>
-                                                <h6><b>Last Updated: @comment.DateUpdated.Date.ToShortDateString()</b></h6>
+                                                <h6><b>Last Updated: @comment.DateUpdated.ToString("d MMM yyyy")</b></h6>
                                             </div>
                                         </div>
                                         <hr />
@@ -213,7 +213,7 @@
                                         <br />
                                         <div class="d-flex align-items-center">
                                             <div class="me-auto">
-                                                <h6><b>Date Commented: @comment.DateCreated.Date.ToShortDateString()</b></h6>
+                                                <h6><b>Date Commented: @comment.DateCreated.ToString("d MMM yyyy")</b></h6>
                                             </div>
                                             @if (comment.ConsumerId == currentconsumerid)
                                             {
@@ -265,7 +265,7 @@
                     <br />
                     <span>$@String.Format("{0:F2}", product.Price)</span>
                     <span>Company: <span style="color: var(--blue)">@product.Company?.Name</span></span>
-                    <span>Category: <span style="color: var(--blue)">@product.Category?.Name</span></span>
+                    <span>Category: <span style="color: var(--blue)">@(product.Category?.Name ?? "No Category")</span></span>
                 </div>
                 <div class="d-lg-none p-2"></div>
                 <div class="col-lg d-flex justify-content-end">
@@ -341,7 +341,7 @@
                                 </h4>
                             </div>
                             <div>
-                                <h6><b>Last Updated: @review.DateUpdated.Date.ToShortDateString()</b></h6>
+                                <h6><b>Last Updated: @review.DateUpdated.ToString("d MMM yyyy")</b></h6>
                             </div>
                         </div>
                         <hr />
@@ -359,7 +359,7 @@
                         <br />
                         <p>@review.Description</p>
                         <br />
-                        <h6><b>Date Reviewed: @review.DateCreated.Date.ToShortDateString()</b></h6>
+                        <h6><b>Date Reviewed: @review.DateCreated.ToString("d MMM yyyy")</b></h6>
                         <hr />
 
                         <div class="d-flex flex-column container">
@@ -399,7 +399,7 @@
                                                 </h4>
                                             </div>
                                             <div>
-                                                <h6><b>Date Replied: @review.DateReplied?.Date.ToShortDateString()</b></h6>
+                                                <h6><b>Date Replied: @(review.DateReplied?.ToString("d MMM yyyy") ?? "Not Replied")</b></h6>
                                             </div>
                                         </div>
                                         <hr />
@@ -420,13 +420,13 @@
                                                     </h4>
                                                 </div>
                                                 <div>
-                                                    <h6><b>Last Updated: @comment.DateUpdated.Date.ToShortDateString()</b></h6>
+                                                    <h6><b>Last Updated: @comment.DateUpdated.ToString("d MMM yyyy")</b></h6>
                                                 </div>
                                             </div>
                                             <hr />
                                             <p>@comment.Description</p>
                                             <br />
-                                            <h6><b>Date Commented: @comment.DateCreated.Date.ToShortDateString()</b></h6>
+                                            <h6><b>Date Commented: @review.DateCreated.ToString("d MMM yyyy")</b></h6>
                                             <hr />
                                             <div class="d-flex">
                                                 <div class="me-auto"></div>

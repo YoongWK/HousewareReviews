@@ -203,7 +203,6 @@
     {
         if (Companies != null)
         {
-            var company = Companies.First(q => q.Id == companyId);
             await _client.DeleteAsync($"{Endpoints.CompaniesEndpoint}/{companyId}");
             await OnInitializedAsync();
         }
