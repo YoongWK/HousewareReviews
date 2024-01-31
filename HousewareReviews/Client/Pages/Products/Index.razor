@@ -74,20 +74,16 @@
                 </div>
                 <div>
                     <small><b>Sort: </b></small>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Most Recent
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item">Most Recent</a></li>
-                            <li><a class="dropdown-item">Most Useful</a></li>
-                            <li><a class="dropdown-item">Most Commented</a></li>
-                        </ul>
-                    </div>
-                    @* <small style="color: var(--blue)"><b>Most Recent</b></small> *@
+                    <a class="dropdown-toggle" style="color:var(--blue)" role="button" id="dropdownmenuitems" data-bs-toggle="dropdown" aria-expanded="false">
+                        @selectedSortOptionText
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="drowpdownmenuitems">
+                        <li><a class="dropdown-item" @onclick="()=>ChangeSortOption(1)">Most Recent</a></li>
+                        <li><a class="dropdown-item" @onclick="()=>ChangeSortOption(2)">Most Useful</a></li>
+                        @* <li><a class="dropdown-item" @onclick="()=>ChangeSortOption(3)">Most Commented</a></li> *@
+                    </ul>
                 </div>
             </div>
-
         </div>
 
         @if (reviews != null)
@@ -96,7 +92,7 @@
             @foreach (var review in reviews
                 @* .OrderBy<Review, int>(r => r.ConsumerId == currentconsumerid ? 0 :1)) *@
                 .OrderByDescending(r => r.ConsumerId == currentconsumerid)
-                .ThenByDescending(r => r.DateUpdated))
+                .ThenByDescending(GetSortExpression(selectedSortOption)))@* r => r.DateUpdated) *@
             {
                 <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
                     <div class="d-flex">
@@ -118,7 +114,7 @@
 
                             for (int i = 1; i <= maxRating; i++)
                             {
-                                <span class="oi oi-star" style="color: @(i <= rating ? "orange" : "gray")"></span>
+                                <span class="oi oi-star me-1" style="color: @(i <= rating ? "orange" : "gray")"></span>
                             }
                         }
                     </h4>
@@ -164,8 +160,10 @@
                                     <small>Comment</small>
                                 </a>
                                 &nbsp;
-                                <span class="oi oi-thumb-up" aria-hidden="true"></span>
-                                <small>Helpful</small>
+                                <a>
+                                    <span class="oi oi-thumb-up" aria-hidden="true"></span>
+                                    <small>Helpful</small>
+                                </a>
                                 &nbsp;
                                 <a href="/reviews/@review.Id/report" style="text-decoration: none; color: var(--black)">
                                     <span class="oi oi-flag" aria-hidden="true"></span>
@@ -469,6 +467,8 @@
     int productreviewCount = 0;
     int companyreviewCount = 0;
     decimal? overallRating = 0;
+    private int selectedSortOption = 1;
+    private string selectedSortOptionText = "Most Recent";
 
     protected override void OnInitialized()
     {
@@ -551,4 +551,37 @@
             }
         }
     }
+
+    void ChangeSortOption(int option)
+    {
+        selectedSortOption = option;
+        if (option ==1)
+        {
+            selectedSortOptionText = "Most Recent";
+        }
+        else
+        {
+            selectedSortOptionText = "Most Useful";
+        }
+        StateHasChanged();
+    }
+
+    Func<Review, object> GetSortExpression(int option)
+    {
+        switch (option)
+        {
+            case 1:
+                return r => r.DateUpdated;
+            case 2:
+                return r => r.UsefulCnt;
+            // case 3:
+            //     return r => r.Comments.Count;
+            // Add more cases as needed
+            default:
+                return r => r.DateUpdated;
+        }
+    }
+
+
+
 }
