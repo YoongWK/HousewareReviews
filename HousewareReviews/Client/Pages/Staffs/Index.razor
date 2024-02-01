@@ -1,5 +1,180 @@
-﻿<h3>Index</h3>
+﻿@page "/staffs/"
+@inject IHttpClientFactory ClientFactory
+@inject IJSRuntime js
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@implements IDisposable
+
+<div class="container-fluid p-4">
+    <h4 class="card-title pb-3">Staffs</h4>
+
+    @if (Staffs == null)
+    {
+        <div class="alert alert-info">Loading Staffs...</div>
+    }
+    else
+    {
+        <AuthorizeView Roles="Staff">
+            <button type="button" class="btn btn-success btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#create-staff">
+                <span class="oi oi-plus"></span>
+                Create Staff
+            </button>
+            <div class="modal fade" id="create-staff" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="create-label-staff" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="create-label-staff">Create New Staff</h1>
+                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                        </div>
+                        <StaffFormComponent ButtonText="Create" OnValidSubmit="@((stf)=>CreateStaff(stf))" OnInitAsync="OnInitializedAsync" staff="@(new Staff{ProfileImgUri = "/images/users/default.jpg"})" />
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-responsive w-100 py-2 m-0" id="staffsTable">
+                <thead>
+                    <tr>
+                        <th>NRIC</th>
+                        <th>Status</th>
+                        <th class="d-none d-sm-table-cell">Name</th>
+                        <th class="d-none d-md-table-cell">Image</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var staff in Staffs)
+                    {
+                        <tr>
+                            <td>@staff.NRIC</td>
+                            <td>@(String.IsNullOrEmpty(staff.UserId) ? "Unauthenticated" : "Authenticated")</td>
+                            <td class="d-none d-sm-table-cell">@staff.FirstName @staff.LastName</td>
+                            <td class="d-none d-md-table-cell">
+                                <img src="@staff.ProfileImgUri" class="profile-image-sm" />
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#view-staff-@staff.Id">
+                                    <span class="oi oi-book"></span>
+                                </button>
+                                <div class="modal fade" id="view-staff-@staff.Id" tabindex="-1" aria-labelledby="view-staff-label-@staff.Id" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="view-staff-label-@staff.Id">View @staff.FirstName @staff.LastName</h1>
+                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <StaffFormComponent staff="staff" Disabled="true" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if (String.IsNullOrEmpty(staff.UserId))
+                                {
+                                    <button type="button" class="btn btn-warning btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#edit-staff-@staff.Id">
+                                        <span class="oi oi-pencil"></span>
+                                    </button>
+                                    <div class="modal fade" id="edit-staff-@staff.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit-staff-label-@staff.Id" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="edit-staff-label-@staff.Id">Edit @staff.FirstName @staff.LastName</h1>
+                                                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                                                </div>
+                                                <StaffFormComponent OnValidSubmit="@((stf)=>EditStaff(stf))" OnInitAsync="OnInitializedAsync" staff="staff" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button type="button" class="btn btn-danger btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#delete-staff-@staff.Id">
+                                        <span class="oi oi-delete"></span>
+                                    </button>
+                                    <div class="modal fade" id="delete-staff-@staff.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete-staff-label-@staff.Id" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="delete-staff-label-@staff.Id">Confirm Delete @staff.FirstName @staff.LastName?</h1>
+                                                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body text-start">
+                                                    This action cannot be undone.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-danger shadow-none" data-bs-dismiss="modal" @onclick="@(()=>DeleteStaff(staff.Id))">Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn btn-secondary btn-sm shadow-none" disabled>
+                                        <span class="oi oi-pencil"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-secondary btn-sm shadow-none" disabled>
+                                        <span class="oi oi-delete"></span>
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </AuthorizeView>
+    }
+</div>
 
 @code {
+    private HttpClient _client;
+    private List<Staff>? Staffs;
+    bool userIsStaff = false;
 
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("public");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        Staffs = await _client.GetFromJsonAsync<List<Staff>>($"{Endpoints.StaffsEndpoint}");
+        var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        userIsStaff = authstate.User.IsInRole("Staff");
+    }
+
+    private async Task CreateStaff(Staff stf)
+    {
+        await _client.PostAsJsonAsync(Endpoints.StaffsEndpoint, stf);
+        await js.InvokeVoidAsync("hideModal", "#create-staff");
+        await OnInitializedAsync();
+    }
+
+    private async Task EditStaff(Staff stf)
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.StaffsEndpoint}/{stf.Id}", stf);
+        await js.InvokeVoidAsync("hideModal", $"#edit-staff-{stf.Id}");
+        await OnInitializedAsync();
+    }
+
+    private async Task DeleteStaff(int staffId)
+    {
+        if (Staffs != null)
+        {
+            await _client.DeleteAsync($"{Endpoints.StaffsEndpoint}/{staffId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (userIsStaff)
+        {
+            await js.InvokeVoidAsync("AddDataTable", "#staffsTable", "Search Staffs");
+        }
+    }
+
+    public void Dispose()
+    {
+        if (userIsStaff)
+        {
+            js.InvokeVoidAsync("DataTablesDispose", "#staffsTable");
+        }
+    }
 }
