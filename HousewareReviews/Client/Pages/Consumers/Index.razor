@@ -45,7 +45,7 @@
                     {
                         <tr>
                             <td>@consumer.NRIC</td>
-                            <td>@(String.IsNullOrEmpty(consumer.UserId) ? "Not Authorized" : "Authorized")</td>
+                            <td>@(String.IsNullOrEmpty(consumer.UserId) ? "Unauthenticated" : "Authenticated")</td>
                             <td class="d-none d-sm-table-cell">@consumer.FirstName @consumer.LastName</td>
                             <td class="d-none d-md-table-cell">
                                 <img src="@consumer.ProfileImgUri" class="profile-image-sm" />
