@@ -70,6 +70,36 @@ html, body {
     margin: 1rem 0rem 0rem 0rem;
 }
 
+.star-rating > label {
+    font-size: 2rem;
+    line-height: 2rem;
+}
+
+.star-rating > input:enabled ~ label {
+    color: orange;
+    cursor: pointer;
+}
+
+.star-rating > input:disabled ~ label {
+    color: var(--darkgray);
+    cursor: auto;
+}
+
+.star-rating > label::before {
+    content: "\2605";
+    position: absolute;
+    opacity: 0;
+}
+
+.star-rating > input:enabled ~ label:hover:before,
+.star-rating > input:enabled ~ label:hover ~ label:before {
+    opacity: 1;
+}
+
+.star-rating > input:checked ~ label:before {
+    opacity: 1;
+}
+
 h1:focus {
     outline: none;
 }

@@ -11,7 +11,7 @@
                 <div>
                     @if (DisallowConsumer)
                     {
-                        <input type="text" value="@((review.Consumer != null) ? $"{review.Consumer.FirstName} {review.Consumer.LastName}" : "Deleted Consumer")" class="form-control shadow-none" disabled />
+                        <input type="text" value="@((review.Consumer != null) ? $"{review.Consumer.FirstName} {review.Consumer.LastName}" : "[Deleted Consumer]")" class="form-control shadow-none" disabled />
                     }
                     else
                     {
@@ -34,10 +34,16 @@
             </div>
             <div class="form-group pb-3">
                 <label>Rating:</label>
-                <div>
-                    <InputNumber @bind-Value="@review.Rating" class="form-control shadow-none" />
-                    <ValidationMessage For="@(() => review.Rating)" />
+                <div class=" d-flex flex-row-reverse justify-content-end star-rating">
+                    @for (int i = 5; i >= 1; i--)
+                    {
+                        var id = Guid.NewGuid();
+                        var rating = i;
+                        <input class="d-none" type="radio" name="StarRating" value="@i" checked="@((review.Rating.HasValue && review.Rating == i))" id="star-@id" @onchange="@(e => updateRating(rating))" disabled="@Disabled" />
+                        <label for="star-@id">☆</label>
+                    }
                 </div>
+                <ValidationMessage For="@(() => review.Rating)" />
             </div>
 
             <div class="form-group pb-3">
@@ -151,5 +157,11 @@
     protected async override Task OnInitializedAsync()
     {
         Consumers = await _client.GetFromJsonAsync<List<Consumer>>($"{Endpoints.ConsumersEndpoint}");
+    }
+
+    private void updateRating(int selectedRating)
+    {
+        review.Rating = selectedRating;
+        Console.WriteLine(review.Rating);
     }
 }
