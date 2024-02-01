@@ -1,5 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@inject IJSRuntime JS
 @inject HttpInterceptorService _interceptor
 @implements IDisposable
 
@@ -9,16 +8,7 @@
     </div>
     <main>
         <article class="content">
-            @try
-            {
-                @Body
-            }
-            catch (Exception ex)
-            {
-                <script>
-                    console.error("@ex.Message");
-                </script>
-            }
+            @Body
         </article>
     </main>
 </div>
