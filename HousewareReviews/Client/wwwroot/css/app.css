@@ -100,6 +100,14 @@ html, body {
     opacity: 1;
 }
 
+.profile-image-sm {
+    border-radius: 50%;
+    height: 70px;
+    width: 70px;
+    border: 2px solid;
+    object-fit: cover;
+}
+
 h1:focus {
     outline: none;
 }

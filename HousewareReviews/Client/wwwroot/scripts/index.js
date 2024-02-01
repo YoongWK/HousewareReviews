@@ -43,3 +43,18 @@ function updateCharCount(inputField, maxlLength) {
         charCountSpan.classList.remove("text-danger");
     }
 }
+function updateImgHeight(imgId) {
+    var image = document.getElementById(imgId);
+    image.style.height = image.width;
+}
+
+function imgHeightListener(imgId) {
+    document.addEventListener("DOMContentLoaded", function () {
+        window.addEventListener('load', function () {
+            updateImgHeight(imgId);
+        });
+        window.addEventListener('resize', function () {
+            updateImgHeight(imgId);
+        });
+    });
+}

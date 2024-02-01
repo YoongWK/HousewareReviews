@@ -1,0 +1,121 @@
+﻿@inject IJSRuntime js
+@attribute [Authorize(Roles = "Staff")]
+
+<EditForm Model="@consumer" OnValidSubmit="@(() => OnValidSubmitCallback(consumer))" style="font-size:1rem;">
+	<DataAnnotationsValidator />
+	<ValidationSummary class="text-start mb-0 pt-3" />
+	<div class="modal-body text-start">
+		<fieldset disabled="@Disabled">
+			<div class="form-group pb-3">
+				<label>First Name:</label>
+				<div>
+					<InputText @bind-Value="@consumer.FirstName" class="form-control shadow-none" />
+					<ValidationMessage For="@(() => consumer.FirstName)" />
+				</div>
+			</div>
+
+			<div class="form-group pb-3">
+				<label>First Name:</label>
+				<div>
+					<InputText @bind-Value="@consumer.LastName" class="form-control shadow-none" />
+					<ValidationMessage For="@(() => consumer.LastName)" />
+				</div>
+			</div>
+
+			<div class="form-group pb-3">
+				<label>NRIC:</label>
+				<div>
+					<InputText @bind-Value="@consumer.NRIC" class="form-control shadow-none" />
+					<ValidationMessage For="@(() => consumer.NRIC)" />
+				</div>
+			</div>
+
+			<div class="form-group pb-3">
+				<label>Email:</label>
+				<div>
+					<InputText @bind-Value="@consumer.Email" class="form-control shadow-none" />
+					<ValidationMessage For="@(() => consumer.Email)" />
+				</div>
+			</div>
+
+			<div class="form-group pb-3">
+				<label>Contact Number:</label>
+				<div>
+					<InputText @bind-Value="@consumer.ContactNumber" class="form-control shadow-none" />
+					<ValidationMessage For="@(() => consumer.ContactNumber)" />
+				</div>
+			</div>
+
+			<div class="form-group pb-3">
+				<label>Password:</label>
+				<div>
+					<InputText @bind-Value="@consumer.Password" type="password" class="form-control shadow-none" />
+					<ValidationMessage For="@(() => consumer.Password)" />
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label>Image:</label>
+				@if (!Disabled)
+				{
+					<div class="d-flex flex-column pb-1">
+						<InputFile OnChange="OnFileSelection" class="file-upload" accept="image/png, image/jpeg" />
+						<ValidationMessage For="@(() => consumer.ProfileImgUri)" />
+					</div>
+				}
+				<div class="text-center">
+					<img class="w-50" src="@consumer.ProfileImgUri" style="border-radius: 50%;border: 2px solid;object-fit: cover;" onerror="this.style.display='none'" id="@imgId" />
+				</div>
+			</div>
+		</fieldset>
+	</div>
+
+	<div class="modal-footer">
+		<button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal" @onclick="OnInitAsync">Close</button>
+		@if (!Disabled)
+		{
+			<button type="submit" class="btn btn-success shadow-none">
+				@ButtonText
+			</button>
+		}
+	</div>
+</EditForm>
+
+@code {
+	[Parameter] public bool Disabled { get; set; } = false;
+	[Parameter] public Consumer? consumer { get; set; }
+	[Parameter] public string ButtonText { get; set; } = "Save";
+	[Parameter] public EventCallback<Consumer> OnValidSubmit { get; set; }
+	[Parameter] public Func<Task> OnInitAsync { get; set; }
+
+	private string imgId;
+
+	protected override void OnInitialized()
+	{
+		imgId = $"profile-{Guid.NewGuid()}";
+	}
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await js.InvokeVoidAsync("imgHeightListener", imgId);
+		}
+	}
+
+	private async Task OnValidSubmitCallback(Consumer con)
+	{
+		if (OnValidSubmit.HasDelegate)
+		{
+			await OnValidSubmit.InvokeAsync(con);
+		}
+	}
+
+	private async Task OnFileSelection(InputFileChangeEventArgs e)
+	{
+		var imgFile = e.File;
+		var buffers = new byte[imgFile.Size];
+		await imgFile.OpenReadStream().ReadAsync(buffers);
+		consumer.ProfileImgUri = $"data:image/png;base64,{Convert.ToBase64String(buffers)}";
+	}
+}
