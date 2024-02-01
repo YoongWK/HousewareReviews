@@ -27,19 +27,15 @@ namespace HousewareReviews.Client.Services
 				{
 					case HttpStatusCode.NotFound:
 						navManager.NavigateTo("/404");
-						message = "The requested resource was not found.";
 						break;
 					case HttpStatusCode.Unauthorized:
 					case HttpStatusCode.Forbidden:
 						navManager.NavigateTo("/unauthorized");
-						message = "You are not authorized to access this resource.";
 						break;
 					default:
 						navManager.NavigateTo("/500");
-						message = "Something went wrong, please contact Administrator.";
 						break;
 				}
-				throw new Exception(message);
 			}
 		}
 

@@ -1,4 +1,6 @@
-﻿<CascadingAuthenticationState>
+﻿@inject NavigationManager navManager
+
+<CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
@@ -9,7 +11,7 @@
                     }
                     else
                     {
-                        <p role="alert">You are not authorized to access this resource.</p>
+                        navManager.NavigateTo("/unauthorized");
                     }
                 </NotAuthorized>
             </AuthorizeRouteView>
@@ -18,7 +20,7 @@
         <NotFound>
             <PageTitle>Not found</PageTitle>
             <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
+                @{navManager.NavigateTo("/404");}
             </LayoutView>
         </NotFound>
     </Router>

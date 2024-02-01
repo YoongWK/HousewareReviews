@@ -10,8 +10,11 @@ namespace HousewareReviews.Shared.Domain
     public class Commentreport
     {
         public int Id { get; set; }
-        [Required(ErrorMessage = "Report type must be selected.")]
+        [Required(ErrorMessage = "Category is required.")]
+        [DataType(DataType.Text)]
         public string? Category { get; set; }
+        [Required(ErrorMessage = "Description is required.")]
+        [DataType(DataType.MultilineText)]
         [StringLength(300, ErrorMessage = "Description must not exceed {1} characters.")]
         public string? Description { get; set; }
         public string? Outcome {  get; set; }
