@@ -22,8 +22,11 @@ namespace HousewareReviews.Shared.Domain
         [StringLength(300, ErrorMessage = "Reply must not exceed {1} characters.")]
         public string? Reply { get; set; }
         public int? UsefulCnt { get; set; }
+        [DataType(DataType.DateTime)]
         public DateTime DateCreated { get; set; }
+        [DataType(DataType.DateTime)]
         public DateTime DateUpdated { get; set; }
+        [DataType(DataType.DateTime)]
         public DateTime? DateReplied { get; set; }
         public int ProductId { get; set; }
         public virtual Product? Product { get; set; }
