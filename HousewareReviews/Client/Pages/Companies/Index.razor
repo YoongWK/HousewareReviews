@@ -63,7 +63,7 @@
                             <h1 class="modal-title fs-5" id="create-label-company">Create New Company</h1>
                             <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
                         </div>
-                        <FormComponent ButtonText="Create" OnValidSubmit="@((comp)=>CreateCompany(comp))" OnInitAsync="OnInitializedAsync" company="new Company()" />
+                        <StaffFormComponent ButtonText="Create" OnValidSubmit="@((comp)=>CreateCompany(comp))" OnInitAsync="OnInitializedAsync" company="new Company()" />
                     </div>
                 </div>
             </div>
@@ -117,7 +117,7 @@
                                                 <h1 class="modal-title fs-5" id="view-company-label-@company.Id">View @company.Name</h1>
                                                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                                            <FormComponent company="company" Disabled="true" />
+                                            <StaffFormComponent company="company" Disabled="true" />
                                         </div>
                                     </div>
                                 </div>
@@ -132,7 +132,7 @@
                                                 <h1 class="modal-title fs-5" id="edit-company-label-@company.Id">Edit @company.Name</h1>
                                                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
                                             </div>
-                                            <FormComponent OnValidSubmit="@((comp)=>EditCompany(comp))" OnInitAsync="OnInitializedAsync" company="company" />
+                                            <StaffFormComponent OnValidSubmit="@((comp)=>EditCompany(comp))" OnInitAsync="OnInitializedAsync" company="company" />
                                         </div>
                                     </div>
                                 </div>

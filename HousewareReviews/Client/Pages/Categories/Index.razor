@@ -63,7 +63,7 @@
                             <h1 class="modal-title fs-5" id="create-category-label">Create New Category</h1>
                             <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
                         </div>
-                        <FormComponent ButtonText="Create" OnValidSubmit="@((cat)=>CreateCategory(cat))" OnInitAsync="OnInitializedAsync" category="new Category()" />
+                        <StaffFormComponent ButtonText="Create" OnValidSubmit="@((cat)=>CreateCategory(cat))" OnInitAsync="OnInitializedAsync" category="new Category()" />
                     </div>
                 </div>
             </div>
@@ -95,7 +95,7 @@
                                                 <h1 class="modal-title fs-5" id="view-category-label-@category.Id">View @category.Name</h1>
                                                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                                            <FormComponent category="category" Disabled="true" />
+                                            <StaffFormComponent category="category" Disabled="true" />
                                         </div>
                                     </div>
                                 </div>
@@ -110,7 +110,7 @@
                                                 <h1 class="modal-title fs-5" id="edit-category-label-@category.Id">Edit @category.Name</h1>
                                                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
                                             </div>
-                                            <FormComponent OnValidSubmit="@((cat)=>EditCategory(cat))" OnInitAsync="OnInitializedAsync" category="category" />
+                                            <StaffFormComponent OnValidSubmit="@((cat)=>EditCategory(cat))" OnInitAsync="OnInitializedAsync" category="category" />
                                         </div>
                                     </div>
                                 </div>

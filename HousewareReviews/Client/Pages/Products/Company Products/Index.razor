@@ -25,7 +25,7 @@
                             <h1 class="modal-title fs-5" id="create-product-label">Create New @company.Name Product</h1>
                             <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
                         </div>
-                        <FormComponent ButtonText="Create" OnValidSubmit="@((prod)=>CreateProduct(prod))" OnInitAsync="OnInitializedAsync" product="new Product{CompanyId=CompanyId}" />
+                        <StaffFormComponent ButtonText="Create" OnValidSubmit="@((prod)=>CreateProduct(prod))" OnInitAsync="OnInitializedAsync" product="new Product{CompanyId=CompanyId}" />
                     </div>
                 </div>
             </div>
@@ -79,7 +79,7 @@
                                                 <h1 class="modal-title fs-5" id="view-product-label-@product.Id">View @product.Name</h1>
                                                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                                            <FormComponent product="product" Disabled="true" />
+                                            <StaffFormComponent product="product" Disabled="true" />
                                         </div>
                                     </div>
                                 </div>
@@ -94,7 +94,7 @@
                                                 <h1 class="modal-title fs-5" id="edit-product-label-@product.Id">Edit @product.Name</h1>
                                                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
                                             </div>
-                                            <FormComponent OnValidSubmit="@((prod)=>EditProduct(prod))" OnInitAsync="OnInitializedAsync" product="product" />
+                                            <StaffFormComponent OnValidSubmit="@((prod)=>EditProduct(prod))" OnInitAsync="OnInitializedAsync" product="product" />
                                         </div>
                                     </div>
                                 </div>
