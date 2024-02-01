@@ -25,7 +25,7 @@
                             <h1 class="modal-title fs-5" id="create-product-label">Create New @company.Name Product</h1>
                             <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
                         </div>
-                        <StaffFormComponent ButtonText="Create" OnValidSubmit="@((prod)=>CreateProduct(prod))" OnInitAsync="OnInitializedAsync" product="new Product{CompanyId=CompanyId}" />
+                        <StaffFormComponent ButtonText="Create" OnValidSubmit="@((prod)=>CreateProduct(prod))" OnInitAsync="OnInitializedAsync" product="new Product{CompanyId=company.Id}" />
                     </div>
                 </div>
             </div>

@@ -26,7 +26,7 @@
                             <h1 class="modal-title fs-5" id="create-review-label">Create New @product.Name Review</h1>
                             <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
                         </div>
-                        <StaffFormComponent ButtonText="Create" OnValidSubmit="@((revData)=>CreateReview(revData))" OnInitAsync="OnInitializedAsync" review="new Review{ProductId=ProductId}" DisallowConsumer="false" />
+                        <StaffFormComponent ButtonText="Create" OnValidSubmit="@((revData)=>CreateReview(revData))" OnInitAsync="OnInitializedAsync" review="new Review{ProductId=product.Id}" DisallowConsumer="false" />
                     </div>
                 </div>
             </div>
