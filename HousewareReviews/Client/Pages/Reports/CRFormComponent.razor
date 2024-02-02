@@ -6,54 +6,32 @@
     <ValidationSummary class="text-start mb-0 pt-3" />
     <div class="modal-body text-start">
         <fieldset disabled="@Disabled">
-            <div class="form-group">
+            <div class="form-group pb-3">
                 <label>Category:</label>
                 <div>
-                    @if (!onlyAllowOutcomeNStaff)
-                    {
-                        <InputSelect @bind-Value="@commentreport.Category" class="form-control">
-                            <option value="">-- Select Category --</option>
-                            <option value="Spam">Spam</option>
-                            <option value="Inappropriate Content">Inappropriate Content</option>
-                            <option value="False Information">False Information</option>
-                            <option value="Conflict of Interest">Conflict of Interest</option>
-                            <option value="Others">Others</option>
-                        </InputSelect>
-                    }
-                    else
-                    {
-                        <input type="text" value="@((commentreport.Category != null) ? $"{commentreport.Category}" : "[unavailable category]")" class="form-control shadow-none" disabled />
-                    }
+                    <input type="text" value="@commentreport.Category" class="form-control shadow-none" disabled />
                 </div>
             </div>
-            <div class="form-group">
+
+            <div class="form-group pb-3">
                 <label>Description:</label>
                 <div>
-                    @if (!onlyAllowOutcomeNStaff)
-                    {
-                        <InputTextArea @bind-Value="@commentreport.Description" class="form-control" />
-                        <ValidationMessage For="@(() => commentreport.Description)" />
-                    }
-                    else
-                    {
-                        <input type="text" value="@((commentreport.Description != null) ? $"{commentreport.Description}" : "[unavailable description]")" class="form-control shadow-none" disabled />
-                    }
+                    <input type="text" value="@commentreport.Description" class="form-control shadow-none" disabled />
                 </div>
             </div>
-            <div class="form-group">
+
+            <div class="form-group pb-3">
                 <label>Outcome:</label>
                 <div>
-                    <InputSelect @bind-Value="@commentreport.Outcome" class="form-control">
-                        @* <option value="">-- Select Outcome --</option> *@
-                        @* @if (commentreport.Outcome == "Pending")
-                        {
-                            <option value="Pending">Pending</option>
-                        } *@
-                        <option value="Dismissed">Dismissed</option>
+                    <InputSelect @bind-Value="@commentreport.Outcome" class="form-control shadow-none">
+                        <option value="Pending">Pending</option>
+                        <option value="Dismissed Report">Dismissed Report</option>
                         <option value="Deleted Comment">Deleted Comment</option>
                     </InputSelect>
+                    <ValidationMessage For="@(() => commentreport.Outcome)" />
                 </div>
             </div>
+
             <div class="form-group">
                 <label>Handled by:</label>
                 <InputSelect @bind-Value="@commentreport.StaffId" class="form-control shadow-none">
@@ -70,6 +48,7 @@
             </div>
         </fieldset>
     </div>
+
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal" @onclick="OnInitAsync">Close</button>
         @if (!Disabled)
@@ -85,21 +64,16 @@
     [Parameter] public bool Disabled { get; set; } = false;
     [Parameter] public Commentreport? commentreport { get; set; }
     [Parameter] public string ButtonText { get; set; } = "Save";
-    [Parameter] public EventCallback<(Commentreport, bool)> OnValidSubmit { get; set; }
-    [Parameter] public bool onlyAllowOutcomeNStaff { get; set; } //compulsory
+    [Parameter] public EventCallback<Commentreport> OnValidSubmit { get; set; }
     [Parameter] public Func<Task> OnInitAsync { get; set; }
     [Parameter] public int CommentId { get; set; }
-    public Commentreport orgCR;
-    private IList<Staff> Staffs;
-
 
     private HttpClient _client;
-    // private IList<Category>? Categories;
+    private IList<Staff> Staffs;
 
     protected override void OnInitialized()
     {
         _client = ClientFactory.CreateClient("private");
-        orgCR = commentreport;
     }
 
     protected async override Task OnInitializedAsync()
@@ -111,14 +85,10 @@
     {
         if (OnValidSubmit.HasDelegate)
         {
+            cr.Comment = null;
             cr.Consumer = null;
             cr.Staff = null;
-            var crChanged = false;
-            if (cr.Outcome != orgCR.Outcome) 
-            {
-                crChanged = true;
-            }
-            await OnValidSubmit.InvokeAsync((cr, crChanged));
+            await OnValidSubmit.InvokeAsync(cr);
         }
     }
 }
