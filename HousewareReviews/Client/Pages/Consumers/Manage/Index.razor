@@ -1,0 +1,117 @@
+﻿@page "/manage/consumers/"
+@inject IHttpClientFactory ClientFactory
+@inject IJSRuntime js
+@implements IDisposable
+@attribute [Authorize(Roles = "Staff")]
+
+<div class="container-fluid p-4">
+    <h4 class="card-title pb-3">Consumers</h4>
+
+    @if (Consumers == null)
+    {
+        <div class="alert alert-info">Loading Consumers...</div>
+    }
+    else
+    {
+        <ConsumerModal Id="@("create-consumer")"
+                        ItemName="New Consumer"
+                        Action="Create"
+                        OnValidSubmit="@((con)=>CreateConsumer(con))"
+                        OnInitAsync="OnInitializedAsync"
+                        Consumer="@(new Consumer{ProfileImgUri = "/images/users/default.jpg"})" />
+
+        <table class="table table-responsive w-100 py-2 m-0" id="consumersTable">
+            <thead>
+                <tr>
+                    <th>NRIC</th>
+                    <th>Status</th>
+                    <th class="d-none d-sm-table-cell">Name</th>
+                    <th class="d-none d-md-table-cell">Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var consumer in Consumers)
+                {
+                    var authenticated = String.IsNullOrEmpty(consumer.UserId) ? false : true;
+                    var consumerName = $"{consumer.FirstName} {consumer.LastName}";
+                    <tr>
+                        <td>@consumer.NRIC</td>
+                        <td>@(authenticated ? "Auth'd" : "Unauth'd")</td>
+                        <td class="d-none d-sm-table-cell">@consumerName</td>
+                        <td class="d-none d-md-table-cell">
+                            <img src="@consumer.ProfileImgUri" class="profile-image-sm" />
+                        </td>
+                        <td>
+                            <ConsumerModal Id="@($"view-consumer-{consumer.Id}")"
+                                            ItemName="@consumerName"
+                                            Action="View"
+                                            Consumer="consumer"/>
+
+                            <ConsumerModal Id="@($"edit-consumer-{consumer.Id}")"
+                                            ItemName="@consumerName"
+                                            Action="Edit"
+                                            OnValidSubmit="@((con)=>EditConsumer(con))"
+                                            OnInitAsync="OnInitializedAsync"
+                                            Consumer="consumer"
+                                            Disabled="authenticated"/>
+
+                            <ConfirmDeleteModal Id="@($"delete-consumer-{consumer.Id}")"
+                                                    ItemName="@consumerName"
+                                                    DeleteFunction="@(()=>DeleteConsumer(consumer.Id))"
+                                                    Disabled="authenticated" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    private HttpClient _client;
+    private List<Consumer>? Consumers;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("private");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        Consumers = await _client.GetFromJsonAsync<List<Consumer>>($"{Endpoints.ConsumersEndpoint}");
+    }
+
+    private async Task CreateConsumer(Consumer con)
+    {
+        await _client.PostAsJsonAsync(Endpoints.ConsumersEndpoint, con);
+        await js.InvokeVoidAsync("hideModal", "#create-consumer");
+        await OnInitializedAsync();
+    }
+
+    private async Task EditConsumer(Consumer con)
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.ConsumersEndpoint}/{con.Id}", con);
+        await js.InvokeVoidAsync("hideModal", $"#edit-consumer-{con.Id}");
+        await OnInitializedAsync();
+    }
+
+    private async Task DeleteConsumer(int consumerId)
+    {
+        if (Consumers != null)
+        {
+            await _client.DeleteAsync($"{Endpoints.ConsumersEndpoint}/{consumerId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#consumersTable", "Search Consumers");
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#consumersTable");
+    }
+}

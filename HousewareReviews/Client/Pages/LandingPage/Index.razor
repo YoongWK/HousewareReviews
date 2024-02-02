@@ -5,7 +5,7 @@
 
 <PageTitle>Houseware Reviews - Home</PageTitle>
 
-<AuthorizeView>
+@* <AuthorizeView>
     <NotAuthorized>
 		<div id="furnitureCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-pause="false">
 			<div class="d-flex carousel-inner">
@@ -65,72 +65,103 @@
 			<span class="carousel-control-next-icon" aria-hidden="true"></span>
 		</button>
 	</div>
-</AuthorizeView>
+</AuthorizeView> *@
 
 
 <AuthorizeView Roles="Staff">
-    <div class="staffhome">
-		<img class="d-block w-100" src="/images/backgrounds/staffhome.jpg" />
-		<div class="staffhome-info px-4">
-			<h2 class="staffhome-info-title m-0">Hello, @staffname!</h2>
-			<p class="staffhome-info-text m-0">There are <span class="text-danger">5</span> reports pending for review.</p>
-		</div>
-    </div>
-	<div class="px-4">
-		<h4 class="staffaccess my-3">Quick Access</h4>
-		<div class="row row-cols-1 row-cols-xl-4 row-cols-lg-3 row-cols-sm-2 g-5">
-			<div class="col">
-				<a href="/categories" style="text-decoration: none;">
-					<div class="staffaccess-item card text-center h-100 p-3 rounded-4">
-						<span class="oi oi-grid-two-up pb-3" aria-hidden="true"></span>
-						<div class="card-body m-0 p-0">
-							<h5 class="card-title m-0">Manage Categories</h5>
-						</div>
-					</div>
-				</a>
-			</div>
-			<div class="col">
-				<a href="/companies" style="text-decoration: none;">
-					<div class="staffaccess-item card text-center h-100 p-3 rounded-4">
-						<span class="oi oi-briefcase pb-3" aria-hidden="true"></span>
-						<div class="card-body m-0 p-0">
-							<h5 class="card-title m-0">Manage Companies</h5>
-						</div>
-					</div>
-				</a>
-			</div>
-			<div class="col">
-				<a href="/reports" style="text-decoration: none;">
-					<div class="staffaccess-item card text-center h-100 p-3 rounded-4">
-						<span class="oi oi-document pb-3" aria-hidden="true"></span>
-						<div class="card-body m-0 p-0">
-							<h5 class="card-title m-0">Manage Reports</h5>
-						</div>
-					</div>
-				</a>
-			</div>
-			<div class="col">
-				<a href="/consumers" style="text-decoration: none;">
-					<div class="staffaccess-item card text-center h-100 p-3 rounded-4">
-						<span class="oi oi-people pb-3" aria-hidden="true"></span>
-						<div class="card-body m-0 p-0">
-							<h5 class="card-title m-0">Manage Consumers</h5>
-						</div>
-					</div>
-				</a>
-			</div>
-			<div class="col">
-				<a href="/staffs" style="text-decoration: none;">
-					<div class="staffaccess-item card text-center h-100 p-3 rounded-4">
-						<span class="oi oi-person pb-3" aria-hidden="true"></span>
-						<div class="card-body m-0 p-0">
-							<h5 class="card-title m-0">Manage Staffs</h5>
-						</div>
-					</div>
-				</a>
+	<Authorized>
+		<div class="staffhome">
+			<img class="d-block w-100" src="/images/backgrounds/staffhome.jpg" />
+			<div class="staffhome-info px-4">
+				<h2 class="staffhome-info-title m-0">Hello, @staffname!</h2>
+				<p class="staffhome-info-text m-0">There are <span class="text-danger">5</span> reports pending for review.</p>
 			</div>
 		</div>
-	</div>
+		<div class="px-4 pb-3">
+			<h4 class="staffaccess py-3">Quick Access</h4>
+			<div class="row row-cols-1 row-cols-xl-4 row-cols-lg-3 row-cols-sm-2 g-3">
+				<div class="col">
+					<a href="/categories" style="text-decoration: none;">
+						<div class="staffaccess-item card text-center h-100 p-3 rounded-4">
+							<span class="oi oi-grid-two-up pb-3" aria-hidden="true"></span>
+							<div class="card-body m-0 p-0">
+								<h5 class="card-title m-0">Manage Categories</h5>
+							</div>
+						</div>
+					</a>
+				</div>
+				<div class="col">
+					<a href="/companies" style="text-decoration: none;">
+						<div class="staffaccess-item card text-center h-100 p-3 rounded-4">
+							<span class="oi oi-briefcase pb-3" aria-hidden="true"></span>
+							<div class="card-body m-0 p-0">
+								<h5 class="card-title m-0">Manage Companies</h5>
+							</div>
+						</div>
+					</a>
+				</div>
+				<div class="col">
+					<a href="/reports" style="text-decoration: none;">
+						<div class="staffaccess-item card text-center h-100 p-3 rounded-4">
+							<span class="oi oi-document pb-3" aria-hidden="true"></span>
+							<div class="card-body m-0 p-0">
+								<h5 class="card-title m-0">Manage Reports</h5>
+							</div>
+						</div>
+					</a>
+				</div>
+				<div class="col">
+					<a href="manage/consumers" style="text-decoration: none;">
+						<div class="staffaccess-item card text-center h-100 p-3 rounded-4">
+							<span class="oi oi-people pb-3" aria-hidden="true"></span>
+							<div class="card-body m-0 p-0">
+								<h5 class="card-title m-0">Manage Consumers</h5>
+							</div>
+						</div>
+					</a>
+				</div>
+				<div class="col">
+					<a href="manage/staffs" style="text-decoration: none;">
+						<div class="staffaccess-item card text-center h-100 p-3 rounded-4">
+							<span class="oi oi-person pb-3" aria-hidden="true"></span>
+							<div class="card-body m-0 p-0">
+								<h5 class="card-title m-0">Manage Staffs</h5>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+	</Authorized>
+    <NotAuthorized>
+		<div id="furnitureCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-pause="false">
+			<div class="d-flex carousel-inner">
+				<div class="carousel-item active" data-bs-interval="3000">
+					<img src="/images/backgrounds/defaulthome1.jpg" class="d-block w-100">
+				</div>
+				<div class="carousel-item" data-bs-interval="3000">
+					<img src="/images/backgrounds/defaulthome2.jpg" class="d-block w-100">
+				</div>
+				<div class="carousel-item" data-bs-interval="3000">
+					<img src="/images/backgrounds/defaulthome3.jpg" class="d-block w-100">
+				</div>
+				<div class="carousel-caption welcome rounded-3 text-start ms-auto">
+					<h2 class="welcome-title m-0">Welcome to</h2>
+					<h2 class="welcome-title">Houseware Reviews!</h2>
+					<p class="welcome-text">Discover the best products for your home.</p>
+					<a href="categories" class="btn welcome-btn rounded-5 text-white shadow-none">
+						Discover Now
+					</a>
+				</div>
+			</div>
+			<button class="carousel-control-prev control" type="button" data-bs-target="#furnitureCarousel" data-bs-slide="prev">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			</button>
+			<button class="carousel-control-next control" id="nextFurnitureCarouselBtn" type="button" data-bs-target="#furnitureCarousel" data-bs-slide="next">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+			</button>
+		</div>
+	</NotAuthorized>
 </AuthorizeView>
 
 @code {
