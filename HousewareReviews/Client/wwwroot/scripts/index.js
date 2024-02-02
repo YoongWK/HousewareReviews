@@ -43,18 +43,30 @@ function updateCharCount(inputField, maxlLength) {
         charCountSpan.classList.remove("text-danger");
     }
 }
-function updateImgHeight(imgId) {
+
+window.ModalImgHandlers = {};
+
+function updateImgHeight(imgId, hwRatio) {
     var image = document.getElementById(imgId);
-    image.style.height = image.width;
+    image.style.height = `${image.width * hwRatio}px`;
 }
 
-function imgHeightListener(imgId) {
-    document.addEventListener("DOMContentLoaded", function () {
-        window.addEventListener('load', function () {
-            updateImgHeight(imgId);
-        });
-        window.addEventListener('resize', function () {
-            updateImgHeight(imgId);
-        });
-    });
+function addModalImgHeightListener(modalId, imgId, hwRatio) {
+    var modal = document.getElementById(modalId);
+    function imgHandler() {
+        updateImgHeight(imgId, hwRatio);
+    }
+    modal.addEventListener('shown.bs.modal', imgHandler);
+    window.addEventListener('resize', imgHandler);    
+    window.ModalImgHandlers[modalId] = imgHandler;
+}
+
+function removeModalImgHeightListener(modalId) {
+    var modal = document.getElementById(modalId);
+    var imgHandler = window.ModalImgHandlers[modalId];
+    if (imgHandler) {
+        window.removeEventListener('resize', imgHandler);
+        modal.removeEventListener('shown.bs.modal', imgHandler);
+        delete window.ModalImgHandlers[modalId];
+    }
 }

@@ -1,0 +1,109 @@
+﻿@page "/manage/categories/"
+@inject IHttpClientFactory ClientFactory
+@inject IJSRuntime js
+@implements IDisposable
+@attribute [Authorize(Roles = "Staff")]
+
+<div class="container-fluid p-4">
+    <h4 class="card-title pb-3">Categories</h4>
+
+    @if (Categories==null)
+    {
+        <div class="alert alert-info">Loading Categories...</div>
+    }
+    else
+    {
+        <CategoryModal Id="@("create-category")"
+                    ItemName="New Category"
+                    Action="Create"
+                    OnValidSubmit="@((cat)=>CreateCategory(cat))"
+                    OnInitAsync="OnInitializedAsync"
+                    Category="@(new Category())" />
+            
+        <table class="table table-responsive w-100 py-2 m-0" id="categoriesTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var category in Categories)
+                {
+                    <tr>
+                        <td>@category.Name</td>
+                        <td>
+                            <img src="@category.ImgUri" style="height:70px;width:140px;object-fit:cover;" />
+                        </td>
+                        <td>
+                            <CategoryModal Id="@($"view-category-{category.Id}")"
+                                            ItemName="@category.Name"
+                                            Action="View"
+                                            Category="category" />
+
+                            <CategoryModal Id="@($"edit-category-{category.Id}")"
+                                            ItemName="@category.Name"
+                                            Action="Edit"
+                                            OnValidSubmit="@((cat)=>EditCategory(cat))"
+                                            OnInitAsync="OnInitializedAsync"
+                                            Category="category" />
+
+                            <ConfirmDeleteModal Id="@($"delete-category-{category.Id}")"
+                                                ItemName="@category.Name"
+                                                DeleteFunction="@(()=>DeleteCategory(category.Id))" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    private HttpClient _client;
+    private List<Category>? Categories;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("private");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        Categories = await _client.GetFromJsonAsync<List<Category>>($"{Endpoints.CategoriesEndpoint}");
+    }
+
+    private async Task CreateCategory(Category cat)
+    {
+        await _client.PostAsJsonAsync(Endpoints.CategoriesEndpoint, cat);
+        await js.InvokeVoidAsync("hideModal", "#create-category");
+        await OnInitializedAsync();
+    }
+
+    private async Task EditCategory(Category cat)
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.CategoriesEndpoint}/{cat.Id}", cat);
+        await js.InvokeVoidAsync("hideModal", $"#edit-category-{cat.Id}");
+        await OnInitializedAsync();
+    }
+
+    private async Task DeleteCategory(int categoryId)
+    {
+        if (Categories != null)
+        {
+            await _client.DeleteAsync($"{Endpoints.CategoriesEndpoint}/{categoryId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#categoriesTable", "Search Categories");
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#categoriesTable");
+    }
+}

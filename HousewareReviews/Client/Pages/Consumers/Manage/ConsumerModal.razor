@@ -1,7 +1,8 @@
 ﻿@inject IJSRuntime js
+@implements IAsyncDisposable
 @attribute [Authorize(Roles = "Staff")]
 
-<button type="button" class="btn @(Disabled? "btn-secondary" : btnColor) btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#@Id" disabled="@Disabled">
+<button type="button" class="btn @(Disabled? "btn-secondary" : btnColor) btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#@Id" disabled="@Disabled" >
     <span class="oi @btnIcon"></span>
     @(Action == "Create" ? "Create Consumer" : "")
 </button>
@@ -75,7 +76,7 @@
 								</div>
 							}
 							<div class="text-center">
-								<img class="w-50" src="@Consumer.ProfileImgUri" style="border-radius: 50%;border: 2px solid;object-fit: cover;" onerror="this.style.display='none'" id="@imgId" />
+								<img class="w-50" src="@Consumer.ProfileImgUri" style="border-radius:50%;border:2px solid;object-fit:cover;" onerror="this.style.display='none'" id="@imgId" />
 							</div>
 						</div>
 					</fieldset>
@@ -135,8 +136,13 @@
 	{
 		if (firstRender)
 		{
-			await js.InvokeVoidAsync("imgHeightListener", imgId);
+			await js.InvokeVoidAsync("addModalImgHeightListener", Id, imgId, 1);
 		}
+	}
+
+	public async ValueTask DisposeAsync()
+	{
+		await js.InvokeVoidAsync("removeModalImgHeightListener", Id);
 	}
 
 	private async Task OnFileSelection(InputFileChangeEventArgs e)
@@ -145,6 +151,7 @@
 		var buffers = new byte[imgFile.Size];
 		await imgFile.OpenReadStream().ReadAsync(buffers);
 		Consumer.ProfileImgUri = $"data:image/png;base64,{Convert.ToBase64String(buffers)}";
+		await js.InvokeVoidAsync("updateImgHeight", imgId, 1);
 	}
 
 	private async Task OnValidSubmitCallback(Consumer con)

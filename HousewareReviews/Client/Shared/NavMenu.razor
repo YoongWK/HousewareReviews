@@ -33,38 +33,52 @@
                         <span class="d-xl-none oi oi-home" aria-hidden="true"></span> Home
                     </NavLink>
                 </div>
-
-                @* Categories Navigation *@
-                <div class="nav-item px-1">
-                    <NavLink class="nav-link" href="categories" Match="NavLinkMatch.All" @onclick="HideNavBar">
-                        <span class="d-xl-none oi oi-grid-two-up" aria-hidden="true"></span> Categories
-                    </NavLink>
-                </div>
-
-                @* Companies Navigation *@
-                <div class="nav-item px-1">
-                    <NavLink class="nav-link" href="companies" Match="NavLinkMatch.All" @onclick="HideNavBar">
-                        <span class="d-xl-none oi oi-briefcase" aria-hidden="true"></span> Companies
-                    </NavLink>
-                </div>
-
-                @* Reports Navigation *@
                 <AuthorizeView Roles="Staff">
-                    <div class="nav-item px-1">
-                        <NavLink class="nav-link" href="reports" Match="NavLinkMatch.All" @onclick="HideNavBar">
-                            <span class="d-xl-none oi oi-file" aria-hidden="true"></span> Reports
-                        </NavLink>
-                    </div>
-                    <div class="nav-item px-1">
-                        <NavLink class="nav-link" href="manage/consumers" Match="NavLinkMatch.All" @onclick="HideNavBar">
-                            <span class="d-xl-none oi oi-people" aria-hidden="true"></span> Consumers
-                        </NavLink>
-                    </div>
-                    <div class="nav-item px-1">
-                        <NavLink class="nav-link" href="manage/staffs" Match="NavLinkMatch.All" @onclick="HideNavBar">
-                            <span class="d-xl-none oi oi-person" aria-hidden="true"></span> Staffs
-                        </NavLink>
-                    </div>
+                    <Authorized>
+                        @* Categories Navigation *@
+                        <div class="nav-item px-1">
+                            <NavLink class="nav-link" href="/manage/categories" Match="NavLinkMatch.All" @onclick="HideNavBar">
+                                <span class="d-xl-none oi oi-grid-two-up" aria-hidden="true"></span> Categories
+                            </NavLink>
+                        </div>
+
+                        @* Companies Navigation *@
+                        <div class="nav-item px-1">
+                            <NavLink class="nav-link" href="companies" Match="NavLinkMatch.All" @onclick="HideNavBar">
+                                <span class="d-xl-none oi oi-briefcase" aria-hidden="true"></span> Companies
+                            </NavLink>
+                        </div>
+						<div class="nav-item px-1">
+							<NavLink class="nav-link" href="reports" Match="NavLinkMatch.All" @onclick="HideNavBar">
+								<span class="d-xl-none oi oi-file" aria-hidden="true"></span> Reports
+							</NavLink>
+						</div>
+						<div class="nav-item px-1">
+							<NavLink class="nav-link" href="manage/consumers" Match="NavLinkMatch.All" @onclick="HideNavBar">
+								<span class="d-xl-none oi oi-people" aria-hidden="true"></span> Consumers
+							</NavLink>
+						</div>
+						<div class="nav-item px-1">
+							<NavLink class="nav-link" href="manage/staffs" Match="NavLinkMatch.All" @onclick="HideNavBar">
+								<span class="d-xl-none oi oi-person" aria-hidden="true"></span> Staffs
+							</NavLink>
+						</div>
+                    </Authorized>
+                    <NotAuthorized>
+                        @* Categories Navigation *@
+                        <div class="nav-item px-1">
+                            <NavLink class="nav-link" href="categories" Match="NavLinkMatch.All" @onclick="HideNavBar">
+                                <span class="d-xl-none oi oi-grid-two-up" aria-hidden="true"></span> Categories
+                            </NavLink>
+                        </div>
+
+                        @* Companies Navigation *@
+                        <div class="nav-item px-1">
+                            <NavLink class="nav-link" href="companies" Match="NavLinkMatch.All" @onclick="HideNavBar">
+                                <span class="d-xl-none oi oi-briefcase" aria-hidden="true"></span> Companies
+                            </NavLink>
+                        </div>
+                    </NotAuthorized>
                 </AuthorizeView>
 
                 @* Navbar Divider *@
