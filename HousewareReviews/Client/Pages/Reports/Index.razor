@@ -1,0 +1,144 @@
+﻿@page "/reports/"
+@inject IHttpClientFactory ClientFactory
+@inject IJSRuntime js
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@implements IDisposable
+
+<div class="container-fluid p-4">
+    <h4 class="card-title pb-3">Comment Reports</h4>
+
+    @if (commentReports == null)
+    {
+        <div class="alert alert-info">Loading Reports...</div>
+    }
+    else
+    {
+        <AuthorizeView Roles="Staff">
+            <table class="table table-responsive w-100 py-2 m-0" id="CommentReportsTable">
+                <thead>
+                    <tr>
+                        <th>Violation Category</th>
+                        <th>Violation Description</th>
+                        <th>Comment Description</th>
+                        <th>Outcome</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cr in commentReports)
+                    {
+                        <tr>
+                            <td>@cr.Category</td>
+                            <td>@cr.Description</td>
+                            <td>@cr.Comment.Description</td>
+                            <td>@cr.Outcome</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#view-cr-@cr.Id">
+                                    <span class="oi oi-book"></span>
+                                </button>
+                                <div class="modal fade" id="view-cr-@cr.Id" tabindex="-1" aria-labelledby="view-cr-label-@cr.Id" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="view-cr-label-@cr.Id">View Report to comment @cr.CommentId</h1>
+                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <CRFormComponent commentreport="cr" onlyAllowOutcomeNStaff="false" Disabled="true" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="button" class="btn btn-warning btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#edit-cr-@cr.Id">
+                                    <span class="oi oi-pencil"></span>
+                                </button>
+                                <div class="modal fade" id="edit-cr-@cr.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit-cr-label-@cr.Id" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="edit-cr-label-@cr.Id">Edit Report to comment @cr.CommentId</h1>
+                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                                            </div>
+                                            <CRFormComponent OnValidSubmit="@((cr)=>EditCReport(cr))" OnInitAsync="OnInitializedAsync" commentreport="cr" onlyAllowOutcomeNStaff="true" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="button" class="btn btn-danger btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#delete-cr-@cr.Id">
+                                    <span class="oi oi-delete"></span>
+                                </button>
+                                <div class="modal fade" id="delete-cr-@cr.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete-cr-label-@cr.Id" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="delete-cr-label-@cr.Id">Confirm Delete Report from @cr.Consumer.FirstName @cr.Consumer.LastName?</h1>
+                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-start">
+                                                This action cannot be undone.
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-danger shadow-none" data-bs-dismiss="modal" @onclick="@(()=>DeleteCReport(cr.Id))">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </AuthorizeView>
+    }
+</div>
+
+@code {
+    private HttpClient _client;
+    private List<Commentreport>? commentReports;
+    bool userIsStaff = false;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("public");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        commentReports = await _client.GetFromJsonAsync<List<Commentreport>>($"{Endpoints.CommentreportsEndpoint}");
+        var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        userIsStaff = authstate.User.IsInRole("Staff");
+    }
+
+    private async Task EditCReport((Commentreport commentreport, bool crChanged) cr)
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.CommentreportsEndpoint}/{cr.commentreport.Id}", cr.commentreport);
+        await js.InvokeVoidAsync("hideModal", $"#edit-cr-{cr.commentreport.Id}");
+        await OnInitializedAsync();
+    }
+
+    private async Task DeleteCReport(int crId) //delete dismiss pending
+    {
+        if (commentReports != null)
+        {
+            await _client.DeleteAsync($"{Endpoints.CommentreportsEndpoint}/{crId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (userIsStaff)
+        {
+            await js.InvokeVoidAsync("AddDataTable", "#CommentReportsTable", "Search Reports");
+        }
+    }
+
+    public void Dispose()
+    {
+        if (userIsStaff)
+        {
+            js.InvokeVoidAsync("DataTablesDispose", "#CommentReportsTable");
+        }
+    }
+}
