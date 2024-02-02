@@ -262,17 +262,55 @@
                                     </div>
                                 </div>
                                 &nbsp;
-                                @* <a>
-                                    <span class="oi oi-thumb-up" aria-hidden="true"></span>
-                                    <small>Helpful</small>
-                                </a>
-                                &nbsp; *@
-                                <a href="/reviews/@review.Id/report" style="text-decoration: none; color: var(--black)">
-                                    <span class="oi oi-flag" aria-hidden="true"></span>
-                                    <small>Report</small>
-                                </a>
+                                @{
+                                    Reviewreport reviewreport = new Reviewreport {Outcome="Pending", ConsumerId=currentconsumerid, ReviewId=review.Id};
+                                    bool rrCreated = false;
 
-
+                                    foreach (var rr in Reviewreports)
+                                    {
+                                        if (rr.ConsumerId == currentconsumerid && rr.ReviewId == review.Id)
+                                        {
+                                            rrCreated = true;
+                                            reviewreport = rr;
+                                        }
+                                    }
+                                    if (rrCreated)
+                                    {
+                                        <a style="text-decoration: none; color: var(--black); cursor:pointer;" data-bs-toggle="modal" data-bs-target="#edit-reviewreport-@reviewreport.Id">
+                                            <span class="oi oi-flag" aria-hidden="true"></span>
+                                            <small>Report</small>
+                                        </a>
+                                        <div class="modal fade" id="edit-reviewreport-@reviewreport.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit-reviewreport-label-@reviewreport.Id" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="edit-reviewreport-label-@reviewreport.Id">Edit Your Report</h1>
+                                                        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                                                    </div>
+                                                    <ReviewreportFormComponent OnValidSubmit="@((rreport)=>EditReviewReport(rreport))" OnInitAsync="OnInitializedAsync" reviewreport="reviewreport" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <a style="text-decoration: none; color: var(--black) cursor:pointer;" data-bs-toggle="modal" data-bs-target="#make-reviewreport-@reviewreport.Id">
+                                            <span class="oi oi-flag" aria-hidden="true"></span>
+                                            <small>Report</small>
+                                        </a>
+                                        <div class="modal fade" id="make-reviewreport-@reviewreport.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="make-reviewreport-label-@reviewreport.Id" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="make-reviewreport-label-@reviewreport.Id">Make A Report</h1>
+                                                        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                                                    </div>
+                                                    <ReviewreportFormComponent ButtonText="Submit" OnValidSubmit="@((rreport)=>MakeReviewReport(rreport))" OnInitAsync="OnInitializedAsync" reviewreport="reviewreport" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
                             </div>
                         </div>
 
@@ -595,6 +633,7 @@
     private IList<Review> Reviews;
     private IList<Comment> Comments;
     private IList<Consumer> Consumers;
+    private IList<Reviewreport> Reviewreports;
     private List<Review>? reviews;
     private List<Review>? companyreviews;
     private int currentconsumerid;
@@ -619,6 +658,7 @@
         Reviews = await _client.GetFromJsonAsync<List<Review>>($"{Endpoints.ReviewsEndpoint}");
         Comments = await _client.GetFromJsonAsync<List<Comment>>($"{Endpoints.CommentsEndpoint}");
         Consumers = await _client.GetFromJsonAsync<List<Consumer>>($"{Endpoints.ConsumersEndpoint}");
+        Reviewreports = await _client.GetFromJsonAsync<List<Reviewreport>>($"{Endpoints.ReviewreportsEndpoint}");
         var context = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         if (context.User.IsInRole("Consumer"))
         {
@@ -653,7 +693,7 @@
 
     protected async override Task OnParametersSetAsync()
     {
-        
+
     }
 
     private async Task WriteReview((Review rev, bool revChanged) revData)
@@ -706,6 +746,20 @@
             await _client.DeleteAsync($"{Endpoints.CommentsEndpoint}/{commentId}");
             await OnInitializedAsync();
         }
+    }
+
+    private async Task MakeReviewReport(Reviewreport rreport)
+    {
+        await _client.PostAsJsonAsync(Endpoints.ReviewreportsEndpoint, rreport);
+        await js.InvokeVoidAsync("hideModal", $"#make-reviewreport-{rreport.Id}");
+        await OnInitializedAsync();
+    }
+
+    private async Task EditReviewReport(Reviewreport rreport)
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.ReviewreportsEndpoint}/{rreport.Id}", rreport);
+        await js.InvokeVoidAsync("hideModal", $"#edit-reviewreport-{rreport.Id}");
+        await OnInitializedAsync();
     }
 
     void ChangeSortOption(int option)
