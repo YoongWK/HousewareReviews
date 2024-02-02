@@ -3,12 +3,24 @@
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
+            @* Authorization Views *@
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                @* Authorizing View *@
+                <Authorizing>
+                    <div class="text-center p-5 mt-4">
+                        <img class="p-2" style="width:30%;" src="/images/others/authorizing.png">
+                        <h1 class="text-primary" style="font-weight:600;font-size:2.8rem;">Authorization in Progress...</h1>
+                        <p style="font-weight:500;font-size:1.5rem;">Please wait while we verify your credentials. This should only take a moment.</p>
+                    </div>
+                </Authorizing>
+                @* Not Authorized Views *@
                 <NotAuthorized>
+                    @* Redirect to login if the user is not authenticated *@
                     @if (context.User.Identity?.IsAuthenticated != true)
                     {
                         <RedirectToLogin />
                     }
+                    @* Navigate to Unauthorized View is user is authenticated *@
                     else
                     {
                         navManager.NavigateTo("/unauthorized");
@@ -18,6 +30,7 @@
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
         </Found>
         <NotFound>
+            @* Navigate to 404 View if page is not found *@
             <PageTitle>Not Found</PageTitle>
             <LayoutView Layout="@typeof(MainLayout)">
                 @{navManager.NavigateTo("/404");}

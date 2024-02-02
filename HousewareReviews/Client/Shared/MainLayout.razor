@@ -3,9 +3,12 @@
 @implements IDisposable
 
 <div class="page">
+    @* Page Navigation Menu *@
     <div>
         <NavMenu />
     </div>
+
+    @* Page Content *@
     <main>
         <article class="content">
             @Body
@@ -15,11 +18,14 @@
 
 @code
 {
+    // Global Error Handling
+    // Add the HTTPInterceptorService event on initialization
     protected async override Task OnInitializedAsync()
     {
         _interceptor.MonitorEvent();
     }
 
+    // Dispose the HTTPInterceptorService Event
     public void Dispose()
     {
         _interceptor.DisposeEvent();

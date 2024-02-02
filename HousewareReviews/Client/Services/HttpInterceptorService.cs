@@ -1,44 +1,56 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Net;
+using System.Reflection.Metadata;
 using Toolbelt.Blazor;
 
 namespace HousewareReviews.Client.Services
 {
 	public class HttpInterceptorService
 	{
-		private readonly HttpClientInterceptor interceptor;
+        // Define the HttpClientInterceptor and NavigationManager instances
+        private readonly HttpClientInterceptor interceptor;
 		private readonly NavigationManager navManager;
 
-		public HttpInterceptorService(HttpClientInterceptor interceptor, NavigationManager navManager)
+        // Constructor that takes the HttpClientInterceptor and NavigationManager instances
+        public HttpInterceptorService(HttpClientInterceptor interceptor, NavigationManager navManager)
 		{
 			this.interceptor = interceptor;
 			this.navManager = navManager;
 		}
 
-		public void MonitorEvent() => interceptor.AfterSend += InterceptResponse;
+        // Method to subscribe to the AfterSend event of the HttpClientInterceptor
+        public void MonitorEvent() => interceptor.AfterSend += InterceptResponse;
 
-		private void InterceptResponse(object sender, HttpClientInterceptorEventArgs e)
+		// Method that handles the InterceptResponse when the AfterSend event is triggered
+        private void InterceptResponse(object sender, HttpClientInterceptorEventArgs e)
 		{
 			string message = string.Empty;
-			if (!e.Response.IsSuccessStatusCode)
+            // If the HTTP response is not successful
+            if (!e.Response.IsSuccessStatusCode)
 			{
-				var responseCode = e.Response.StatusCode;
-				switch (responseCode)
+                // Get the HTTP status code from the response
+                var responseCode = e.Response.StatusCode;
+                // Handling the different HTTP status codes
+                switch (responseCode)
 				{
-					case HttpStatusCode.NotFound:
+                    // Navigate to the "/404" page for a Not Found error
+                    case HttpStatusCode.NotFound:
 						navManager.NavigateTo("/404");
 						break;
-					case HttpStatusCode.Unauthorized:
+                    // Navigate to the "/unauthorized" route for Unauthorized or Forbidden errors
+                    case HttpStatusCode.Unauthorized:
 					case HttpStatusCode.Forbidden:
 						navManager.NavigateTo("/unauthorized");
 						break;
-					default:
+                    // Navigate to the "/500" route for other errors
+                    default:
 						navManager.NavigateTo("/500");
 						break;
 				}
 			}
 		}
 
-		public void DisposeEvent() => interceptor.AfterSend -= InterceptResponse;
+        // Method to unsubscribe from the AfterSend event of the HttpClientInterceptor
+        public void DisposeEvent() => interceptor.AfterSend -= InterceptResponse;
 	}
 }
