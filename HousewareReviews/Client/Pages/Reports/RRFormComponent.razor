@@ -1,56 +1,94 @@
 ﻿@inject IHttpClientFactory ClientFactory
+@attribute [Authorize(Roles = "Staff")]
 
-<EditForm Model="@commentreport" OnValidSubmit=@OnValidSubmit>
+<EditForm Model="@reviewreport" OnValidSubmit="@(() => OnValidSubmitCallback(reviewreport))" style="font-size:1rem;">
     <DataAnnotationsValidator />
-    <ValidationSummary />
-    <fieldset disabled="@Disabled">
-        <div class="form-group">
-            <label>Outcome: </label>
-            <div>
-                <InputTextArea @bind-Value="@commentreport.Outcome" class="form-control" />
-                @* <ValidationMessage For="@(() => reviewreport.Description)" /> *@
+    <ValidationSummary class="text-start mb-0 pt-3" />
+    <div class="modal-body text-start">
+        <fieldset disabled="@Disabled">
+            <div class="form-group pb-3">
+                <label>Category:</label>
+                <div>
+                    <input type="text" value="@reviewreport.Category" class="form-control shadow-none" disabled />
+                </div>
             </div>
-        </div>
-    </fieldset>
-    <br />
-    @if (!Disabled)
-    {
-        <button type="submit" class="btn btn-success btn-block">
-            @ButtonText
-        </button>
-    }
-    <BackToList Target="@GetTarget()" />
+
+            <div class="form-group pb-3">
+                <label>Description:</label>
+                <div>
+                    <input type="text" value="@reviewreport.Description" class="form-control shadow-none" disabled />
+                </div>
+            </div>
+
+            <div class="form-group pb-3">
+                <label>Outcome:</label>
+                <div>
+                    <InputSelect @bind-Value="@reviewreport.Outcome" class="form-control shadow-none">
+                        <option value="Pending">Pending</option>
+                        <option value="Dismissed Report">Dismissed Report</option>
+                        <option value="Deleted Comment">Deleted Comment</option>
+                    </InputSelect>
+                    <ValidationMessage For="@(() => reviewreport.Outcome)" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Handled by:</label>
+                <InputSelect @bind-Value="@reviewreport.StaffId" class="form-control shadow-none">
+                    <option value="">-- Select Staff --</option>
+                    @if (Staffs != null)
+                    {
+                        foreach (var staff in Staffs)
+                        {
+                            <option value="@staff.Id">@staff.FirstName @staff.LastName</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => reviewreport.StaffId)" />
+            </div>
+        </fieldset>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal" @onclick="OnInitAsync">Close</button>
+        @if (!Disabled)
+        {
+            <button type="submit" class="btn btn-success shadow-none">
+                @ButtonText
+            </button>
+        }
+    </div>
 </EditForm>
 
 @code {
     [Parameter] public bool Disabled { get; set; } = false;
-    [Parameter] public Commentreport? commentreport { get; set; }
+    [Parameter] public Reviewreport? reviewreport { get; set; }
     [Parameter] public string ButtonText { get; set; } = "Save";
-    [Parameter] public EventCallback OnValidSubmit { get; set; }
-    //product and consumer
-    //[Parameter] public int ProductId { get; set; }
-    [Parameter] public int CommentId { get; set; }
-    Review? review = new Review();
-    Comment? comment = new Comment();
-
+    [Parameter] public EventCallback<Reviewreport> OnValidSubmit { get; set; }
+    [Parameter] public Func<Task> OnInitAsync { get; set; }
+    [Parameter] public int ReviewId { get; set; }
 
     private HttpClient _client;
-    // private IList<Category>? Categories;
+    private IList<Staff> Staffs;
 
     protected override void OnInitialized()
     {
         _client = ClientFactory.CreateClient("private");
-        // product.CompanyId = CompanyId;
     }
 
     protected async override Task OnInitializedAsync()
     {
-        comment = await _client.GetFromJsonAsync<Comment>($"{Endpoints.CommentsEndpoint}/{CommentId}");
-        review = await _client.GetFromJsonAsync<Review>($"{Endpoints.ReviewsEndpoint}/{comment.ReviewId}");
+        Staffs = await _client.GetFromJsonAsync<List<Staff>>($"{Endpoints.StaffsEndpoint}");
     }
 
-    private string GetTarget()
+    private async Task OnValidSubmitCallback(Reviewreport rr)
     {
-        return $"products/{review.ProductId}"; //need to change for staff
+        if (OnValidSubmit.HasDelegate)
+        {
+            rr.Review = null;
+            rr.Consumer = null;
+            rr.Staff = null;
+            await OnValidSubmit.InvokeAsync(rr);
+        }
     }
 }

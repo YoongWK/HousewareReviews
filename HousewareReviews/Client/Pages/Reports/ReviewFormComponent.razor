@@ -1,0 +1,60 @@
+﻿@inject IHttpClientFactory ClientFactory
+@attribute [Authorize(Roles = "Staff")]
+
+<EditForm Model="@review" style="font-size:1rem;">
+    <div class="modal-body text-start">
+        <fieldset disabled="true">
+            <div class="form-group pb-3">
+                <label>Consumer:</label>
+                <div>
+                    <input type="text" value="@((consumer == null) ? "[Deleted Consumer]" :  $"{consumer.FirstName} {consumer.LastName}")" class="form-control shadow-none" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Description:</label>
+                <div>
+                    <textarea value="@((review == null) ? "[Deleted Review]" : review.Description)" class="form-control shadow-none" style="resize:none;" rows="4" maxlength="301"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group py-3">
+                <label>Date Created:</label>
+                <div>
+                    <input type="text" value="@((review == null) ? "[Deleted Review]" : review.DateCreated.ToString("d MMM yyyy"))" class="form-control shadow-none" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Date Updated:</label>
+                <div>
+                    <input type="text" value="@((review == null) ? "[Deleted Review]" : review.DateUpdated.ToString("d MMM yyyy"))" class="form-control shadow-none" />
+                </div>
+            </div>
+        </fieldset>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public Review? review { get; set; }
+
+    private HttpClient _client;
+    private Consumer consumer;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("public");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        if (review.ConsumerId!= null)
+        {
+            consumer = await _client.GetFromJsonAsync<Consumer>($"{Endpoints.ConsumersEndpoint}/{review.ConsumerId}");
+        }
+    }
+}
