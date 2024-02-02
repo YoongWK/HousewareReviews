@@ -1,0 +1,70 @@
+﻿@inject IHttpClientFactory ClientFactory
+@attribute [Authorize(Roles ="Consumer")]
+
+<EditForm Model="@comment" OnValidSubmit="@(() => OnValidSubmitCallback(comment))" style="font-size:1rem;">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-start mb-0 pt-3" />
+    <div class="modal-body text-start">
+        <fieldset disabled="@Disabled">
+            <div class="form-group pb-3">
+                <label class="w-50">Description: </label>
+                @if (!Disabled)
+                {
+                    <p class="d-inline-flex justify-content-end w-50 m-0 text-secondary" style="font-size:0.8rem;">Count:&nbsp;<span>@(comment.Description?.Length ?? 0)</span>/300</p>
+                }
+                <div>
+                    <InputTextArea @bind-Value="@comment.Description" class="form-control shadow-none" style="resize:none;" rows="4" maxlength="301" oninput="updateCharCount(this, 300)" />
+                    <ValidationMessage For="@(() => comment.Description)" />
+                </div>
+            </div>
+        </fieldset>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal" @onclick="OnInitAsync">Close</button>
+        @if (!Disabled)
+        {
+            <button type="submit" class="btn btn-success shadow-none">
+                @ButtonText
+            </button>
+        }
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public Comment? comment { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback<(Comment, bool)> OnValidSubmit { get; set; }
+    [Parameter] public Func<Task> OnInitAsync { get; set; }
+    [Parameter] public int CommentId { get; set; }
+    [Parameter] public int ReviewId { get; set; }
+    public Comment orgComment;
+
+    private HttpClient _client;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("public");
+        orgComment = comment;
+    }
+
+    private async Task OnValidSubmitCallback(Comment com)
+    {
+        if (OnValidSubmit.HasDelegate)
+        {
+            com.Consumer = null;
+            var comChanged = false;
+            if (com.Description != orgComment.Description)
+            {
+                comChanged = true;
+            }
+            await OnValidSubmit.InvokeAsync((com, comChanged));
+        }
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        //Categories = await _client.GetFromJsonAsync<List<Category>>($"{Endpoints.CategoriesEndpoint}");
+    }
+}

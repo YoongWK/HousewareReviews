@@ -21,10 +21,21 @@
             </div>
             <div class="d-lg-none p-2"></div>
             <div class="col-lg d-flex justify-content-end">
-                <a href="/products/@product.Id/reviews/create" class="btn rounded-5 text-white" style="background-color: var(--blue)">
+                <button type="button" class="btn rounded-5 text-white shadow-none" style="background-color: var(--blue)" data-bs-toggle="modal" data-bs-target="#write-review">
                     <small><b>Write A Review</b></small>
                     <span class="oi oi-share"></span>
-                </a>
+                </button>
+                <div class="modal fade" id="write-review" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="write-review-label" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="create-review-label">Write Review for @product.Name</h1>
+                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                            </div>
+                            <ReviewFormComponent ButtonText="Create" OnValidSubmit="@((revData)=>WriteReview(revData))" OnInitAsync="OnInitializedAsync" review="new Review{ProductId=id, ConsumerId=currentconsumerid}" />
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
@@ -77,7 +88,7 @@
                     <a class="dropdown-toggle" style="color:var(--blue)" role="button" id="dropdownmenuitems" data-bs-toggle="dropdown" aria-expanded="false">
                         @selectedSortOptionText
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="drowpdownmenuitems">
+                    <ul class="dropdown-menu dropdown-menu-end" style="cursor:pointer" aria-labelledby="drowpdownmenuitems">
                         <li><a class="dropdown-item" @onclick="()=>ChangeSortOption(1)">Newest First</a></li>
                         <li><a class="dropdown-item" @onclick="()=>ChangeSortOption(2)">Oldest First</a></li>
                         <li><a class="dropdown-item" @onclick="()=>ChangeSortOption(3)">Highest Rating</a></li>
@@ -183,18 +194,43 @@
                         @if (review.ConsumerId == currentconsumerid)
                         {
                             <div>
-                                <a href="/products/@review.ProductId/reviews/@review.Id/edit" style="text-decoration: none;">
+                                <a class="text-warning" style="text-decoration: none; cursor: pointer" data-bs-toggle="modal" data-bs-target="#modify-review-@review.Id">
                                     <span class="oi oi-pencil" aria-hidden="true"></span>
-                                    <small><b>Edit Review</b></small>
+                                    <small><b>Edit</b></small>
                                 </a>
-                                @* <span class="oi oi-delete" aria-hidden="true" style="cursor: pointer;" onclick="deleteReview(@review.Id)">Delete Review</span> *@
-                                @* <a href="" style="text-decoration: none;" onclick="deleteReview('@review.Id')">
-                                    <span class="oi oi-delete" aria-hidden="true"></span>
-                                    <small><b>Delete Review</b></small>
-                                </a> *@
-                                <button class="btn btn-danger" @onclick="@(()=>deleteReview(review.Id))">
-                                    <span class="oi oi-delete"></span>
-                                </button>
+                                <div class="modal fade" id="modify-review-@review.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modify-review-label-@review.Id" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="modify-review-label-@review.Id">Edit Your Review</h1>
+                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                                            </div>
+                                            <ReviewFormComponent OnValidSubmit="@((revData)=>ModifyReview(revData))" OnInitAsync="OnInitializedAsync" review="review" />
+                                        </div>
+                                    </div>
+                                </div>
+                                &nbsp;
+                                <a class="text-danger" style="text-decoration: none; cursor: pointer" data-bs-toggle="modal" data-bs-target="#remove-review-@review.Id">
+                                    <span class="oi oi-pencil" aria-hidden="true"></span>
+                                    <small><b>Delete</b></small>
+                                </a>
+                                <div class="modal fade" id="remove-review-@review.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="remove-review-label-@review.Id" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="remove-review-label-@review.Id">Confirm Delete Review?</h1>
+                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-start">
+                                                This action cannot be undone.
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-danger shadow-none" data-bs-dismiss="modal" @onclick="@(()=>removeReview(review.Id))">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         }
                     </div>
@@ -210,16 +246,27 @@
                             </div>
 
                             <div>
-                                <a href="/reviews/@review.Id/comments/create" style="text-decoration: none; color: var(--black);">
+                                <a style="text-decoration: none; color: var(--black); cursor: pointer" data-bs-toggle="modal" data-bs-target="#write-comment-@review.Id">
                                     <span class="oi oi-comment-square" aria-hidden="true"></span>
                                     <small>Comment</small>
                                 </a>
+                                <div class="modal fade" id="write-comment-@review.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="write-comment-@review.Id-label" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="write-comment-@review.Id-label">Make a comment</h1>
+                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                                            </div>
+                                            <CommentFormComponent ButtonText="Create" OnValidSubmit="@((comData)=>WriteComment(comData))" OnInitAsync="OnInitializedAsync" comment="new Comment{ReviewId=review.Id, ConsumerId=currentconsumerid}" />
+                                        </div>
+                                    </div>
+                                </div>
                                 &nbsp;
-                                <a>
+                                @* <a>
                                     <span class="oi oi-thumb-up" aria-hidden="true"></span>
                                     <small>Helpful</small>
                                 </a>
-                                &nbsp;
+                                &nbsp; *@
                                 <a href="/reviews/@review.Id/report" style="text-decoration: none; color: var(--black)">
                                     <span class="oi oi-flag" aria-hidden="true"></span>
                                     <small>Report</small>
@@ -273,13 +320,43 @@
                                             @if (comment.ConsumerId == currentconsumerid)
                                             {
                                                 <div>
-                                                    <a href="/reviews/@review.Id/comments/@comment.Id/edit" style="text-decoration: none;">
+                                                    <a class="text-warning" style="text-decoration: none; cursor:pointer;" data-bs-toggle="modal" data-bs-target="#modify-comment-@comment.Id">
                                                         <span class="oi oi-pencil" aria-hidden="true"></span>
-                                                        <small><b>Edit Comment</b></small>
+                                                        <small><b>Edit</b></small>
                                                     </a>
-                                                    <button class="btn btn-danger" @onclick="@(()=>deleteComment(comment.Id))">
-                                                        <span class="oi oi-delete"></span>
-                                                    </button>
+                                                    <div class="modal fade" id="modify-comment-@comment.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modify-comment-label-@comment.Id" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="modify-comment-label-@comment.Id">Edit Your Comment</h1>
+                                                                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                                                                </div>
+                                                                <CommentFormComponent OnValidSubmit="@((comData)=>ModifyComment(comData))" OnInitAsync="OnInitializedAsync" comment="comment" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    &nbsp;
+                                                    <a class="text-danger" style="text-decoration: none; cursor: pointer" data-bs-toggle="modal" data-bs-target="#remove-comment-@comment.Id">
+                                                        <span class="oi oi-pencil" aria-hidden="true"></span>
+                                                        <small><b>Delete</b></small>
+                                                    </a>
+                                                    <div class="modal fade" id="remove-comment-@comment.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="remove-comment-label-@comment.Id" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="remove-comment-label-@comment.Id">Confirm Delete Comment?</h1>
+                                                                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body text-start">
+                                                                    This action cannot be undone.
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+                                                                    <button type="submit" class="btn btn-danger shadow-none" data-bs-dismiss="modal" @onclick="@(()=>removeComment(comment.Id))">Delete</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             }
                                         </div>
@@ -287,9 +364,9 @@
                                         <div class="d-flex">
                                             <div class="me-auto"></div>
                                             <div>
-                                                <span class="oi oi-thumb-up" aria-hidden="true"></span>
+                                                @* <span class="oi oi-thumb-up" aria-hidden="true"></span>
                                                 <small>Helpful</small>
-                                                &nbsp;
+                                                &nbsp; *@
                                                 <a href="/comments/@comment.Id/report" style="text-decoration: none; color: var(--black)">
                                                     <span class="oi oi-flag" aria-hidden="true"></span>
                                                     <small>Report</small>
@@ -546,10 +623,6 @@
             var consumer = Consumers.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value));
             currentconsumerid = consumer.Id;
         }
-    }
-
-    protected async override Task OnParametersSetAsync()
-    {
         productreviewCount = 0;
         companyreviewCount = 0;
         // hideRnC = true;
@@ -576,37 +649,60 @@
         companyreviews = companyReviews;
     }
 
-    async Task deleteReview(int reviewId)
+    protected async override Task OnParametersSetAsync()
+    {
+        
+    }
+
+    private async Task WriteReview((Review rev, bool revChanged) revData)
+    {
+        revData.rev.DateCreated = DateTime.Now;
+        revData.rev.DateUpdated = DateTime.Now;
+        await _client.PostAsJsonAsync(Endpoints.ReviewsEndpoint, revData.rev);
+        await js.InvokeVoidAsync("hideModal", "#write-review");
+        await OnInitializedAsync();
+    }
+
+    private async Task ModifyReview((Review rev, bool revChanged) revData)
+    {
+        revData.rev.DateUpdated = revData.revChanged ? DateTime.Now : revData.rev.DateUpdated;
+        await _client.PutAsJsonAsync($"{Endpoints.ReviewsEndpoint}/{revData.rev.Id}", revData.rev);
+        await js.InvokeVoidAsync("hideModal", $"#modify-review-{revData.rev.Id}");
+        await OnInitializedAsync();
+    }
+
+    async Task removeReview(int reviewId)
     {
         if (Reviews != null)
         {
-            var review = Reviews.First(q => q.Id == reviewId);
-            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete your review?");
-            if (confirm)
-            {
-                await _client.DeleteAsync($"{Endpoints.ReviewsEndpoint}/{reviewId}");
-                _navManager.NavigateTo(_navManager.Uri, forceLoad: true);
-                //await OnInitializedAsync();
-                //StateHasChanged();
-                //_navManager.NavigateTo($"/products/{ProductId}");
-            }
+            await _client.DeleteAsync($"{Endpoints.ReviewsEndpoint}/{reviewId}");
+            await OnInitializedAsync();
         }
     }
 
-    async Task deleteComment(int commentId)
+    private async Task WriteComment((Comment com, bool comChanged) comData)
+    {
+        comData.com.DateCreated = DateTime.Now;
+        comData.com.DateUpdated = DateTime.Now;
+        await _client.PostAsJsonAsync(Endpoints.CommentsEndpoint, comData.com);
+        await js.InvokeVoidAsync("hideModal", $"#write-comment-{comData.com.ReviewId}");
+        await OnInitializedAsync();
+    }
+
+    private async Task ModifyComment((Comment com, bool comChanged) comData)
+    {
+        comData.com.DateUpdated = comData.comChanged ? DateTime.Now : comData.com.DateUpdated;
+        await _client.PutAsJsonAsync($"{Endpoints.CommentsEndpoint}/{comData.com.Id}", comData.com);
+        await js.InvokeVoidAsync("hideModal", $"#modify-comment-{comData.com.Id}");
+        await OnInitializedAsync();
+    }
+
+    async Task removeComment(int commentId)
     {
         if (Comments != null)
         {
-            var comment = Comments.First(q => q.Id == commentId);
-            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete your comment?");
-            if (confirm)
-            {
-                await _client.DeleteAsync($"{Endpoints.CommentsEndpoint}/{commentId}");
-                _navManager.NavigateTo(_navManager.Uri, forceLoad: true);
-                //await OnInitializedAsync();
-                //StateHasChanged();
-                //_navManager.NavigateTo($"/products/{ProductId}");
-            }
+            await _client.DeleteAsync($"{Endpoints.CommentsEndpoint}/{commentId}");
+            await OnInitializedAsync();
         }
     }
 

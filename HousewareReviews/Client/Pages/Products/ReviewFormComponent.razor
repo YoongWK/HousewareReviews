@@ -1,0 +1,90 @@
+﻿@inject IHttpClientFactory ClientFactory
+@attribute [Authorize(Roles ="Consumer")]
+
+<EditForm Model="@review" OnValidSubmit="@(() => OnValidSubmitCallback(review))" style="font-size:1rem;">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-start mb-0 pt-3" />
+    <div class="modal-body text-start">
+        <fieldset disabled="@Disabled">
+            <div class="form-group pb-3">
+                <label>Rating:</label>
+                <div class=" d-flex flex-row-reverse justify-content-end star-rating">
+                    @for (int i = 5; i >= 1; i--)
+                    {
+                        var id = Guid.NewGuid();
+                        var rating = i;
+                        <input class="d-none" type="radio" name="StarRating" value="@i" checked="@((review.Rating.HasValue && review.Rating == i))" id="star-@id" @onchange="@(e => updateRating(rating))" disabled="@Disabled" />
+                        <label for="star-@id">☆</label>
+                    }
+                </div>
+                <ValidationMessage For="@(() => review.Rating)" />
+            </div>
+
+            <div class="form-group pb-3">
+                <label class="w-50">Description: </label>
+                @if (!Disabled)
+                {
+                    <p class="d-inline-flex justify-content-end w-50 m-0 text-secondary" style="font-size:0.8rem;">Count:&nbsp;<span>@(review.Description?.Length ?? 0)</span>/300</p>
+                }
+                <div>
+                    <InputTextArea @bind-Value="@review.Description" class="form-control shadow-none" style="resize:none;" rows="4" maxlength="301" oninput="updateCharCount(this, 300)" />
+                    <ValidationMessage For="@(() => review.Description)" />
+                </div>
+            </div>
+        </fieldset>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal" @onclick="OnInitAsync">Close</button>
+        @if (!Disabled)
+        {
+            <button type="submit" class="btn btn-success shadow-none">
+                @ButtonText
+            </button>
+        }
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public Review? review { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback<(Review, bool)> OnValidSubmit { get; set; }
+    [Parameter] public Func<Task> OnInitAsync { get; set; }
+    [Parameter] public int ProductId { get; set; }
+    [Parameter] public int ReviewId { get; set; }
+    //Review rev = new Review();
+    public Review orgReview;
+
+    private HttpClient _client;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("public");
+        orgReview = review;
+    }
+
+    private async Task OnValidSubmitCallback(Review rev)
+    {
+        if (OnValidSubmit.HasDelegate)
+        {
+            rev.Consumer = null;
+            var revChanged = false;
+            if ((rev.Rating != orgReview.Rating) || (rev.Description != orgReview.Description))
+            {
+                revChanged = true;
+            }
+            await OnValidSubmit.InvokeAsync((rev, revChanged));
+        }
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+    }
+
+    private void updateRating(int selectedRating)
+    {
+        review.Rating = selectedRating;
+        Console.WriteLine(review.Rating);
+    }
+}
