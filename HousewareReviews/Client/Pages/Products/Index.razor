@@ -78,52 +78,76 @@
                         @selectedSortOptionText
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="drowpdownmenuitems">
-                        <li><a class="dropdown-item" @onclick="()=>ChangeSortOption(1)">Most Recent</a></li>
-                        <li><a class="dropdown-item" @onclick="()=>ChangeSortOption(2)">Most Useful</a></li>
-                        @* <li><a class="dropdown-item" @onclick="()=>ChangeSortOption(3)">Most Commented</a></li> *@
+                        <li><a class="dropdown-item" @onclick="()=>ChangeSortOption(1)">Newest First</a></li>
+                        <li><a class="dropdown-item" @onclick="()=>ChangeSortOption(2)">Oldest First</a></li>
+                        <li><a class="dropdown-item" @onclick="()=>ChangeSortOption(3)">Highest Rating</a></li>
+                        <li><a class="dropdown-item" @onclick="()=>ChangeSortOption(4)">Lowest Rating</a></li>
                     </ul>
                 </div>
             </div>
-            <!-- Insert for loop to generate progress bars -->
-            <div class="d-flex">
-                <div class="pe-2">
-                    <input type="checkbox" id="5starcb" style="width:1rem; height:1rem;" class="align-middle">
-                    <label for="checkbox1" style="font-size:1rem;" class="align-middle">5-star</label>
-                </div>
-                <div class="flex-grow-1 p-1">
-                    <div class="progress w-100">
-                        <div class="progress-bar align-middle" role="progressbar" style="width: 100%; color: green" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                </div>
-                <div class="ps-2 align-middle"
-                    <div class="progress-number">7</div>
-                </div>
+            <div>
+                @{
+                    if (reviews != null && productreviewCount > 0)
+                    {
+                        int? sumofRatings = 0;
+                        foreach (var rev in reviews)
+                        {
+                            sumofRatings += rev.Rating;
+                        }
+                        productRating = Math.Round(((decimal)sumofRatings / productreviewCount), 1);
+                    }
+                }
+                @productRating
+                <span class="oi oi-star" style="color:orange"></span>
             </div>
+            @{
+                // dictionary key:value = rating:count
+                Dictionary<int, int> ratingCounts = new Dictionary<int, int>
+                {
+                    { 1, 0 },
+                    { 2, 0 },
+                    { 3, 0 },
+                    { 4, 0 },
+                    { 5, 0 }
+                };
+                foreach (var review in reviews)
+                {
+                    int rating = review.Rating ?? 0;
 
-            <div class="d-flex">
-                <div class="pe-2">
-                    <input type="checkbox" id="4starcb" style="width:1rem; height:1rem;" class="align-middle">
-                    <label for="checkbox1" style="font-size:1rem;" class="align-middle">4-star</label>
-                </div>
-                <div class="flex-grow-1 p-1">
-                    <div class="progress w-100">
-                        <div class="progress-bar align-middle" role="progressbar" style="width: 75%; color:lawngreen" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                    ratingCounts[rating]++;
+                }
+            }
+
+            @foreach (var ratingCount in ratingCounts.OrderByDescending(kvp => kvp.Key)) {
+                int rating = ratingCount.Key;
+                int count = ratingCount.Value;
+                string ratingColor = GetRatingColor(rating);
+
+                <div class="d-flex">
+                    <div class="pe-2">
+                        <input type="checkbox" id="checkbox-@rating" style="width:1rem; height:1rem;" class="align-middle" @onchange="()=>ToggleRating(rating)" checked="@selectedRatings.Contains(rating)">
+                        <label for="checkbox-@rating" style="font-size:1rem; width:3rem; text-align:left;" class="align-middle">@rating-star</label>
+                    </div>
+                    <div class="flex-grow-1 p-1">
+                        <div class="progress w-100">
+                            <div class="progress-bar align-middle rounded-2" role="progressbar" style="width: @((Double) (count)/ (Double) (reviews.Count) * 100.0)%; background-color: @ratingColor" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                    <div class="ps-2 align-middle">
+                        <div class="progress-number" style="width:0.5rem; text-align:right;">@count</div>
                     </div>
                 </div>
-                <div class="ps-2 align-middle"
-                    <div class="progress-number">7</div>
-                </div>
-            </div>
-                
+            }
+                          
         </div>
 
         @if (reviews != null)
         {
             //logged in consumer reviews displayed at the top
             @foreach (var review in reviews
-                @* .OrderBy<Review, int>(r => r.ConsumerId == currentconsumerid ? 0 :1)) *@
-           .OrderByDescending(r => (r.ConsumerId == currentconsumerid || r.ConsumerId == null))
-                .ThenByDescending(GetSortExpression(selectedSortOption)))@* r => r.DateUpdated) *@
+                .Where(r => selectedRatings.Contains(r.Rating ?? 0))
+                .OrderByDescending(r => (r.ConsumerId == currentconsumerid || r.ConsumerId == null))
+                .ThenBy(GetSortExpression(selectedSortOption)))@* r => r.DateUpdated) *@ //also sort by descending and ascending ratings
             {
                 <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
                     <div class="d-flex">
@@ -498,12 +522,15 @@
     int productreviewCount = 0;
     int companyreviewCount = 0;
     decimal? overallRating = 0;
+    decimal? productRating = 0;
     private int selectedSortOption = 1;
-    private string selectedSortOptionText = "Most Recent";
+    private string selectedSortOptionText = "Newest First";
+    List<int> selectedRatings = new List<int>();
 
     protected override void OnInitialized()
     {
         _client = ClientFactory.CreateClient("public");
+        selectedRatings = Enumerable.Range(1, 5).ToList();
     }
 
     protected async override Task OnInitializedAsync()
@@ -586,13 +613,20 @@
     void ChangeSortOption(int option)
     {
         selectedSortOption = option;
-        if (option ==1)
+        switch(option)
         {
-            selectedSortOptionText = "Most Recent";
-        }
-        else
-        {
-            selectedSortOptionText = "Most Useful";
+            case 1:
+                selectedSortOptionText = "Newest First";
+                break;
+            case 2:
+                selectedSortOptionText = "Oldest First";
+                break;
+            case 3:
+                selectedSortOptionText = "Highest Rating";
+                break;
+            case 4:
+                selectedSortOptionText = "Lowest Rating";
+                break;
         }
         StateHasChanged();
     }
@@ -602,19 +636,48 @@
         switch (option)
         {
             case 1:
-                return r => r.DateUpdated;
+                return r => -r.DateUpdated.Ticks; // Newest First, negate to sort in descending order
             case 2:
-                return r => r.UsefulCnt;
-            // case 3:
-            //     return r => r.Comments.Count;
-            // Add more cases as needed
+                return r => r.DateUpdated.Ticks; // Oldest First
+            case 3:
+                return r => -1 * (r.Rating ?? 0); // Highest Rating, negate to sort in descending order
+            case 4:
+                return r => r.Rating ?? 0; // Lowest Rating
             default:
-                return r => r.DateUpdated;
+                return r => -r.DateUpdated.Ticks; // Default to Newest First
         }
     }
 
+    void ToggleRating(int rating)
+    {
+        if (selectedRatings.Contains(rating))
+        {
+            selectedRatings.Remove(rating);
+        }
+        else
+        {
+            selectedRatings.Add(rating);
+        }
+        StateHasChanged();
+    }
 
-
-
+    string GetRatingColor(int rating)
+    {
+        switch (rating)
+        {
+            case 5:
+                return "#49A401";
+            case 4:
+                return "#9DEA1E";
+            case 3:
+                return "#FFC107";
+            case 2:
+                return "#FF9529";
+            case 1:
+                return "#DC3545";
+            default:
+                return "gray";
+        }
+    }
 
 }
