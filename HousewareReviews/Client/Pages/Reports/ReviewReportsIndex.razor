@@ -1,0 +1,331 @@
+﻿@page "/reports/"
+@inject IHttpClientFactory ClientFactory
+@inject IJSRuntime js
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@implements IDisposable
+
+<div class="container-fluid p-4">
+    <h4 class="card-title pb-3">Reports</h4>
+
+    @if (reviewReports == null)
+    {
+        <div class="alert alert-info">Loading Review Reports...</div>
+    }
+    else
+    {
+        <AuthorizeView Roles="Staff">
+            <span @onclick="(()=>SelectReportType(1))">Reviews</span>
+            &nbsp;
+            <span @onclick="(()=>SelectReportType(2))" >Comments</span>
+
+            @if (currentReportType == 1)
+            {
+                <table class="table table-responsive w-100 py-2 m-0" id="ReviewReportsTable" @ref="reviewReportsTableRef">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Category</th>
+                            <th>Review</th>
+                            <th>Outcome</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var rr in reviewReports)
+                        {
+                            <tr>
+                                <td>@rr.Id</td>
+                                <td>@rr.Category</td>
+                                <td>
+                                    <button type="button" class="btn @(rr.ReviewId == null ? "btn-secondary" : "btn-info") btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#view-rr-@rr.Id-review" disabled="@(rr.ReviewId == null ? true : false)">
+                                        <span class="oi oi-eye"></span> @(rr.ReviewId == null ? "Deleted" : "Available")
+                                    </button>
+                                    <div class="modal fade" id="view-rr-@rr.Id-review" tabindex="-1" aria-labelledby="view-rr-label-@rr.Id-review" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="view-rr-label-@rr.Id-review">View Review @(rr.ReviewId == null ? "[Deleted]" : rr.ReviewId)</h1>
+                                                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <ReviewFormComponent review="rr.Review" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@rr.Outcome</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#view-rr-@rr.Id">
+                                        <span class="oi oi-book"></span>
+                                    </button>
+                                    <div class="modal fade" id="view-rr-@rr.Id" tabindex="-1" aria-labelledby="view-rr-label-@rr.Id" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="view-rr-label-@rr.Id">View Review Report @rr.Id</h1>
+                                                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <RRFormComponent reviewreport="rr" Disabled="true" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button type="button" class="btn @(rr.Outcome == "Pending" ? "btn-warning" : "btn-secondary") btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#edit-rr-@rr.Id" disabled="@(rr.Outcome == "Pending" ? false : true)">
+                                        <span class="oi oi-pencil"></span>
+                                    </button>
+                                    <div class="modal fade" id="edit-rr-@rr.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit-rr-label-@rr.Id" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="edit-rr-label-@rr.Id">Edit Review Report @rr.Id</h1>
+                                                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                                                </div>
+                                                <RRFormComponent OnValidSubmit="@((rr)=>EditRReport(rr))" OnInitAsync="OnInitializedAsync" reviewreport="rr" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button type="button" class="btn btn-danger btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#delete-rr-@rr.Id">
+                                        <span class="oi oi-delete"></span>
+                                    </button>
+                                    <div class="modal fade" id="delete-rr-@rr.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete-rr-label-@rr.Id" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="delete-rr-label-@rr.Id">Confirm Delete Review Report @rr.Id?</h1>
+                                                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body text-start">
+                                                    This action cannot be undone.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-danger shadow-none" data-bs-dismiss="modal" @onclick="@(()=>DeleteRReport(rr.Id))">Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+            else
+            {
+                @if (commentReports == null)
+                {
+                    <div class="alert alert-info">Loading Comment Reports...</div>
+                }
+                else
+                {
+                    <table class="table table-responsive w-100 py-2 m-0" id="CommentReportsTable" @ref="commentReportsTableRef">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Category</th>
+                                <th>Comment</th>
+                                <th>Outcome</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var cr in commentReports)
+                            {
+                                <tr>
+                                    <td>@cr.Id</td>
+                                    <td>@cr.Category</td>
+                                    <td>
+                                        <button type="button" class="btn @(cr.CommentId == null ? "btn-secondary" : "btn-info") btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#view-cr-@cr.Id-comment" disabled="@(cr.CommentId == null ? true : false)">
+                                            <span class="oi oi-eye"></span> @(cr.CommentId == null ? "Deleted" : "Available")
+                                        </button>
+                                        <div class="modal fade" id="view-cr-@cr.Id-comment" tabindex="-1" aria-labelledby="view-cr-label-@cr.Id-comment" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="view-cr-label-@cr.Id-comment">View Comment @(cr.CommentId == null ? "[Deleted]" : cr.CommentId)</h1>
+                                                        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <CommentFormComponent comment="cr.Comment" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>@cr.Outcome</td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#view-cr-@cr.Id">
+                                            <span class="oi oi-book"></span>
+                                        </button>
+                                        <div class="modal fade" id="view-cr-@cr.Id" tabindex="-1" aria-labelledby="view-cr-label-@cr.Id" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="view-cr-label-@cr.Id">View Comment Report @cr.Id</h1>
+                                                        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <CRFormComponent commentreport="cr" Disabled="true" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button type="button" class="btn @(cr.Outcome == "Pending" ? "btn-warning" : "btn-secondary") btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#edit-cr-@cr.Id" disabled="@(cr.Outcome == "Pending" ? false : true)">
+                                            <span class="oi oi-pencil"></span>
+                                        </button>
+                                        <div class="modal fade" id="edit-cr-@cr.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit-cr-label-@cr.Id" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="edit-cr-label-@cr.Id">Edit Comment Report @cr.Id</h1>
+                                                        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                                                    </div>
+                                                    <CRFormComponent OnValidSubmit="@((cr)=>EditCReport(cr))" OnInitAsync="OnInitializedAsync" commentreport="cr" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button type="button" class="btn btn-danger btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#delete-cr-@cr.Id">
+                                            <span class="oi oi-delete"></span>
+                                        </button>
+                                        <div class="modal fade" id="delete-cr-@cr.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete-cr-label-@cr.Id" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="delete-cr-label-@cr.Id">Confirm Delete Comment Report @cr.Id?</h1>
+                                                        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body text-start">
+                                                        This action cannot be undone.
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-danger shadow-none" data-bs-dismiss="modal" @onclick="@(()=>DeleteCReport(cr.Id))">Delete</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            }
+            
+        </AuthorizeView>
+    }
+</div>
+
+@code {
+    private HttpClient _client;
+    private List<Reviewreport>? reviewReports;
+    private List<Commentreport>? commentReports;
+    private Staff staff;
+    bool userIsStaff = false;
+    private int currentReportType = 1; //reviews 1 comments 2
+    private ElementReference reviewReportsTableRef;
+    private ElementReference commentReportsTableRef;    
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("public");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        reviewReports = await _client.GetFromJsonAsync<List<Reviewreport>>($"{Endpoints.ReviewreportsEndpoint}");
+        commentReports = await _client.GetFromJsonAsync<List<Commentreport>>($"{Endpoints.CommentreportsEndpoint}");
+        var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        userIsStaff = authstate.User.IsInRole("Staff");
+        if (userIsStaff)
+        {
+            var staffs = await _client.GetFromJsonAsync<List<Staff>>($"{Endpoints.StaffsEndpoint}");
+            staff = staffs.FirstOrDefault(u => u.UserId == (authstate.User.FindFirst(c => c.Type == "sub")?.Value));
+        }
+    }
+
+    private async Task EditRReport(Reviewreport reviewreport)
+    {
+        if (reviewreport.StaffId == null)
+        {
+            reviewreport.StaffId = staff.Id;
+        }
+        await _client.PutAsJsonAsync($"{Endpoints.ReviewreportsEndpoint}/{reviewreport.Id}", reviewreport);
+        if (reviewreport.Outcome == "Deleted Review")
+        {
+            await _client.DeleteAsync($"{Endpoints.ReviewsEndpoint}/{reviewreport.ReviewId}");
+        }
+        await js.InvokeVoidAsync("hideModal", $"#edit-rr-{reviewreport.Id}");
+        await OnInitializedAsync();
+    }
+
+    private async Task DeleteRReport(int rrId) //delete dismiss pending
+    {
+        if (reviewReports != null)
+        {
+            await _client.DeleteAsync($"{Endpoints.ReviewreportsEndpoint}/{rrId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    private async Task EditCReport(Commentreport commentreport)
+    {
+        if (commentreport.StaffId == null)
+        {
+            commentreport.StaffId = staff.Id;
+        }
+        await _client.PutAsJsonAsync($"{Endpoints.CommentreportsEndpoint}/{commentreport.Id}", commentreport);
+        if (commentreport.Outcome == "Deleted Comment")
+        {
+            await _client.DeleteAsync($"{Endpoints.CommentsEndpoint}/{commentreport.CommentId}");
+        }
+        await js.InvokeVoidAsync("hideModal", $"#edit-cr-{commentreport.Id}");
+        await OnInitializedAsync();
+    }
+
+    private async Task DeleteCReport(int crId) //delete dismiss pending
+    {
+        if (commentReports != null)
+        {
+            await _client.DeleteAsync($"{Endpoints.CommentreportsEndpoint}/{crId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    void SelectReportType(int option)
+    {
+        currentReportType = option;
+        StateHasChanged();
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (userIsStaff)
+        {
+            if (currentReportType == 1)
+            {
+                await js.InvokeVoidAsync("AddDataTable", "#ReviewReportsTable", "Search Reports");
+            }
+            else
+            {
+                await js.InvokeVoidAsync("AddDataTable", "#CommentReportsTable", "Search Reports");
+            }
+        }
+    }
+
+    public void Dispose()
+    {
+        if (userIsStaff)
+        {
+            if (currentReportType == 1)
+            {
+                js.InvokeVoidAsync("DataTablesDispose", reviewReportsTableRef);
+                reviewReports = null;
+            }
+            else
+            {
+                js.InvokeVoidAsync("DataTablesDispose", commentReportsTableRef);
+                commentReports = null;
+            }
+        }
+    }
+}
