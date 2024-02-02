@@ -1,7 +1,28 @@
 ﻿@page "/authentication/{action}"
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-<RemoteAuthenticatorView Action="@Action" />
+@inject NavigationManager navManager
+<RemoteAuthenticatorView Action="@Action">
+    <LogOutSucceeded>
+        <PageTitle>Logged Out</PageTitle>
+        <div class="text-center p-5 mt-4">
+            <img class="p-2" style="width:30%;" src="/images/backgrounds/logout.png">
+            <h1 class="text-success" style="font-weight:600;font-size:2.8rem;">Successfully Logged Out</h1>
+            <p style="font-weight:500;font-size:1.5rem;">Thank you for using Houseware Reviews!<br />Do visit us again!</p>
+            <span>For your security, we recommend you to close your browser.</span>
+        </div>
+    </LogOutSucceeded>
+</RemoteAuthenticatorView>
 
 @code{
     [Parameter] public string? Action { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Action == "logged-out")
+        {
+            navManager.NavigateTo("/authentication/loggedout");
+        }
+
+        await base.OnInitializedAsync();
+    }
 }
