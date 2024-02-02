@@ -1,28 +1,94 @@
 ﻿@page "/authentication/{action}"
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @inject NavigationManager navManager
+
+@* Authentication Views *@
 <RemoteAuthenticatorView Action="@Action">
+    @* "authentication/register" View *@
+    <Registering>
+        <div class="text-center p-5 mt-4">
+            <img class="p-2" style="width:30%;" src="/images/others/redirecting.png">
+            <h1 class="text-primary" style="font-weight:600;font-size:2.8rem;">Hang Tight!</h1>
+            <p style="font-weight:500;font-size:1.5rem;">We are redirecting you to our Register page.</p>
+        </div>
+    </Registering>
+
+    @* "authentication/login" View *@
+    <LoggingIn>
+        <div class="text-center p-5 mt-4">
+            <img class="p-2" style="width:30%;" src="/images/others/redirecting.png">
+            <h1 class="text-primary" style="font-weight:600;font-size:2.8rem;">Hang Tight!</h1>
+            <p style="font-weight:500;font-size:1.5rem;">We are redirecting you to our Log In page.</p>
+        </div>
+    </LoggingIn>
+
+    @* "authentication/login-callback" View *@
+    <CompletingLoggingIn>
+        <div class="text-center p-5 mt-4">
+            <img class="p-2" style="width:30%;" src="/images/others/redirecting.png">
+            <h1 class="text-primary" style="font-weight:600;font-size:2.8rem;">Hang Tight!</h1>
+            <p style="font-weight:500;font-size:1.5rem;">We are processing your Log In request.</p>
+        </div>
+    </CompletingLoggingIn>
+
+    @* "authentication/login-failed" View *@
+    <LogInFailed>
+        <div class="text-center p-5 mt-4">
+            <img class="p-2" style="width:30%;" src="/images/others/failed.png">
+            <h1 class="text-danger" style="font-weight:600;font-size:2.8rem;">Log In Failed</h1>
+            <p style="font-weight:500;font-size:1.5rem;">We were unable to process your Log In request.</p>
+        </div>
+    </LogInFailed>
+
+    @* "authentication/logout" View *@
+    <LogOut>
+        <div class="text-center p-5 mt-4">
+            <img class="p-2" style="width:30%;" src="/images/others/redirecting.png">
+            <h1 class="text-primary" style="font-weight:600;font-size:2.8rem;">Hang Tight!</h1>
+            <p style="font-weight:500;font-size:1.5rem;">We are preparing your Log Out request.</p>
+        </div>
+    </LogOut>
+
+    @* "authentication/logout-callback" View *@
+    <CompletingLogOut>
+        <div class="text-center p-5 mt-4">
+            <img class="p-2" style="width:30%;" src="/images/others/redirecting.png">
+            <h1 class="text-primary" style="font-weight:600;font-size:2.8rem;">Hang Tight!</h1>
+            <p style="font-weight:500;font-size:1.5rem;">We are processing your Log Out request.</p>
+        </div>
+    </CompletingLogOut>
+
+    @* "authentication/logout-failed" View *@
+    <LogOutFailed>
+        <div class="text-center p-5 mt-4">
+            <img class="p-2" style="width:30%;" src="/images/others/failed.png">
+            <h1 class="text-danger" style="font-weight:600;font-size:2.8rem;">Log Out Failed</h1>
+            <p style="font-weight:500;font-size:1.5rem;">We were unable to process your Log Out request.</p>
+        </div>
+    </LogOutFailed>
+
+    @* "authentication/logged-out" View *@
     <LogOutSucceeded>
         <PageTitle>Logged Out</PageTitle>
         <div class="text-center p-5 mt-4">
-            <img class="p-2" style="width:30%;" src="/images/backgrounds/logout.png">
+            <img class="p-2" style="width:30%;" src="/images/others/loggedout.png">
             <h1 class="text-success" style="font-weight:600;font-size:2.8rem;">Successfully Logged Out</h1>
             <p style="font-weight:500;font-size:1.5rem;">Thank you for using Houseware Reviews!<br />Do visit us again!</p>
             <span>For your security, we recommend you to close your browser.</span>
         </div>
     </LogOutSucceeded>
+
+    @* "authentication/profile" View *@
+    <UserProfile>
+        <div class="text-center p-5 mt-4">
+            <img class="p-2" style="width:30%;" src="/images/others/redirecting.png">
+            <h1 class="text-primary" style="font-weight:600;font-size:2.8rem;">Hang Tight!</h1>
+            <p style="font-weight:500;font-size:1.5rem;">We are redirecting you to your Profile page.</p>
+        </div>
+    </UserProfile>
 </RemoteAuthenticatorView>
 
 @code{
+    // Authentication action
     [Parameter] public string? Action { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (Action == "logged-out")
-        {
-            navManager.NavigateTo("/authentication/loggedout");
-        }
-
-        await base.OnInitializedAsync();
-    }
 }
