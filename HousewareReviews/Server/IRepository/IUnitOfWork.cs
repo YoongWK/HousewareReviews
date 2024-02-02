@@ -1,15 +1,14 @@
 ﻿using HousewareReviews.Shared.Domain;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HousewareReviews.Server.IRepository
 {
+    // Define the IUnitOfWork interface inheriting from IDisposable
     public interface IUnitOfWork : IDisposable
     {
+        // Method signature for saving changes to the database
         Task Save(HttpContext httpContext);
+
+        // Properties for accessing different repositories related to specific entities
         IGenericRepository<Category> Categories { get; }
         IGenericRepository<Comment> Comments { get; }
         IGenericRepository<Company> Companies { get; }

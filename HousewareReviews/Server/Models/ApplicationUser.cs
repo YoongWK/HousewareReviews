@@ -4,6 +4,5 @@ namespace HousewareReviews.Server.Models
 {
     public class ApplicationUser : IdentityUser
     {
-
     }
 }
