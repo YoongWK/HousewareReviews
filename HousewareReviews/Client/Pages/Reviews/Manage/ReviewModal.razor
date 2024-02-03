@@ -52,7 +52,7 @@
 								{
 									var id = Guid.NewGuid();
 									var rating = i;
-									<input class="d-none" type="radio" value="@i" checked="@(Review.Rating.HasValue && Review.Rating == i)" id="star-@id" @onchange="@(e => updateRating(rating))" disabled="@(Action == "View" ? true : false)" />
+									<input class="d-none" type="radio" value="@i" checked="@(Review.Rating.HasValue && Review.Rating == i)" id="star-@id" @onchange="@(e => updateRating(rating))" />
 									<label for="star-@id">☆</label>
 								}
 							</div>
@@ -86,7 +86,7 @@
 							<div class="form-group py-3">
 								<label>Date Created:</label>
 								<div>
-									<input type="text" value="@Review.DateCreated.ToString("d MMM yyyy")" class="form-control shadow-none" disabled />
+									<input type="text" value="@Review.DateCreated.ToString("d MMM yyyy")" class="form-control shadow-none" />
 
 								</div>
 							</div>
@@ -94,14 +94,14 @@
 							<div class="form-group pb-3">
 								<label>Date Updated:</label>
 								<div>
-									<input type="text" value="@Review.DateUpdated.ToString("d MMM yyyy")" class="form-control shadow-none" disabled />
+									<input type="text" value="@Review.DateUpdated.ToString("d MMM yyyy")" class="form-control shadow-none" />
 								</div>
 							</div>
 
 							<div class="form-group">
 								<label>Date Replied:</label>
 								<div>
-									<input type="text" value="@(Review.DateReplied?.ToString("d MMM yyyy") ?? "Not Replied")" class="form-control shadow-none" disabled />
+									<input type="text" value="@(Review.DateReplied?.ToString("d MMM yyyy") ?? "Not Replied")" class="form-control shadow-none" />
 								</div>
 							</div>
 						}

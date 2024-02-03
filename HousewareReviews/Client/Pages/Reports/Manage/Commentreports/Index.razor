@@ -26,7 +26,7 @@
             <thead>
                 <tr>
                     <th>Id</th>
-                    <th>Category</th>
+                    <th class="d-none d-md-table-cell">Category</th>
                     <th>Comment</th>
                     <th>Outcome</th>
                     <th>Actions</th>
@@ -37,7 +37,7 @@
                 {
                     <tr>
                         <td>@commentreport.Id</td>
-                        <td>@commentreport.Category</td>
+                        <td class="d-none d-md-table-cell">@commentreport.Category</td>
                         <td>
                             <ViewCommentButton Comment="commentreport.Comment"
                                                Id="@($"view-commentreport-{commentreport.Id}-comment")" />
