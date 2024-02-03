@@ -1,0 +1,125 @@
+﻿@page "/manage/companies/{CompanyId:int}/products/"
+@inject IHttpClientFactory ClientFactory
+@inject IJSRuntime js
+@implements IDisposable
+@attribute [Authorize(Roles = "Staff")]
+
+<div class="container-fluid p-4">
+    <h4 class="card-title pb-3">@company?.Name Products</h4>
+
+    @if (Products == null)
+    {
+        <div class="alert alert-info">Loading Products...</div>
+    }
+    else
+    {
+        <ProductModal Id="@("create-product")"
+                      ItemName="New Product"
+                      Action="Create"
+                      OnValidSubmit="@((prod)=>CreateProduct(prod))"
+                      OnInitAsync="OnInitializedAsync"
+                      Product="@(new Product{CompanyId=company.Id})" />
+
+        <table class="table table-responsive w-100 py-2 m-0" id="productsTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th class="d-none d-md-table-cell">Price</th>
+                    <th class="d-none d-lg-table-cell">Image</th>
+                    <th>Reviews</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Products)
+                {
+                    <tr>
+                        <td>@product.Name</td>
+                        <td class="d-none d-md-table-cell">@product.Price</td>
+                        <td class="d-none d-lg-table-cell">
+                            <img src="@product.ImgUri" style="height:70px;width:70px;object-fit:cover;" />
+                        </td>
+                        <td>
+                            <EntityNavButton NavAddress="@($"/products/{product.Id}/reviews")"
+                                             Count="@(Reviews == null? 0 : Reviews.Count(r => r.ProductId == product.Id))" />
+                        </td>
+                        <td>
+                            <ProductModal Id="@($"view-product-{product.Id}")"
+                                          ItemName="@product.Name"
+                                          Action="View"
+                                          Product="product" />
+
+                            <ProductModal Id="@($"edit-product-{product.Id}")"
+                                          ItemName="@product.Name"
+                                          Action="Edit"
+                                          OnValidSubmit="@((prod)=>EditProduct(prod))"
+                                          OnInitAsync="OnInitializedAsync"
+                                          Product="product" />
+
+                            <ConfirmDeleteModal Id="@($"delete-product-{product.Id}")"
+                                                ItemName="@product.Name"
+                                                DeleteFunction="@(()=>DeleteProduct(product.Id))" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    [Parameter] public int CompanyId { get; set; }
+    private HttpClient _client;
+    private Company? company;
+    private List<Product>? Products;
+    private List<Review>? Reviews;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("private");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        company = await _client.GetFromJsonAsync<Company>($"{Endpoints.CompaniesEndpoint}/{CompanyId}");
+        var allProducts = await _client.GetFromJsonAsync<List<Product>>($"{Endpoints.ProductsEndpoint}");
+        if (allProducts != null)
+        {
+            Products = allProducts.Where(p => p.CompanyId == CompanyId).ToList();
+        }
+        Reviews = await _client.GetFromJsonAsync<List<Review>>($"{Endpoints.ReviewsEndpoint}");
+    }
+
+    private async Task CreateProduct(Product prod)
+    {
+        await _client.PostAsJsonAsync(Endpoints.ProductsEndpoint, prod);
+        await js.InvokeVoidAsync("hideModal", "#create-product");
+        await OnInitializedAsync();
+    }
+
+    private async Task EditProduct(Product prod)
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.ProductsEndpoint}/{prod.Id}", prod);
+        await js.InvokeVoidAsync("hideModal", $"#edit-product-{prod.Id}");
+        await OnInitializedAsync();
+    }
+
+    private async Task DeleteProduct(int productId)
+    {
+        if (Products != null)
+        {
+            await _client.DeleteAsync($"{Endpoints.ProductsEndpoint}/{productId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#productsTable", "Search Products");
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#productsTable");
+    }
+}

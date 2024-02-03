@@ -40,7 +40,7 @@
                             <img src="@company.LogoUri" style="height:70px;width:140px;object-fit:cover;" />
                         </td>
                         <td>
-                            <EntityNavButton NavAddress="@($"/companies/{company.Id}/products")"
+                            <EntityNavButton NavAddress="@($"/manage/companies/{company.Id}/products")"
                                              Count="@(Products == null? 0 : Products.Count(p => p.CompanyId == company.Id))" />
                         </td>
                         <td>
