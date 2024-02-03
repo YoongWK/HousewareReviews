@@ -40,7 +40,7 @@
                         <td>@(String.IsNullOrEmpty(review.Reply) ? "Not Replied" : "Replied")</td>
                         <td class="d-none d-md-table-cell">@((review.Consumer == null) ? "[Deleted Consumer]" : $"{review.Consumer.FirstName} {review.Consumer.LastName}")</td>
                         <td>
-                            <EntityNavButton NavAddress="@($"/reviews/{review.Id}/comments")"
+                            <EntityNavButton NavAddress="@($"/manage/reviews/{review.Id}/comments")"
                                              Count="@(Comments == null? 0 : Comments.Count(r => r.ReviewId == review.Id))" />
                         </td>
                         <td>

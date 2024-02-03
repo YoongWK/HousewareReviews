@@ -1,0 +1,119 @@
+﻿@page "/manage/reviews/{ReviewId:int}/comments/"
+@inject IHttpClientFactory ClientFactory
+@inject IJSRuntime js
+@implements IDisposable
+@attribute [Authorize(Roles = "Staff")]
+
+<div class="container-fluid p-4">
+    <h4 class="card-title pb-3">Review @review?.Id Comments</h4>
+
+    @if (Comments == null)
+    {
+        <div class="alert alert-info">Loading Comments...</div>
+    }
+    else
+    {
+        <CommentModal Id="@("create-comment")"
+                      ItemName="New Comment"
+                      Action="Create"
+                      OnValidSubmit="@((comData)=>CreateComment(comData))"
+                      OnInitAsync="OnInitializedAsync"
+                      Comment="@(new Comment{ReviewId=review.Id})" />
+
+        <table class="table table-responsive w-100 py-2 m-0" id="commentsTable">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Consumer</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var comment in Comments)
+                {
+                    <tr>
+                        <td>@comment.Id</td>
+                        <td>@((comment.Consumer == null) ? "[Deleted Consumer]" : $"{comment.Consumer.FirstName} {comment.Consumer.LastName}")</td>
+                        <td>
+                            <CommentModal Id="@($"view-comment-{comment.Id}")"
+                                         ItemName="@($"Comment {comment.Id}")"
+                                         Action="View"
+                                         Comment="comment" />
+
+                            <CommentModal Id="@($"edit-comment-{comment.Id}")"
+                                         ItemName="@($"Comment {comment.Id}")"
+                                         Action="Edit"
+                                          OnValidSubmit="@((comData)=>EditComment(comData))"
+                                         OnInitAsync="OnInitializedAsync"
+                                         Comment="comment" />
+
+                            <ConfirmDeleteModal Id="@($"delete-comment-{comment.Id}")"
+                                                ItemName="@($"Comment {comment.Id}")"
+                                                DeleteFunction="@(()=>DeleteComment(comment.Id))" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    [Parameter] public int ReviewId { get; set; }
+    private HttpClient _client;
+    private Review? review;
+    private List<Comment>? Comments;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("private");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        review = await _client.GetFromJsonAsync<Review>($"{Endpoints.ReviewsEndpoint}/{ReviewId}");
+        var allComments = await _client.GetFromJsonAsync<List<Comment>>($"{Endpoints.CommentsEndpoint}");
+        if (allComments != null)
+        {
+            Comments = allComments.Where(c => c.ReviewId == ReviewId).ToList();
+        }
+    }
+
+    private async Task CreateComment((Comment com, bool comChanged) comData)
+    {
+        var latestDateTime = DateTime.Now;
+        comData.com.DateCreated = latestDateTime;
+        comData.com.DateUpdated = latestDateTime;
+        await _client.PostAsJsonAsync(Endpoints.CommentsEndpoint, comData.com);
+        await js.InvokeVoidAsync("hideModal", "#create-comment");
+        await OnInitializedAsync();
+    }
+
+    private async Task EditComment((Comment com, bool comChanged) comData)
+    {
+        var latestDateTime = DateTime.Now;
+        comData.com.DateUpdated = comData.comChanged ? latestDateTime : comData.com.DateUpdated;
+        await _client.PutAsJsonAsync($"{Endpoints.CommentsEndpoint}/{comData.com.Id}", comData.com);
+        await js.InvokeVoidAsync("hideModal", $"#edit-comment-{comData.com.Id}");
+        await OnInitializedAsync();
+    }
+
+    private async Task DeleteComment(int commentId)
+    {
+        if (Comments != null)
+        {
+            await _client.DeleteAsync($"{Endpoints.CommentsEndpoint}/{commentId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#commentsTable", "Search Comments");
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#commentsTable");
+    }
+}
