@@ -1,0 +1,131 @@
+﻿@page "/manage/reports/reviewreports"
+@inject IHttpClientFactory ClientFactory
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime js
+@implements IDisposable
+@inject NavigationManager navManager
+@attribute [Authorize(Roles = "Staff")]
+
+<div class="container-fluid p-4">
+    <h4 class="card-title pb-3">Reports</h4>
+
+    <div class="dropdown">
+        <select class="form-select form-select-sm shadow-none" style="width:178px;cursor:pointer;" @onchange="(e)=>navManager.NavigateTo(e.Value.ToString())">
+            <option value="manage/reports/reviewreports">Review Reports</option>
+            <option value="manage/reports/commentreports">Comment Reports</option>
+        </select>
+    </div>
+    
+    @if (Reviewreports == null)
+    {
+        <div class="alert alert-info">Loading Review Reports...</div>
+    }
+    else
+    {            
+        <table class="table table-responsive w-100 py-2 m-0" id="reviewreportsTable">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Category</th>
+                    <th>Review</th>
+                    <th>Outcome</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var reviewreport in Reviewreports)
+                {
+                    <tr>
+                        <td>@reviewreport.Id</td>
+                        <td>@reviewreport.Category</td>
+                        <td>
+                            <ViewReviewButton Review="reviewreport.Review"
+                                              Id="@($"view-reviewreport-{reviewreport.Id}-review")" />
+                        </td>
+                        <td>@reviewreport.Outcome</td>
+                        <td>
+                            <ReviewreportModal Id="@($"view-reviewreport-{reviewreport.Id}")"
+                                               ItemName="@($"Review Report {reviewreport.Id}")"
+                                               Action="View"
+                                               Reviewreport="reviewreport" />
+
+                            <ReviewreportModal Id="@($"edit-reviewreport-{reviewreport.Id}")"
+                                               ItemName="@($"Review Report {reviewreport.Id}")"
+                                               Action="Edit"
+                                               OnValidSubmit="@((revReport)=>EditReviewreport(revReport))"
+                                               OnInitAsync="OnInitializedAsync"
+                                               Reviewreport="reviewreport"
+                                               Disabled="@(reviewreport.Outcome == "Pending" ? false : true)" />
+
+                            <ConfirmDeleteModal Id="@($"delete-reviewreport-{reviewreport.Id}")"
+                                                ItemName="@($"Review Report {reviewreport.Id}")"
+                                                DeleteFunction="@(()=>DeleteReviewreport(reviewreport.Id))" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    private HttpClient _client;
+    private List<Reviewreport>? Reviewreports;
+    private Staff staff;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("private");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        Reviewreports = await _client.GetFromJsonAsync<List<Reviewreport>>($"{Endpoints.ReviewreportsEndpoint}");
+        var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (authstate.User.IsInRole("Staff"))
+        {
+            var staffs = await _client.GetFromJsonAsync<List<Staff>>($"{Endpoints.StaffsEndpoint}");
+            staff = staffs.FirstOrDefault(u => u.UserId == (authstate.User.FindFirst(c => c.Type == "sub")?.Value));
+        }
+    }
+
+    private async Task EditReviewreport(Reviewreport revReport)
+    {
+        if (revReport.Outcome != "Pending")
+        {
+            revReport.StaffId = revReport.StaffId == null ? staff.Id : revReport.StaffId;
+            foreach (var report in Reviewreports.Where(r => r.ReviewId == revReport.ReviewId))
+            {
+                report.StaffId = revReport.StaffId;
+                report.Outcome = revReport.Outcome;
+                await _client.PutAsJsonAsync($"{Endpoints.ReviewreportsEndpoint}/{report.Id}", report);
+            }
+
+            if (revReport.Outcome == "Review Deleted")
+            {
+                await _client.DeleteAsync($"{Endpoints.ReviewsEndpoint}/{revReport.ReviewId}");
+            }
+        }
+        await js.InvokeVoidAsync("hideModal", $"#edit-reviewreport-{revReport.Id}");
+        await OnInitializedAsync();
+    }
+
+    private async Task DeleteReviewreport(int reviewreportId)
+    {
+        if (Reviewreports != null)
+        {
+            await _client.DeleteAsync($"{Endpoints.ReviewreportsEndpoint}/{reviewreportId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#reviewreportsTable", "Search Review Reports");
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#reviewreportsTable");
+    }
+}

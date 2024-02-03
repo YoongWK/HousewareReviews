@@ -1,0 +1,77 @@
+﻿@inject IHttpClientFactory ClientFactory
+@attribute [Authorize(Roles = "Staff")]
+
+<button type="button" class="btn @(Comment == null ? "btn-secondary" : "btn-info") btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#@Id" disabled="@(Comment == null ? true : false)">
+    <span class="oi oi-eye"></span> @(Comment == null ? "Deleted" : $"Comment {Comment.Id}")
+</button>
+@if (Comment != null)
+{
+    <div class="modal fade" id="@Id" tabindex="-1" aria-labelledby="label-@Id" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="label-@Id">View Comment @Comment.Id</h1>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-start" style="font-size:1rem;">
+                    <fieldset disabled="true">
+                        <div class="form-group pb-3">
+                            <label>Consumer:</label>
+                            <div>
+                                <input type="text" value="@((Consumer == null) ? "[Deleted Consumer]" :  $"{Consumer.FirstName} {Consumer.LastName}")" class="form-control shadow-none" />
+                            </div>
+                        </div>
+
+                        <div class="form-group pb-3">
+                            <div class="d-flex">
+                                <label class="w-50">Description:</label>
+                                <p class="d-inline-flex justify-content-end w-50 m-0 text-secondary" style="font-size:0.8rem;">Count:&nbsp;<span>@(Comment.Description?.Length ?? 0)</span>/300</p>
+                            </div>
+                            <div>
+                                <textarea value="@Comment.Description" class="form-control shadow-none" style="resize:none;" rows="4" maxlength="301"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group pb-3">
+                            <label>Date Created:</label>
+                            <div>
+                                <input type="text" value="@Comment.DateCreated.ToString("d MMM yyyy")" class="form-control shadow-none" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Date Updated:</label>
+                            <div>
+                                <input type="text" value="@Comment.DateUpdated.ToString("d MMM yyyy")" class="form-control shadow-none" />
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public Comment? Comment { get; set; }
+
+    private HttpClient _client;
+    private Consumer Consumer;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("private");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        if (Comment.ConsumerId != null)
+        {
+            Consumer = await _client.GetFromJsonAsync<Consumer>($"{Endpoints.ConsumersEndpoint}/{Comment.ConsumerId}");
+        }
+    }
+}

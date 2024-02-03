@@ -1,0 +1,131 @@
+﻿@page "/manage/reports/commentreports"
+@inject IHttpClientFactory ClientFactory
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime js
+@implements IDisposable
+@inject NavigationManager navManager
+@attribute [Authorize(Roles = "Staff")]
+
+<div class="container-fluid p-4">
+    <h4 class="card-title pb-3">Reports</h4>
+
+    <div class="dropdown">
+        <select class="form-select form-select-sm shadow-none" style="width:178px;cursor:pointer;" @onchange="(e)=>navManager.NavigateTo(e.Value.ToString())">
+			<option value="manage/reports/commentreports">Comment Reports</option>
+			<option value="manage/reports/reviewreports">Review Reports</option>
+		</select>
+    </div>
+    
+    @if (Commentreports == null)
+    {
+        <div class="alert alert-info">Loading Comment Reports...</div>
+    }
+    else
+    {            
+        <table class="table table-responsive w-100 py-2 m-0" id="commentreportsTable">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Category</th>
+                    <th>Comment</th>
+                    <th>Outcome</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var commentreport in Commentreports)
+                {
+                    <tr>
+                        <td>@commentreport.Id</td>
+                        <td>@commentreport.Category</td>
+                        <td>
+                            <ViewCommentButton Comment="commentreport.Comment"
+                                               Id="@($"view-commentreport-{commentreport.Id}-comment")" />
+                        </td>
+                        <td>@commentreport.Outcome</td>
+                        <td>
+                            <CommentreportModal Id="@($"view-commentreport-{commentreport.Id}")"
+                                                ItemName="@($"Comment Report {commentreport.Id}")"
+                                                Action="View"
+                                                Commentreport="commentreport" />
+
+                            <CommentreportModal Id="@($"edit-commentreport-{commentreport.Id}")"
+                                                ItemName="@($"Comment Report {commentreport.Id}")"
+                                                Action="Edit"
+                                                OnValidSubmit="@((comReport)=>EditCommentreport(comReport))"
+                                                OnInitAsync="OnInitializedAsync"
+                                                Commentreport="commentreport"
+                                                Disabled="@(commentreport.Outcome == "Pending" ? false : true)" />
+
+                            <ConfirmDeleteModal Id="@($"delete-commentreport-{commentreport.Id}")"
+                                                ItemName="@($"Comment Report {commentreport.Id}")"
+                                                DeleteFunction="@(()=>DeleteCommentreport(commentreport.Id))" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    private HttpClient _client;
+    private List<Commentreport>? Commentreports;
+    private Staff staff;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("private");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        Commentreports = await _client.GetFromJsonAsync<List<Commentreport>>($"{Endpoints.CommentreportsEndpoint}");
+        var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (authstate.User.IsInRole("Staff"))
+        {
+            var staffs = await _client.GetFromJsonAsync<List<Staff>>($"{Endpoints.StaffsEndpoint}");
+            staff = staffs.FirstOrDefault(u => u.UserId == (authstate.User.FindFirst(c => c.Type == "sub")?.Value));
+        }
+    }
+
+    private async Task EditCommentreport(Commentreport comReport)
+    {
+        if (comReport.Outcome != "Pending")
+        {
+            comReport.StaffId = comReport.StaffId == null ? staff.Id : comReport.StaffId;
+            foreach (var report in Commentreports.Where(r => r.CommentId == comReport.CommentId))
+            {
+                report.StaffId = comReport.StaffId;
+                report.Outcome = comReport.Outcome;
+                await _client.PutAsJsonAsync($"{Endpoints.CommentreportsEndpoint}/{report.Id}", report);
+            }
+
+            if (comReport.Outcome == "Comment Deleted")
+            {
+                await _client.DeleteAsync($"{Endpoints.CommentsEndpoint}/{comReport.CommentId}");
+            }
+        }
+        await js.InvokeVoidAsync("hideModal", $"#edit-commentreport-{comReport.Id}");
+        await OnInitializedAsync();
+    }
+
+    private async Task DeleteCommentreport(int commentreportId)
+    {
+        if (Commentreports != null)
+        {
+            await _client.DeleteAsync($"{Endpoints.CommentreportsEndpoint}/{commentreportId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#commentreportsTable", "Search Comment Reports");
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#commentreportsTable");
+    }
+}

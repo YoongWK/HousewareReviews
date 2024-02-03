@@ -1,0 +1,130 @@
+﻿@inject IHttpClientFactory ClientFactory
+@attribute [Authorize(Roles = "Staff")]
+
+<button type="button" class="btn @(Disabled? "btn-secondary" : btnColor) btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#@Id" disabled="@Disabled">
+	<span class="oi @btnIcon"></span>
+	@(Action == "Create" ? "Create Review Report" : "")
+</button>
+<div class="modal fade" id="@Id" data-bs-backdrop="@(Action == "View" ? "true" : "static")" data-bs-keyboard="@(Action == "View" ? "true" : "false")" tabindex="-1" aria-labelledby="label-@Id" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="label-@Id">@Action @ItemName</h1>
+				<button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitAsync"></button>
+			</div>
+			<EditForm Model="@Commentreport" OnValidSubmit="@(() => OnValidSubmitCallback(Commentreport))" style="font-size:1rem;">
+				<DataAnnotationsValidator />
+				<ValidationSummary class="text-start mb-0 pt-3" />
+				<div class="modal-body text-start">
+					<fieldset disabled="@(Action == "View" ? true : false)">
+						<div class="form-group pb-3">
+							<label>Category:</label>
+							<div>
+								<input type="text" value="@Commentreport.Category" class="form-control shadow-none" disabled />
+							</div>
+						</div>
+
+						<div class="form-group pb-3">
+							<label>Description:</label>
+							<div>
+								<input type="text" value="@Commentreport.Description" class="form-control shadow-none" disabled />
+							</div>
+						</div>
+
+						<div class="form-group pb-3">
+							<label>Outcome:</label>
+							<div>
+								<InputSelect @bind-Value="@Commentreport.Outcome" class="form-control shadow-none">
+									<option value="Pending">Pending</option>
+									<option value="Report Dismissed">Report Dismissed</option>
+									<option value="Comment Deleted">Comment Deleted</option>
+								</InputSelect>
+								<ValidationMessage For="@(() => Commentreport.Outcome)" />
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label>Handled by:</label>
+							<InputSelect @bind-Value="@Commentreport.StaffId" class="form-control shadow-none">
+								<option value="">-- Select Staff --</option>
+								@if (Staffs != null)
+								{
+									foreach (var staff in Staffs)
+									{
+										<option value="@staff.Id">@staff.FirstName @staff.LastName</option>
+									}
+								}
+							</InputSelect>
+							<ValidationMessage For="@(() => Commentreport.StaffId)" />
+						</div>
+					</fieldset>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal" @onclick="OnInitAsync">Close</button>
+					@if (Action != "View" ? true : false)
+					{
+						<button type="submit" class="btn btn-success shadow-none">
+							@(Action == "Edit" ? "Save" : "Create")
+						</button>
+					}
+				</div>
+			</EditForm>
+		</div>
+	</div>
+</div>
+
+@code {
+	[Parameter] public string? Id { get; set; }
+	[Parameter] public string? ItemName { get; set; }
+	[Parameter] public string? Action { get; set; }
+	[Parameter] public EventCallback<Commentreport> OnValidSubmit { get; set; }
+	[Parameter] public EventCallback OnInitAsync { get; set; }
+	[Parameter] public Commentreport? Commentreport { get; set; }
+	[Parameter] public bool Disabled { get; set; } = false;
+
+	private string btnColor;
+	private string btnIcon;
+
+	private HttpClient _client;
+	private List<Staff> Staffs;
+
+	protected override void OnInitialized()
+	{
+		switch (Action.ToLower())
+		{
+			case "create":
+				btnColor = "btn-success";
+				btnIcon = "oi-plus";
+				Action = "Create";
+				break;
+			case "view":
+				btnColor = "btn-primary";
+				btnIcon = "oi-book";
+				Action = "View";
+				break;
+			case "edit":
+				btnColor = "btn-warning";
+				btnIcon = "oi-pencil";
+				Action = "Edit";
+				break;
+		}
+		_client = ClientFactory.CreateClient("private");
+	}
+
+	protected async override Task OnInitializedAsync()
+	{
+		Staffs = await _client.GetFromJsonAsync<List<Staff>>($"{Endpoints.StaffsEndpoint}");
+	}
+
+	private async Task OnValidSubmitCallback(Commentreport comReport)
+	{
+		if (OnValidSubmit.HasDelegate)
+		{
+			comReport.Comment = null;
+			comReport.Consumer = null;
+			comReport.Staff = null;
+			await OnValidSubmit.InvokeAsync(comReport);
+		}
+	}
+}
