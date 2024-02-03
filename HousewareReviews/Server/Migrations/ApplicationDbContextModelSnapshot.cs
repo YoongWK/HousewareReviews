@@ -232,16 +232,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "3781efa7-66dc-47f0-860f-e506d04102e4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "97470b6f-bbb2-4ddb-a3b5-332ae6766524",
+                            ConcurrencyStamp = "66304709-e20c-4e15-b5b8-114648dc7a71",
                             Email = "staff@blazor.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "STAFF@BLAZOR.COM",
                             NormalizedUserName = "S1234567A",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDGDwkQS0XTRuIKmgG4R7qO/K81Ae2VurJ2AHUQFoXhgDexw7IoTwa7EUuJIJzmifA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEB5G4dY7FiaWgd+BU1aCGOkE+jVqbFZtSLI8H3z3d9n0Y37e5xWr+rpqo7w1NRjRTQ==",
                             PhoneNumber = "91234567",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "403d5c9b-930e-4587-9187-bdc0b7c0baca",
+                            SecurityStamp = "f3181a51-16e1-4c01-9a78-a840328dfe3c",
                             TwoFactorEnabled = false,
                             UserName = "S1234567A"
                         },
@@ -249,16 +249,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "1ce40de7-b2a7-4cf4-a8f3-c811191a664d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "41e9dd9c-50de-4750-a9d1-f0d489c88065",
+                            ConcurrencyStamp = "21ff38ca-630f-48f2-8a78-4962b40f22e4",
                             Email = "consumer@blazor.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "CONSUMER@BLAZOR.COM",
                             NormalizedUserName = "T1234567A",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIcsPhToDcXLmZoDVW8d0fFg9a2EILAwZbHHV1L3bzhPdQOTFix3L2JAqKH+31ySAw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAIu7mbdKHyDzMd8lzsRzmVYJtIp61kfJMWeK1xpDk6h/9nw4lRR8buyw6fghPgKaA==",
                             PhoneNumber = "98765432",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5778eeaa-9306-4740-b8d2-3c0248f8c398",
+                            SecurityStamp = "55509189-fbfa-47ed-8ac5-d2ad9f98c60f",
                             TwoFactorEnabled = false,
                             UserName = "T1234567A"
                         },
@@ -266,16 +266,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "9du2ii40-h7d9-8sj2-j98s-is0dh83jk48s",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ef24ed58-bdf9-43a8-8fc6-2f8bddd961ce",
+                            ConcurrencyStamp = "b08ae816-4be7-406f-9c75-fbe1d8cf2a47",
                             Email = "maymorrison@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "MAYMORRISON@GMAIL.COM",
                             NormalizedUserName = "S6523489J",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAs9aw0kK1TXHuvaPphyf3TmSKE2Ib5xYiqdLv+K6JRgJbkgDQeq3d7HGwL9JSCrfg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOREwYyU37C843a+eu2AWUBj514WUQ1HLnJVyc33/bcqpOU6I9VyQaxwNyvz/FRIHg==",
                             PhoneNumber = "92438900",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "0d16db48-63d3-4888-84da-be9a3bd1f622",
+                            SecurityStamp = "35344258-5d4a-40ca-b092-f71869d7d85e",
                             TwoFactorEnabled = false,
                             UserName = "S6523489J"
                         },
@@ -283,16 +283,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "2oh7diw9-0or5-3jf9-8ss6-ks8ya5h297bd",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6769c662-85d6-486f-8d1f-1a2b8996899d",
+                            ConcurrencyStamp = "1d5ba46e-2bcf-422b-b116-26f6dbf57493",
                             Email = "joshuatan@outlook.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "JOSHUATAN@OUTLOOK.COM",
                             NormalizedUserName = "T9366538J",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHtK+oeEAKpTWHEUenHK5izN40Ptahx+zMl+Gdt+fNhEDMhx0LQyzeeqU7EhgwdIxQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHYTUvONEv98TzbNsZAGWgwgchAF/wjiTvkKNbn9jh5FIAdgTYDZYEvH3VGtfCzqQA==",
                             PhoneNumber = "83072245",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "9a6fa8f3-aa10-4c4c-b524-7d9c13a90d87",
+                            SecurityStamp = "c6021a9c-396c-44dd-b3a0-04102e142870",
                             TwoFactorEnabled = false,
                             UserName = "T9366538J"
                         },
@@ -300,16 +300,16 @@ namespace HousewareReviews.Server.Migrations
                         {
                             Id = "5di8sy83-2i9r-f56h-s8d9-s09njsh7dd53",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f99e6447-23c3-40ca-8737-c1edff02399f",
+                            ConcurrencyStamp = "5ce4e5ea-173e-45c6-9fe3-0d81c0ff63f1",
                             Email = "ethanlim@hotmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ETHANLIM@HOTMAIL.COM",
                             NormalizedUserName = "S9812704F",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMITpsAI1AiqR6N/l101FMBe9veU+pmejilxYcwlZjJf0IjQA/AAhNCEPt61Dnd+Ew==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDlBLRVZqAB3V3LGPfolQbNRpVbJLgQ1+VHZNNvYf264175oebuz3/dhhVct+GNPQw==",
                             PhoneNumber = "87229044",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e127a7b1-bdc2-4018-a91f-7501285b8f0f",
+                            SecurityStamp = "e7f235d5-15c6-4be3-ad7a-767861c66be9",
                             TwoFactorEnabled = false,
                             UserName = "S9812704F"
                         });
@@ -417,9 +417,6 @@ namespace HousewareReviews.Server.Migrations
                     b.Property<int>("ReviewId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UsefulCnt")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ConsumerId");
@@ -477,6 +474,7 @@ namespace HousewareReviews.Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
@@ -605,22 +603,29 @@ namespace HousewareReviews.Server.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ContactNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NRIC")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("ProfileImgUri")
                         .HasColumnType("nvarchar(max)");
@@ -816,6 +821,7 @@ namespace HousewareReviews.Server.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
@@ -827,10 +833,8 @@ namespace HousewareReviews.Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Reply")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UsefulCnt")
-                        .HasColumnType("int");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.HasKey("Id");
 
@@ -927,6 +931,7 @@ namespace HousewareReviews.Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
@@ -970,22 +975,29 @@ namespace HousewareReviews.Server.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ContactNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NRIC")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("ProfileImgUri")
                         .HasColumnType("nvarchar(max)");

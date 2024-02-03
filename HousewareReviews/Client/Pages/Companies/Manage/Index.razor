@@ -14,11 +14,11 @@
     else
     {
         <CompanyModal Id="@("create-company")"
-                    ItemName="New Company"
-                    Action="Create"
-                    OnValidSubmit="@((cat)=>CreateCompany(cat))"
-                    OnInitAsync="OnInitializedAsync"
-                    Company="@(new Company())" />
+                      ItemName="New Company"
+                      Action="Create"
+                      OnValidSubmit="@((cat)=>CreateCompany(cat))"
+                      OnInitAsync="OnInitializedAsync"
+                      Company="@(new Company())" />
             
         <table class="table table-responsive w-100 py-2 m-0" id="companiesTable">
             <thead>
@@ -45,16 +45,16 @@
                         </td>
                         <td>
                             <CompanyModal Id="@($"view-company-{company.Id}")"
-                                            ItemName="@company.Name"
-                                            Action="View"
-                                            Company="company" />
+                                          ItemName="@company.Name"
+                                          Action="View"
+                                          Company="company" />
 
                             <CompanyModal Id="@($"edit-company-{company.Id}")"
-                                            ItemName="@company.Name"
-                                            Action="Edit"
-                                            OnValidSubmit="@((cat)=>EditCompany(cat))"
-                                            OnInitAsync="OnInitializedAsync"
-                                            Company="company" />
+                                          ItemName="@company.Name"
+                                          Action="Edit"
+                                          OnValidSubmit="@((cat)=>EditCompany(cat))"
+                                          OnInitAsync="OnInitializedAsync"
+                                          Company="company" />
 
                             <ConfirmDeleteModal Id="@($"delete-company-{company.Id}")"
                                                 ItemName="@company.Name"

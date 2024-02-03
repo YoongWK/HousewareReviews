@@ -14,11 +14,11 @@
     else
     {
         <ReviewModal Id="@("create-review")"
-                      ItemName="New Review"
-                      Action="Create"
+                     ItemName="New Review"
+                     Action="Create"
                      OnValidSubmit="@((revData)=>CreateReview(revData))"
-                      OnInitAsync="OnInitializedAsync"
-                      Review="@(new Review{ProductId=product.Id})" />
+                     OnInitAsync="OnInitializedAsync"
+                     Review="@(new Review{ProductId=product.Id})" />
 
         <table class="table table-responsive w-100 py-2 m-0" id="reviewsTable">
             <thead>

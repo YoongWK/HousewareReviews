@@ -13,7 +13,6 @@ namespace HousewareReviews.Shared.Domain
         public DateTime DateCreated { get; set; }
         [DataType(DataType.DateTime)]
         public DateTime DateUpdated { get; set; }
-		public int? UsefulCnt { get; set; }
 		public int ReviewId { get; set; }
         public virtual Review? Review { get; set; }
         public int? ConsumerId { get; set; }

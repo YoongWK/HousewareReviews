@@ -14,11 +14,11 @@
     else
     {
         <ConsumerModal Id="@("create-consumer")"
-                        ItemName="New Consumer"
-                        Action="Create"
-                        OnValidSubmit="@((con)=>CreateConsumer(con))"
-                        OnInitAsync="OnInitializedAsync"
-                        Consumer="@(new Consumer{ProfileImgUri = "/images/users/default.jpg"})" />
+                       ItemName="New Consumer"
+                       Action="Create"
+                       OnValidSubmit="@((con)=>CreateConsumer(con))"
+                       OnInitAsync="OnInitializedAsync"
+                       Consumer="@(new Consumer{ProfileImgUri = "/images/users/default.jpg"})" />
 
         <table class="table table-responsive w-100 py-2 m-0" id="consumersTable">
             <thead>
@@ -44,22 +44,22 @@
                         </td>
                         <td>
                             <ConsumerModal Id="@($"view-consumer-{consumer.Id}")"
-                                            ItemName="@consumerName"
-                                            Action="View"
-                                            Consumer="consumer"/>
+                                           ItemName="@consumerName"
+                                           Action="View"
+                                           Consumer="consumer" />
 
                             <ConsumerModal Id="@($"edit-consumer-{consumer.Id}")"
-                                            ItemName="@consumerName"
-                                            Action="Edit"
-                                            OnValidSubmit="@((con)=>EditConsumer(con))"
-                                            OnInitAsync="OnInitializedAsync"
-                                            Consumer="consumer"
-                                            Disabled="authenticated"/>
+                                           ItemName="@consumerName"
+                                           Action="Edit"
+                                           OnValidSubmit="@((con)=>EditConsumer(con))"
+                                           OnInitAsync="OnInitializedAsync"
+                                           Consumer="consumer"
+                                           Disabled="authenticated" />
 
                             <ConfirmDeleteModal Id="@($"delete-consumer-{consumer.Id}")"
-                                                    ItemName="@consumerName"
-                                                    DeleteFunction="@(()=>DeleteConsumer(consumer.Id))"
-                                                    Disabled="authenticated" />
+                                                ItemName="@consumerName"
+                                                DeleteFunction="@(()=>DeleteConsumer(consumer.Id))"
+                                                Disabled="authenticated" />
                         </td>
                     </tr>
                 }

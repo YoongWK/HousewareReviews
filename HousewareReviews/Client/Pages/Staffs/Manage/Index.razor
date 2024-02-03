@@ -14,11 +14,11 @@
     else
     {
         <StaffModal Id="@("create-staff")"
-                        ItemName="New Staff"
-                        Action="Create"
-                        OnValidSubmit="@((stf)=>CreateStaff(stf))"
-                        OnInitAsync="OnInitializedAsync"
-                        Staff="@(new Staff{ProfileImgUri = "/images/users/default.jpg"})" />
+                    ItemName="New Staff"
+                    Action="Create"
+                    OnValidSubmit="@((stf)=>CreateStaff(stf))"
+                    OnInitAsync="OnInitializedAsync"
+                    Staff="@(new Staff{ProfileImgUri = "/images/users/default.jpg"})" />
 
         <table class="table table-responsive w-100 py-2 m-0" id="staffsTable">
             <thead>
@@ -44,22 +44,22 @@
                         </td>
                         <td>
                             <StaffModal Id="@($"view-staff-{staff.Id}")"
-                                            ItemName="@staffName"
-                                            Action="View"
-                                            Staff="staff"/>
+                                        ItemName="@staffName"
+                                        Action="View"
+                                        Staff="staff" />
 
                             <StaffModal Id="@($"edit-staff-{staff.Id}")"
-                                            ItemName="@staffName"
-                                            Action="Edit"
-                                            OnValidSubmit="@((stf)=>EditStaff(stf))"
-                                            OnInitAsync="OnInitializedAsync"
-                                            Staff="staff"
-                                            Disabled="authenticated"/>
+                                        ItemName="@staffName"
+                                        Action="Edit"
+                                        OnValidSubmit="@((stf)=>EditStaff(stf))"
+                                        OnInitAsync="OnInitializedAsync"
+                                        Staff="staff"
+                                        Disabled="authenticated" />
 
                             <ConfirmDeleteModal Id="@($"delete-staff-{staff.Id}")"
-                                                    ItemName="@staffName"
-                                                    DeleteFunction="@(()=>DeleteStaff(staff.Id))"
-                                                    Disabled="authenticated" />
+                                                ItemName="@staffName"
+                                                DeleteFunction="@(()=>DeleteStaff(staff.Id))"
+                                                Disabled="authenticated" />
                         </td>
                     </tr>
                 }

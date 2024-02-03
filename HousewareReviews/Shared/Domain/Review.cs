@@ -15,7 +15,6 @@ namespace HousewareReviews.Shared.Domain
         [DataType(DataType.MultilineText)]
         [StringLength(300, ErrorMessage = "Reply must not exceed {1} characters.")]
         public string? Reply { get; set; }
-        public int? UsefulCnt { get; set; }
         [DataType(DataType.DateTime)]
         public DateTime DateCreated { get; set; }
         [DataType(DataType.DateTime)]

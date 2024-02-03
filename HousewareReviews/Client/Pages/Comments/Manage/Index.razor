@@ -36,16 +36,16 @@
                         <td>@((comment.Consumer == null) ? "[Deleted Consumer]" : $"{comment.Consumer.FirstName} {comment.Consumer.LastName}")</td>
                         <td>
                             <CommentModal Id="@($"view-comment-{comment.Id}")"
-                                         ItemName="@($"Comment {comment.Id}")"
-                                         Action="View"
-                                         Comment="comment" />
+                                          ItemName="@($"Comment {comment.Id}")"
+                                          Action="View"
+                                          Comment="comment" />
 
                             <CommentModal Id="@($"edit-comment-{comment.Id}")"
-                                         ItemName="@($"Comment {comment.Id}")"
-                                         Action="Edit"
+                                          ItemName="@($"Comment {comment.Id}")"
+                                          Action="Edit"
                                           OnValidSubmit="@((comData)=>EditComment(comData))"
-                                         OnInitAsync="OnInitializedAsync"
-                                         Comment="comment" />
+                                          OnInitAsync="OnInitializedAsync"
+                                          Comment="comment" />
 
                             <ConfirmDeleteModal Id="@($"delete-comment-{comment.Id}")"
                                                 ItemName="@($"Comment {comment.Id}")"

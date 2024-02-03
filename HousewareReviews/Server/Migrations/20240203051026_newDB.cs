@@ -92,13 +92,13 @@ namespace HousewareReviews.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NRIC = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ContactNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NRIC = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ContactNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProfileImgUri = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Password = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -169,13 +169,13 @@ namespace HousewareReviews.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NRIC = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ContactNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NRIC = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ContactNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProfileImgUri = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Password = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -325,9 +325,8 @@ namespace HousewareReviews.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Rating = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    Reply = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UsefulCnt = table.Column<int>(type: "int", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    Reply = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateReplied = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -360,7 +359,6 @@ namespace HousewareReviews.Server.Migrations
                     Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UsefulCnt = table.Column<int>(type: "int", nullable: true),
                     ReviewId = table.Column<int>(type: "int", nullable: false),
                     ConsumerId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -388,7 +386,7 @@ namespace HousewareReviews.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     Outcome = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConsumerId = table.Column<int>(type: "int", nullable: true),
                     ReviewId = table.Column<int>(type: "int", nullable: true),
@@ -424,7 +422,7 @@ namespace HousewareReviews.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     Outcome = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConsumerId = table.Column<int>(type: "int", nullable: true),
                     CommentId = table.Column<int>(type: "int", nullable: true),
@@ -467,11 +465,11 @@ namespace HousewareReviews.Server.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "1ce40de7-b2a7-4cf4-a8f3-c811191a664d", 0, "41e9dd9c-50de-4750-a9d1-f0d489c88065", "consumer@blazor.com", false, false, null, "CONSUMER@BLAZOR.COM", "T1234567A", "AQAAAAIAAYagAAAAEIcsPhToDcXLmZoDVW8d0fFg9a2EILAwZbHHV1L3bzhPdQOTFix3L2JAqKH+31ySAw==", "98765432", false, "5778eeaa-9306-4740-b8d2-3c0248f8c398", false, "T1234567A" },
-                    { "2oh7diw9-0or5-3jf9-8ss6-ks8ya5h297bd", 0, "6769c662-85d6-486f-8d1f-1a2b8996899d", "joshuatan@outlook.com", false, false, null, "JOSHUATAN@OUTLOOK.COM", "T9366538J", "AQAAAAIAAYagAAAAEHtK+oeEAKpTWHEUenHK5izN40Ptahx+zMl+Gdt+fNhEDMhx0LQyzeeqU7EhgwdIxQ==", "83072245", false, "9a6fa8f3-aa10-4c4c-b524-7d9c13a90d87", false, "T9366538J" },
-                    { "3781efa7-66dc-47f0-860f-e506d04102e4", 0, "97470b6f-bbb2-4ddb-a3b5-332ae6766524", "staff@blazor.com", false, false, null, "STAFF@BLAZOR.COM", "S1234567A", "AQAAAAIAAYagAAAAEDGDwkQS0XTRuIKmgG4R7qO/K81Ae2VurJ2AHUQFoXhgDexw7IoTwa7EUuJIJzmifA==", "91234567", false, "403d5c9b-930e-4587-9187-bdc0b7c0baca", false, "S1234567A" },
-                    { "5di8sy83-2i9r-f56h-s8d9-s09njsh7dd53", 0, "f99e6447-23c3-40ca-8737-c1edff02399f", "ethanlim@hotmail.com", false, false, null, "ETHANLIM@HOTMAIL.COM", "S9812704F", "AQAAAAIAAYagAAAAEMITpsAI1AiqR6N/l101FMBe9veU+pmejilxYcwlZjJf0IjQA/AAhNCEPt61Dnd+Ew==", "87229044", false, "e127a7b1-bdc2-4018-a91f-7501285b8f0f", false, "S9812704F" },
-                    { "9du2ii40-h7d9-8sj2-j98s-is0dh83jk48s", 0, "ef24ed58-bdf9-43a8-8fc6-2f8bddd961ce", "maymorrison@gmail.com", false, false, null, "MAYMORRISON@GMAIL.COM", "S6523489J", "AQAAAAIAAYagAAAAEAs9aw0kK1TXHuvaPphyf3TmSKE2Ib5xYiqdLv+K6JRgJbkgDQeq3d7HGwL9JSCrfg==", "92438900", false, "0d16db48-63d3-4888-84da-be9a3bd1f622", false, "S6523489J" }
+                    { "1ce40de7-b2a7-4cf4-a8f3-c811191a664d", 0, "21ff38ca-630f-48f2-8a78-4962b40f22e4", "consumer@blazor.com", false, false, null, "CONSUMER@BLAZOR.COM", "T1234567A", "AQAAAAIAAYagAAAAEAIu7mbdKHyDzMd8lzsRzmVYJtIp61kfJMWeK1xpDk6h/9nw4lRR8buyw6fghPgKaA==", "98765432", false, "55509189-fbfa-47ed-8ac5-d2ad9f98c60f", false, "T1234567A" },
+                    { "2oh7diw9-0or5-3jf9-8ss6-ks8ya5h297bd", 0, "1d5ba46e-2bcf-422b-b116-26f6dbf57493", "joshuatan@outlook.com", false, false, null, "JOSHUATAN@OUTLOOK.COM", "T9366538J", "AQAAAAIAAYagAAAAEHYTUvONEv98TzbNsZAGWgwgchAF/wjiTvkKNbn9jh5FIAdgTYDZYEvH3VGtfCzqQA==", "83072245", false, "c6021a9c-396c-44dd-b3a0-04102e142870", false, "T9366538J" },
+                    { "3781efa7-66dc-47f0-860f-e506d04102e4", 0, "66304709-e20c-4e15-b5b8-114648dc7a71", "staff@blazor.com", false, false, null, "STAFF@BLAZOR.COM", "S1234567A", "AQAAAAIAAYagAAAAEB5G4dY7FiaWgd+BU1aCGOkE+jVqbFZtSLI8H3z3d9n0Y37e5xWr+rpqo7w1NRjRTQ==", "91234567", false, "f3181a51-16e1-4c01-9a78-a840328dfe3c", false, "S1234567A" },
+                    { "5di8sy83-2i9r-f56h-s8d9-s09njsh7dd53", 0, "5ce4e5ea-173e-45c6-9fe3-0d81c0ff63f1", "ethanlim@hotmail.com", false, false, null, "ETHANLIM@HOTMAIL.COM", "S9812704F", "AQAAAAIAAYagAAAAEDlBLRVZqAB3V3LGPfolQbNRpVbJLgQ1+VHZNNvYf264175oebuz3/dhhVct+GNPQw==", "87229044", false, "e7f235d5-15c6-4be3-ad7a-767861c66be9", false, "S9812704F" },
+                    { "9du2ii40-h7d9-8sj2-j98s-is0dh83jk48s", 0, "b08ae816-4be7-406f-9c75-fbe1d8cf2a47", "maymorrison@gmail.com", false, false, null, "MAYMORRISON@GMAIL.COM", "S6523489J", "AQAAAAIAAYagAAAAEOREwYyU37C843a+eu2AWUBj514WUQ1HLnJVyc33/bcqpOU6I9VyQaxwNyvz/FRIHg==", "92438900", false, "35344258-5d4a-40ca-b092-f71869d7d85e", false, "S6523489J" }
                 });
 
             migrationBuilder.InsertData(
@@ -545,25 +543,25 @@ namespace HousewareReviews.Server.Migrations
 
             migrationBuilder.InsertData(
                 table: "Reviews",
-                columns: new[] { "Id", "ConsumerId", "DateCreated", "DateReplied", "DateUpdated", "Description", "ProductId", "Rating", "Reply", "UsefulCnt" },
+                columns: new[] { "Id", "ConsumerId", "DateCreated", "DateReplied", "DateUpdated", "Description", "ProductId", "Rating", "Reply" },
                 values: new object[,]
                 {
-                    { 1, 4, new DateTime(2023, 12, 25, 10, 30, 45, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 28, 11, 20, 10, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 25, 10, 30, 45, 0, DateTimeKind.Unspecified), "This Aerogaz wall fan, power sia! Confirm plus chop the motor very solid. Really shiok for beating the heat. No kidding.", 1, 5, "Hey Ethan, awesome to hear you’re loving our wall fan. Stay cool and thanks for choosing Aerogaz!", null },
-                    { 2, 2, new DateTime(2024, 1, 2, 10, 30, 45, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 2, 11, 20, 10, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 2, 10, 30, 45, 0, DateTimeKind.Unspecified), "The fan does its job in cooling the place down. But always got a hum sound, need to tahan the extra background melody.", 1, 3, "Hello May, appreciate your honest review! We’re sorry to hear about the hum and we’ll look into improving this issue. If you have more details to share, hit us up. Thanks!", null },
-                    { 3, 1, new DateTime(2024, 1, 2, 14, 30, 45, 0, DateTimeKind.Unspecified), null, new DateTime(2024, 1, 2, 14, 30, 45, 0, DateTimeKind.Unspecified), "Reliable fan. Good choice for staying cool.", 1, 4, null, null },
-                    { 4, 3, new DateTime(2024, 1, 4, 10, 30, 45, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 6, 11, 20, 10, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 5, 10, 49, 49, 0, DateTimeKind.Unspecified), "Alamak, this Aerogaz 16\" wall fan damn noisy lor! Motor like got its own concert. Confirm regret, better find one quieter, can sleep better.", 1, 1, "Hi Joshua, we’re sorry to hear about the noise issue. Please contact our support team to share more details. We’re here to help. Thanks for letting us know!", null },
-                    { 5, 3, new DateTime(2024, 1, 24, 10, 30, 45, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 26, 11, 40, 10, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 24, 10, 49, 49, 0, DateTimeKind.Unspecified), "Love this water heater sia! Instant hot water, sleek design, and easy to install.", 2, 5, "Hi Joshua, glad to hear that you are loving our product! Thank you for choosing Aerogaz.", null },
-                    { 6, 4, new DateTime(2024, 1, 21, 10, 15, 45, 0, DateTimeKind.Unspecified), null, new DateTime(2024, 1, 21, 10, 15, 45, 0, DateTimeKind.Unspecified), "dvjhbwedjgfjsdjvjsovnsdvkjvjovjijsifdjijhfjjfijf9fofmlxxpp-qjjfjfkj", 1, 1, null, null }
+                    { 1, 4, new DateTime(2023, 12, 25, 10, 30, 45, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 28, 11, 20, 10, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 25, 10, 30, 45, 0, DateTimeKind.Unspecified), "This Aerogaz wall fan, power sia! Confirm plus chop the motor very solid. Really shiok for beating the heat. No kidding.", 1, 5, "Hey Ethan, awesome to hear you’re loving our wall fan. Stay cool and thanks for choosing Aerogaz!" },
+                    { 2, 2, new DateTime(2024, 1, 2, 10, 30, 45, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 2, 11, 20, 10, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 2, 10, 30, 45, 0, DateTimeKind.Unspecified), "The fan does its job in cooling the place down. But always got a hum sound, need to tahan the extra background melody.", 1, 3, "Hello May, appreciate your honest review! We’re sorry to hear about the hum and we’ll look into improving this issue. If you have more details to share, hit us up. Thanks!" },
+                    { 3, 1, new DateTime(2024, 1, 2, 14, 30, 45, 0, DateTimeKind.Unspecified), null, new DateTime(2024, 1, 2, 14, 30, 45, 0, DateTimeKind.Unspecified), "Reliable fan. Good choice for staying cool.", 1, 4, null },
+                    { 4, 3, new DateTime(2024, 1, 4, 10, 30, 45, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 6, 11, 20, 10, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 5, 10, 49, 49, 0, DateTimeKind.Unspecified), "Alamak, this Aerogaz 16\" wall fan damn noisy lor! Motor like got its own concert. Confirm regret, better find one quieter, can sleep better.", 1, 1, "Hi Joshua, we’re sorry to hear about the noise issue. Please contact our support team to share more details. We’re here to help. Thanks for letting us know!" },
+                    { 5, 3, new DateTime(2024, 1, 24, 10, 30, 45, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 26, 11, 40, 10, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 24, 10, 49, 49, 0, DateTimeKind.Unspecified), "Love this water heater sia! Instant hot water, sleek design, and easy to install.", 2, 5, "Hi Joshua, glad to hear that you are loving our product! Thank you for choosing Aerogaz." },
+                    { 6, 4, new DateTime(2024, 1, 21, 10, 15, 45, 0, DateTimeKind.Unspecified), null, new DateTime(2024, 1, 21, 10, 15, 45, 0, DateTimeKind.Unspecified), "dvjhbwedjgfjsdjvjsovnsdvkjvjovjijsifdjijhfjjfijf9fofmlxxpp-qjjfjfkj", 1, 1, null }
                 });
 
             migrationBuilder.InsertData(
                 table: "Comments",
-                columns: new[] { "Id", "ConsumerId", "DateCreated", "DateUpdated", "Description", "ReviewId", "UsefulCnt" },
+                columns: new[] { "Id", "ConsumerId", "DateCreated", "DateUpdated", "Description", "ReviewId" },
                 values: new object[,]
                 {
-                    { 1, 4, new DateTime(2024, 1, 6, 15, 32, 40, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 6, 15, 32, 40, 0, DateTimeKind.Unspecified), "Agreed! The Aerogaz 16” wall fan is way too noisy. Regretted buying it. Found a quieter one for better sleep.", 4, null },
-                    { 2, 2, new DateTime(2024, 1, 6, 15, 32, 40, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 6, 15, 32, 40, 0, DateTimeKind.Unspecified), "Absolutely agree! It's a game-changer!", 5, null },
-                    { 3, 3, new DateTime(2024, 1, 17, 15, 10, 40, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 17, 15, 10, 40, 0, DateTimeKind.Unspecified), ":#%#&%”?*%”#%6", 1, null }
+                    { 1, 4, new DateTime(2024, 1, 6, 15, 32, 40, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 6, 15, 32, 40, 0, DateTimeKind.Unspecified), "Agreed! The Aerogaz 16” wall fan is way too noisy. Regretted buying it. Found a quieter one for better sleep.", 4 },
+                    { 2, 2, new DateTime(2024, 1, 6, 15, 32, 40, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 6, 15, 32, 40, 0, DateTimeKind.Unspecified), "Absolutely agree! It's a game-changer!", 5 },
+                    { 3, 3, new DateTime(2024, 1, 17, 15, 10, 40, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 17, 15, 10, 40, 0, DateTimeKind.Unspecified), ":#%#&%”?*%”#%6", 1 }
                 });
 
             migrationBuilder.InsertData(

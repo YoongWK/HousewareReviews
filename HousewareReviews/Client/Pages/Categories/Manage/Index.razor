@@ -14,11 +14,11 @@
     else
     {
         <CategoryModal Id="@("create-category")"
-                    ItemName="New Category"
-                    Action="Create"
-                    OnValidSubmit="@((cat)=>CreateCategory(cat))"
-                    OnInitAsync="OnInitializedAsync"
-                    Category="@(new Category())" />
+                       ItemName="New Category"
+                       Action="Create"
+                       OnValidSubmit="@((cat)=>CreateCategory(cat))"
+                       OnInitAsync="OnInitializedAsync"
+                       Category="@(new Category())" />
             
         <table class="table table-responsive w-100 py-2 m-0" id="categoriesTable">
             <thead>
@@ -38,16 +38,16 @@
                         </td>
                         <td>
                             <CategoryModal Id="@($"view-category-{category.Id}")"
-                                            ItemName="@category.Name"
-                                            Action="View"
-                                            Category="category" />
+                                           ItemName="@category.Name"
+                                           Action="View"
+                                           Category="category" />
 
                             <CategoryModal Id="@($"edit-category-{category.Id}")"
-                                            ItemName="@category.Name"
-                                            Action="Edit"
-                                            OnValidSubmit="@((cat)=>EditCategory(cat))"
-                                            OnInitAsync="OnInitializedAsync"
-                                            Category="category" />
+                                           ItemName="@category.Name"
+                                           Action="Edit"
+                                           OnValidSubmit="@((cat)=>EditCategory(cat))"
+                                           OnInitAsync="OnInitializedAsync"
+                                           Category="category" />
 
                             <ConfirmDeleteModal Id="@($"delete-category-{category.Id}")"
                                                 ItemName="@category.Name"
