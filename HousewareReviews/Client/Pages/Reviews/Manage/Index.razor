@@ -1,0 +1,132 @@
+﻿@page "/manage/products/{ProductId:int}/reviews/"
+@inject IHttpClientFactory ClientFactory
+@inject IJSRuntime js
+@implements IDisposable
+@attribute [Authorize(Roles = "Staff")]
+
+<div class="container-fluid p-4">
+    <h4 class="card-title pb-3">@product?.Name Reviews</h4>
+
+    @if (Reviews == null)
+    {
+        <div class="alert alert-info">Loading Reviews...</div>
+    }
+    else
+    {
+        <ReviewModal Id="@("create-review")"
+                      ItemName="New Review"
+                      Action="Create"
+                     OnValidSubmit="@((revData)=>CreateReview(revData))"
+                      OnInitAsync="OnInitializedAsync"
+                      Review="@(new Review{ProductId=product.Id})" />
+
+        <table class="table table-responsive w-100 py-2 m-0" id="reviewsTable">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th><span class="oi oi-star"></span></th>
+                    <th>Status</th>
+                    <th class="d-none d-md-table-cell">Consumer</th>
+                    <th>Comments</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var review in Reviews)
+                {
+                    <tr>
+                        <td>@review.Id</td>
+                        <td>@review.Rating</td>
+                        <td>@(String.IsNullOrEmpty(review.Reply) ? "Not Replied" : "Replied")</td>
+                        <td class="d-none d-md-table-cell">@((review.Consumer == null) ? "[Deleted Consumer]" : $"{review.Consumer.FirstName} {review.Consumer.LastName}")</td>
+                        <td>
+                            <EntityNavButton NavAddress="@($"/reviews/{review.Id}/comments")"
+                                             Count="@(Comments == null? 0 : Comments.Count(r => r.ReviewId == review.Id))" />
+                        </td>
+                        <td>
+                            <ReviewModal Id="@($"view-review-{review.Id}")"
+                                         ItemName="@($"Review {review.Id}")"
+                                         Action="View"
+                                         Review="review" />
+
+                            <ReviewModal Id="@($"edit-review-{review.Id}")"
+                                         ItemName="@($"Review {review.Id}")"
+                                         Action="Edit"
+                                         OnValidSubmit="@((revData)=>EditReview(revData))"
+                                         OnInitAsync="OnInitializedAsync"
+                                         Review="review" />
+
+                            <ConfirmDeleteModal Id="@($"delete-review-{review.Id}")"
+                                                ItemName="@($"Review {review.Id}")"
+                                                DeleteFunction="@(()=>DeleteReview(review.Id))" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    [Parameter] public int ProductId { get; set; }
+    private HttpClient _client;
+    private Product? product;
+    private List<Review>? Reviews;
+    private List<Comment>? Comments;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("private");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        product = await _client.GetFromJsonAsync<Product>($"{Endpoints.ProductsEndpoint}/{ProductId}");
+        var allReviews = await _client.GetFromJsonAsync<List<Review>>($"{Endpoints.ReviewsEndpoint}");
+        if (allReviews != null)
+        {
+            Reviews = allReviews.Where(r => r.ProductId == ProductId).ToList();
+        }
+        Comments = await _client.GetFromJsonAsync<List<Comment>>($"{Endpoints.CommentsEndpoint}");
+    }
+
+    private async Task CreateReview((Review rev, bool revChanged, bool revReplyChanged) revData)
+    {
+        var latestDateTime = DateTime.Now;
+        revData.rev.DateCreated = latestDateTime;
+        revData.rev.DateUpdated = latestDateTime;
+        revData.rev.DateReplied = String.IsNullOrEmpty(revData.rev.Reply) ? null : latestDateTime;
+        await _client.PostAsJsonAsync(Endpoints.ReviewsEndpoint, revData.rev);
+        await js.InvokeVoidAsync("hideModal", "#create-review");
+        await OnInitializedAsync();
+    }
+
+    private async Task EditReview((Review rev, bool revChanged, bool revReplyChanged) revData)
+    {
+        var latestDateTime = DateTime.Now;
+        revData.rev.DateUpdated = revData.revChanged ? latestDateTime : revData.rev.DateUpdated;
+        revData.rev.DateReplied = revData.revReplyChanged ? (String.IsNullOrEmpty(revData.rev.Reply) ? null : latestDateTime) : revData.rev.DateReplied;
+        await _client.PutAsJsonAsync($"{Endpoints.ReviewsEndpoint}/{revData.rev.Id}", revData.rev);
+        await js.InvokeVoidAsync("hideModal", $"#edit-review-{revData.rev.Id}");
+        await OnInitializedAsync();
+    }
+
+    private async Task DeleteReview(int reviewId)
+    {
+        if (Reviews != null)
+        {
+            await _client.DeleteAsync($"{Endpoints.ReviewsEndpoint}/{reviewId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeVoidAsync("AddDataTable", "#reviewsTable", "Search Reviews");
+    }
+
+    public void Dispose()
+    {
+        js.InvokeVoidAsync("DataTablesDispose", "#reviewsTable");
+    }
+}

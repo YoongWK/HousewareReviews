@@ -40,7 +40,7 @@
                             <img src="@product.ImgUri" style="height:70px;width:70px;object-fit:cover;" />
                         </td>
                         <td>
-                            <EntityNavButton NavAddress="@($"/products/{product.Id}/reviews")"
+                            <EntityNavButton NavAddress="@($"/manage/products/{product.Id}/reviews")"
                                              Count="@(Reviews == null? 0 : Reviews.Count(r => r.ProductId == product.Id))" />
                         </td>
                         <td>
