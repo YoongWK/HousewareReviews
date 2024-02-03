@@ -27,24 +27,24 @@
         @* NavItems *@
         <div class="collapse navbar-collapse" id="navbarNav">
             <nav class="navbar-nav justify-content-center flex-grow-1">
-                @* Home Navigation *@
-                <div class="nav-item px-1">
-                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All" @onclick="HideNavBar">
-                        <span class="d-xl-none oi oi-home" aria-hidden="true"></span> Home
-                    </NavLink>
-                </div>
                 <AuthorizeView Roles="Staff">
                     <Authorized>
+                        @* Home Navigation *@
+                        <div class="nav-item px-1">
+                            <NavLink class="nav-link" href="" Match="NavLinkMatch.All" @onclick="HideNavBar">
+                                <span class="d-xl-none oi oi-home" aria-hidden="true"></span> Home
+                            </NavLink>
+                        </div>
                         @* Categories Navigation *@
                         <div class="nav-item px-1">
-                            <NavLink class="nav-link" href="/manage/categories" Match="NavLinkMatch.All" @onclick="HideNavBar">
+                            <NavLink class="nav-link" href="manage/categories" Match="NavLinkMatch.All" @onclick="HideNavBar">
                                 <span class="d-xl-none oi oi-grid-two-up" aria-hidden="true"></span> Categories
                             </NavLink>
                         </div>
 
                         @* Companies Navigation *@
                         <div class="nav-item px-1">
-                            <NavLink class="nav-link" href="companies" Match="NavLinkMatch.All" @onclick="HideNavBar">
+                            <NavLink class="nav-link" href="manage/companies" Match="NavLinkMatch.All" @onclick="HideNavBar">
                                 <span class="d-xl-none oi oi-briefcase" aria-hidden="true"></span> Companies
                             </NavLink>
                         </div>
@@ -65,6 +65,12 @@
 						</div>
                     </Authorized>
                     <NotAuthorized>
+                        @* Home Navigation *@
+                        <div class="nav-item px-1">
+                            <NavLink class="nav-link" href="" Match="NavLinkMatch.All" @onclick="HideNavBar">
+                                <span class="d-xl-none oi oi-home" aria-hidden="true"></span> Home
+                            </NavLink>
+                        </div>
                         @* Categories Navigation *@
                         <div class="nav-item px-1">
                             <NavLink class="nav-link" href="categories" Match="NavLinkMatch.All" @onclick="HideNavBar">

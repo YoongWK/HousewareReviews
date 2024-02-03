@@ -1,8 +1,5 @@
 ﻿@page "/categories/"
 @inject IHttpClientFactory ClientFactory
-@inject IJSRuntime js
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@implements IDisposable
 
 <div class="container-fluid p-4">
     <h4 class="card-title pb-3">Categories</h4>
@@ -13,141 +10,27 @@
     }
     else
     {
-        <AuthorizeView>
-            <NotAuthorized>
-                <div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
-                    @foreach (var category in Categories)
-                    {
-                        <div class="col">
-                            <a href="/products/categories/@category.Id" style="text-decoration: none;">
-                                <div class="card text-center h-100 rounded-5">
-                                    <img src="@category.ImgUri" class="card-img-top rounded-top-5" alt="@category.Name Image">
-                                    <div class="card-body p-2 m-0">
-                                        <h5 class="card-title">@category.Name</h5>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    }
-                </div>
-            </NotAuthorized>
-        </AuthorizeView>
-
-        <AuthorizeView Roles="Consumer">
-            <div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
-                @foreach (var category in Categories)
-                {
-                    <div class="col">
-                        <a href="/products/categories/@category.Id" style="text-decoration: none;">
-                            <div class="card text-center h-100 rounded-5">
-                                <img src="@category.ImgUri" class="card-img-top rounded-top-5" alt="@category.Name Image">
-                                <div class="card-body p-2 m-0">
-                                    <h5 class="card-title">@category.Name</h5>
-                                </div>
+        <div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
+            @foreach (var category in Categories)
+            {
+                <div class="col">
+                    <a href="/products/categories/@category.Id" style="text-decoration: none;">
+                        <div class="card text-center h-100 rounded-5">
+                            <img src="@category.ImgUri" class="card-img-top rounded-top-5" alt="@category.Name Image">
+                            <div class="card-body p-2 m-0">
+                                <h5 class="card-title">@category.Name</h5>
                             </div>
-                        </a>
-                    </div>
-                }
-            </div>
-        </AuthorizeView>
-
-        <AuthorizeView Roles="Staff">
-            <button type="button" class="btn btn-success btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#create-category">
-                <span class="oi oi-plus"></span>
-                Create Category
-            </button>
-            <div class="modal fade" id="create-category" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="create-category-label" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="create-category-label">Create New Category</h1>
-                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
                         </div>
-                        <StaffFormComponent ButtonText="Create" OnValidSubmit="@((cat)=>CreateCategory(cat))" OnInitAsync="OnInitializedAsync" category="new Category()" />
-                    </div>
+                    </a>
                 </div>
-            </div>
-            
-            <table class="table table-responsive w-100 py-2 m-0" id="categoriesTable">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Image</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var category in Categories)
-                    {
-                        <tr>
-                            <td>@category.Name</td>
-                            <td>
-                                <img src="@category.ImgUri" style="height:70px;width:140px;object-fit:cover;" />
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-primary btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#view-category-@category.Id">
-                                    <span class="oi oi-book"></span>
-                                </button>
-                                <div class="modal fade" id="view-category-@category.Id" tabindex="-1" aria-labelledby="view-category-label-@category.Id" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="view-category-label-@category.Id">View @category.Name</h1>
-                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <StaffFormComponent category="category" Disabled="true" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <button type="button" class="btn btn-warning btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#edit-category-@category.Id">
-                                    <span class="oi oi-pencil"></span>
-                                </button>
-                                <div class="modal fade" id="edit-category-@category.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit-category-label-@category.Id" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="edit-category-label-@category.Id">Edit @category.Name</h1>
-                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
-                                            </div>
-                                            <StaffFormComponent OnValidSubmit="@((cat)=>EditCategory(cat))" OnInitAsync="OnInitializedAsync" category="category" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <button type="button" class="btn btn-danger btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#delete-category-@category.Id">
-                                    <span class="oi oi-delete"></span>
-                                </button>
-                                <div class="modal fade" id="delete-category-@category.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete-category-label-@category.Id" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="delete-category-label-@category.Id">Confirm Delete @category.Name?</h1>
-                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body text-start">
-                                                This action cannot be undone.
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-danger shadow-none" data-bs-dismiss="modal" @onclick="@(()=>DeleteCategory(category.Id))">Delete</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </AuthorizeView>
+            }
+        </div>
     }
 </div>
 
 @code {
     private HttpClient _client;
     private List<Category>? Categories;
-    bool userIsStaff = false;
 
     protected override void OnInitialized()
     {
@@ -157,46 +40,5 @@
     protected async override Task OnInitializedAsync()
     {
         Categories = await _client.GetFromJsonAsync<List<Category>>($"{Endpoints.CategoriesEndpoint}");
-        var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        userIsStaff = authstate.User.IsInRole("Staff");
-    }
-
-    private async Task CreateCategory(Category cat)
-    {
-        await _client.PostAsJsonAsync(Endpoints.CategoriesEndpoint, cat);
-        await js.InvokeVoidAsync("hideModal", "#create-category");
-        await OnInitializedAsync();
-    }
-
-    private async Task EditCategory(Category cat)
-    {
-        await _client.PutAsJsonAsync($"{Endpoints.CategoriesEndpoint}/{cat.Id}", cat);
-        await js.InvokeVoidAsync("hideModal", $"#edit-category-{cat.Id}");
-        await OnInitializedAsync();
-    }
-
-    private async Task DeleteCategory(int categoryId)
-    {
-        if (Categories != null)
-        {
-            await _client.DeleteAsync($"{Endpoints.CategoriesEndpoint}/{categoryId}");
-            await OnInitializedAsync();
-        }
-    }
-
-    protected async override Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (userIsStaff)
-        {
-            await js.InvokeVoidAsync("AddDataTable", "#categoriesTable", "Search Categories");
-        }
-    }
-
-    public void Dispose()
-    {
-        if (userIsStaff)
-        {
-            js.InvokeVoidAsync("DataTablesDispose", "#categoriesTable");
-        }
     }
 }

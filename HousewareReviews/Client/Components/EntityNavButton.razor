@@ -1,0 +1,8 @@
+﻿<a href="@NavAddress" class="btn btn-info btn-sm shadow-none">
+    <span class="oi oi-eye"></span> @Count
+</a>
+
+@code {
+    [Parameter] public string? NavAddress { get; set; }
+    [Parameter] public int Count { get; set; } = 0;
+}

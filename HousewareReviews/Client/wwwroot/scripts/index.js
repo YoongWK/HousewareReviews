@@ -56,8 +56,8 @@ function addModalImgHeightListener(modalId, imgId, hwRatio) {
     function imgHandler() {
         updateImgHeight(imgId, hwRatio);
     }
+    window.addEventListener('resize', imgHandler);
     modal.addEventListener('shown.bs.modal', imgHandler);
-    window.addEventListener('resize', imgHandler);    
     window.ModalImgHandlers[modalId] = imgHandler;
 }
 
