@@ -100,8 +100,8 @@
                 report.Outcome = comReport.Outcome;
                 await _client.PutAsJsonAsync($"{Endpoints.CommentreportsEndpoint}/{report.Id}", report);
             }
-
-            if (comReport.Outcome == "Comment Deleted")
+            
+            if ((comReport.Outcome == "Comment Deleted") && (comReport.CommentId != null))
             {
                 await _client.DeleteAsync($"{Endpoints.CommentsEndpoint}/{comReport.CommentId}");
             }

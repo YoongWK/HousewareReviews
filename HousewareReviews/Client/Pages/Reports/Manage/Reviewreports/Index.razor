@@ -101,7 +101,7 @@
                 await _client.PutAsJsonAsync($"{Endpoints.ReviewreportsEndpoint}/{report.Id}", report);
             }
 
-            if (revReport.Outcome == "Review Deleted")
+            if ((revReport.Outcome == "Review Deleted") && (revReport.ReviewId != null))
             {
                 await _client.DeleteAsync($"{Endpoints.ReviewsEndpoint}/{revReport.ReviewId}");
             }
