@@ -15,7 +15,7 @@
 			<h4><b>@company?.Name</b></h4>
 			<span>@productCount Products</span>
 			<span>@reviewCount Reviews</span>
-			<span>@overallRating <span class="oi oi-star" style="color:orange"></span></span>
+			<span>@companyRating <span class="oi oi-star" style="color:orange"></span></span>
 		</div>
 		<div class="col-12 pt-2 text-end">
 			<a href="@company?.WebsiteUrl" target="_blank" class="btn btn-light rounded-5 shadow-none" style="color:var(--darkgray)">
@@ -84,7 +84,7 @@
 	private String? imgId;
 	private int productCount;
 	private int reviewCount;
-	private double overallRating;
+	private double companyRating;
 
 	protected override void OnInitialized()
 	{
@@ -107,9 +107,9 @@
 		Products = allProducts?.Where(p => p.CompanyId == companyId).ToList();
 		productCount = Products?.Count ?? 0;
 
-		var reviews = allReviews?.Where(review => review?.Product?.CompanyId == companyId).ToList();
+		var reviews = allReviews?.Where(r => r?.Product?.CompanyId == companyId).ToList();
 		reviewCount = reviews?.Count ?? 0;
-		overallRating = Math.Round((double)(reviews?.Average(rev => rev?.Rating) ?? 0), 1);
+		companyRating = Math.Round((double)(reviews?.Average(r => r?.Rating) ?? 0), 1);
 	}
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)

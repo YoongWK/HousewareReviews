@@ -1,4 +1,4 @@
-﻿@page "/products/{id:int}/"
+﻿@page "/products/{productId:int}/"
 @inject IHttpClientFactory ClientFactory
 @inject IJSRuntime js
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -31,7 +31,7 @@
                                 <h1 class="modal-title fs-5" id="create-review-label">Write Review for @product.Name</h1>
                                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
                             </div>
-                            <ReviewFormComponent ButtonText="Create" OnValidSubmit="@((revData)=>WriteReview(revData))" OnInitAsync="OnInitializedAsync" review="new Review{ProductId=id, ConsumerId=currentconsumerid}" />
+                            <ReviewFormComponent ButtonText="Create" OnValidSubmit="@((revData)=>WriteReview(revData))" OnInitAsync="OnInitializedAsync" review="new Review{ProductId=productId, ConsumerId=currentConsumerId}" />
                         </div>
                     </div>
                 </div>
@@ -41,35 +41,23 @@
             <div class="col-lg">
                 <img src="@product.Company?.LogoUri" class="rounded-4 w-100">
             </div>
+            <div class="d-lg-none p-2"></div>
             <div class="col-lg-3">
-                <h5 class="m-0">@product.Company?.Name</h5>
+                <h5 class="m-0" style="font-weight:600;">@product.Company?.Name</h5>
             </div>
+            <div class="d-lg-none p-2"></div>
             <div class="col-lg">
-                <h6>Total Reviews:</h6>
-                <span>
-                    @companyreviewCount
-                </span>
+                <h6 class="m-0">Total Reviews:</h6>
+                <span>@companyReviewCount</span>
             </div>
+            <div class="d-lg-none p-1"></div>
             <div class="col-lg">
-                <h6>Overall Rating:</h6>
-                <span>
-                    @{
-                        if (companyreviews != null && companyreviewCount >0)
-                        {
-                            int? sumofRatings = 0;
-                            foreach (var rev in companyreviews)
-                            {
-                                sumofRatings += rev.Rating;
-                            }
-                            overallRating = Math.Round(((decimal)sumofRatings / companyreviewCount), 1);
-                        }
-                    }
-                    @overallRating
-                    <span class="oi oi-star" style="color:orange"></span>
-                </span>
+                <h6 class="m-0">Overall Rating:</h6>
+                <span>@companyRating <span class="oi oi-star" style="color:orange"></span></span>
             </div>
+            <div class="d-lg-none p-2"></div>
             <div class="col-lg d-flex justify-content-end">
-                <a href="/companies/@product.CompanyId" class="btn rounded-5 text-white" style="background-color: var(--blue)">
+                <a href="/companies/@product.CompanyId" class="btn rounded-5 text-white shadow-none" style="background-color: var(--blue)">
                     <small><b>View Page</b></small>
                     <span class="oi oi-arrow-right"></span>
                 </a>
@@ -80,7 +68,7 @@
         <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
             <div class="d-flex">
                 <div class="me-auto">
-                    <h3 class="card-title" style="color: var(--black)"><b>Reviews (@productreviewCount)</b></h3>
+                    <h4 class="card-title" style="color: var(--black)"><b>Reviews (@productReviewCount)</b></h4>
                 </div>
                 <div>
                     <small><b>Sort: </b></small>
@@ -95,21 +83,7 @@
                     </ul>
                 </div>
             </div>
-            <div>
-                @{
-                    if (reviews != null && productreviewCount > 0)
-                    {
-                        int? sumofRatings = 0;
-                        foreach (var rev in reviews)
-                        {
-                            sumofRatings += rev.Rating;
-                        }
-                        productRating = Math.Round(((decimal)sumofRatings / productreviewCount), 1);
-                    }
-                }
-                @productRating
-                <span class="oi oi-star" style="color:orange"></span>
-            </div>
+            <div>@productRating<span class="oi oi-star" style="color:orange"></span></div>
             @{
                 // dictionary key:value = rating:count
                 Dictionary<int, int> ratingCounts = new Dictionary<int, int>
@@ -155,9 +129,9 @@
         {
             //logged in consumer reviews displayed at the top
             @foreach (var review in reviews
-                .Where(r => selectedRatings.Contains(r.Rating ?? 0))
-                .OrderByDescending(r => r?.ConsumerId == currentconsumerid)
-                .ThenBy(GetSortExpression(selectedSortOption)))@* r => r.DateUpdated) *@ //also sort by descending and ascending ratings
+           .Where(r => selectedRatings.Contains(r.Rating ?? 0))
+           .OrderByDescending(r => r?.ConsumerId == currentConsumerId)
+           .ThenBy(GetSortExpression(selectedSortOption)))
             {
                 <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
                     <div class="d-flex">
@@ -190,7 +164,7 @@
                         <div class="me-auto">
                             <h6><b>Date Reviewed: @review.DateCreated.ToString("d MMM yyyy")</b></h6>
                         </div>
-                        @if (review.ConsumerId == currentconsumerid)
+                        @if (review.ConsumerId == currentConsumerId)
                         {
                             <div>
                                 <a class="text-warning" style="text-decoration: none; cursor: pointer" data-bs-toggle="modal" data-bs-target="#modify-review-@review.Id">
@@ -256,18 +230,18 @@
                                                 <h1 class="modal-title fs-5" id="write-comment-@review.Id-label">Make a comment</h1>
                                                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
                                             </div>
-                                            <CommentFormComponent ButtonText="Create" OnValidSubmit="@((comData)=>WriteComment(comData))" OnInitAsync="OnInitializedAsync" comment="new Comment{ReviewId=review.Id, ConsumerId=currentconsumerid}" />
+                                            <CommentFormComponent ButtonText="Create" OnValidSubmit="@((comData)=>WriteComment(comData))" OnInitAsync="OnInitializedAsync" comment="new Comment{ReviewId=review.Id, ConsumerId=currentConsumerId}" />
                                         </div>
                                     </div>
                                 </div>
                                 &nbsp;
                                 @{
-                                    Reviewreport reviewreport = new Reviewreport {Outcome="Pending", ConsumerId=currentconsumerid, ReviewId=review.Id};
+                                    Reviewreport reviewreport = new Reviewreport {Outcome="Pending", ConsumerId=currentConsumerId, ReviewId=review.Id};
                                     bool rrCreated = false;
 
                                     foreach (var rr in Reviewreports)
                                     {
-                                        if (rr.ConsumerId == currentconsumerid && rr.ReviewId == review.Id)
+                                        if (rr.ConsumerId == currentConsumerId && rr.ReviewId == review.Id)
                                         {
                                             rrCreated = true;
                                             reviewreport = rr;
@@ -293,7 +267,7 @@
                                     }
                                     else
                                     {
-                                        <a style="text-decoration: none; color: var(--black) cursor:pointer;" data-bs-toggle="modal" data-bs-target="#make-reviewreport-@reviewreport.Id">
+                                        <a style="text-decoration: none; color: var(--black);cursor:pointer;" data-bs-toggle="modal" data-bs-target="#make-reviewreport-@reviewreport.Id">
                                             <span class="oi oi-flag" aria-hidden="true"></span>
                                             <small>Report</small>
                                         </a>
@@ -333,7 +307,7 @@
                                 </div>
                             }
 
-                            @foreach (var comment in Comments.OrderBy<Comment, int>(c => c.ConsumerId == currentconsumerid ? 0 : 1))
+                            @foreach (var comment in Comments.OrderBy<Comment, int>(c => c.ConsumerId == currentConsumerId ? 0 : 1))
                             {
                                 if (comment.ReviewId == review.Id)
                                 {
@@ -356,7 +330,7 @@
                                             <div class="me-auto">
                                                 <h6><b>Date Commented: @comment.DateCreated.ToString("d MMM yyyy")</b></h6>
                                             </div>
-                                            @if (comment.ConsumerId == currentconsumerid)
+                                            @if (comment.ConsumerId == currentConsumerId)
                                             {
                                                 <div>
                                                     <a class="text-warning" style="text-decoration: none; cursor:pointer;" data-bs-toggle="modal" data-bs-target="#modify-comment-@comment.Id">
@@ -403,21 +377,14 @@
                                         <div class="d-flex">
                                             <div class="me-auto"></div>
                                             <div>
-                                                @* <span class="oi oi-thumb-up" aria-hidden="true"></span>
-                                                <small>Helpful</small>
-                                                &nbsp; *@
-                                                @* <a href="/comments/@comment.Id/report" style="text-decoration: none; color: var(--black)">
-                                                    <span class="oi oi-flag" aria-hidden="true"></span>
-                                                    <small>Report</small>
-                                                </a> *@
                                                 &nbsp;
                                                 @{
-                                                    Commentreport commentreport = new Commentreport { Outcome = "Pending", ConsumerId = currentconsumerid, CommentId = comment.Id };
+                                                    Commentreport commentreport = new Commentreport { Outcome = "Pending", ConsumerId = currentConsumerId, CommentId = comment.Id };
                                                     bool crCreated = false;
 
                                                     foreach (var cr in Commentreports)
                                                     {
-                                                        if (cr.ConsumerId == currentconsumerid && cr.CommentId == comment.Id)
+                                                        if (cr.ConsumerId == currentConsumerId && cr.CommentId == comment.Id)
                                                         {
                                                             crCreated = true;
                                                             commentreport = cr;
@@ -443,7 +410,7 @@
                                                     }
                                                     else
                                                     {
-                                                        <a style="text-decoration: none; color: var(--black) cursor:pointer;" data-bs-toggle="modal" data-bs-target="#make-commentreport-@commentreport.Id">
+                                                        <a style="text-decoration: none; color: var(--black);cursor:pointer;" data-bs-toggle="modal" data-bs-target="#make-commentreport-@commentreport.Id">
                                                             <span class="oi oi-flag" aria-hidden="true"></span>
                                                             <small>Report</small>
                                                         </a>
@@ -506,26 +473,12 @@
                 <div class="col-lg">
                     <h6>Total Reviews:</h6>
                     <span>
-                        @companyreviewCount
+                        @companyReviewCount
                     </span>
                 </div>
                 <div class="col-lg">
                     <h6>Overall Rating:</h6>
-                    <span>
-                        @{
-                            if (companyreviews != null && companyreviewCount > 0)
-                            {
-                                int? sumofRatings = 0;
-                                foreach (var rev in companyreviews)
-                                {
-                                    sumofRatings += rev.Rating;
-                                }
-                                overallRating = Math.Round(((decimal)sumofRatings / companyreviewCount), 1);
-                            }
-                        }
-                        @overallRating
-                    </span>
-                    <span class="oi oi-star" style="color:orange"></span>
+                    <span>@companyRating <span class="oi oi-star" style="color:orange"></span></span>
                 </div>
                 <div class="col-lg d-flex justify-content-end">
                     <a href="/companies/view/@product.CompanyId" class="btn rounded-5 text-white" style="background-color: var(--blue)">
@@ -539,7 +492,7 @@
             <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
                 <div class="d-flex">
                     <div class="me-auto">
-                        <h3 class="card-title" style="color: var(--black)"><b>Reviews (@productreviewCount)</b></h3>
+                        <h3 class="card-title" style="color: var(--black)"><b>Reviews (@productReviewCount)</b></h3>
                     </div>
                     <div>
                         <small><b>Sort: </b></small>
@@ -674,25 +627,21 @@
 </AuthorizeView>
 
 @code {
+    [Parameter] public int productId { get; set; }
     private HttpClient _client;
-    [Parameter] public int id { get; set; }
-    private List<Product>? products;
-    private Product? product = new Product();
-    private IList<Review> Reviews;
-    private IList<Comment> Comments;
-    private IList<Consumer> Consumers;
-    private IList<Reviewreport> Reviewreports;
-    private IList<Commentreport> Commentreports;
+    private Product? product;
+    private List<Comment>? Comments;
+    private List<Reviewreport>? Reviewreports;
+    private List<Commentreport>? Commentreports;
     private List<Review>? reviews;
-    private List<Review>? companyreviews;
-    private int currentconsumerid;
-    int productreviewCount = 0;
-    int companyreviewCount = 0;
-    decimal? overallRating = 0;
-    decimal? productRating = 0;
+    private int? currentConsumerId;
+    private int productReviewCount = 0;
+    private int companyReviewCount = 0;
+    private double? productRating = 0;
+    private double? companyRating = 0;
     private int selectedSortOption = 1;
     private string selectedSortOptionText = "Newest First";
-    List<int> selectedRatings = new List<int>();
+    List<int>? selectedRatings;
 
     protected override void OnInitialized()
     {
@@ -702,42 +651,22 @@
 
     protected async override Task OnInitializedAsync()
     {
-        product = await _client.GetFromJsonAsync<Product>($"{Endpoints.ProductsEndpoint}/{id}");
-        products = await _client.GetFromJsonAsync<List<Product>>($"{Endpoints.ProductsEndpoint}");
-        Reviews = await _client.GetFromJsonAsync<List<Review>>($"{Endpoints.ReviewsEndpoint}");
+        product = await _client.GetFromJsonAsync<Product>($"{Endpoints.ProductsEndpoint}/{productId}");
         Comments = await _client.GetFromJsonAsync<List<Comment>>($"{Endpoints.CommentsEndpoint}");
-        Consumers = await _client.GetFromJsonAsync<List<Consumer>>($"{Endpoints.ConsumersEndpoint}");
         Reviewreports = await _client.GetFromJsonAsync<List<Reviewreport>>($"{Endpoints.ReviewreportsEndpoint}");
         Commentreports = await _client.GetFromJsonAsync<List<Commentreport>>($"{Endpoints.CommentreportsEndpoint}");
-        var context = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        if (context.User.IsInRole("Consumer"))
-        {
-            var consumer = Consumers.FirstOrDefault(u => u.UserId == (context.User.FindFirst(c => c.Type == "sub")?.Value));
-            currentconsumerid = consumer.Id;
-        }
-        productreviewCount = 0;
-        companyreviewCount = 0;
-        var productReviews = new List<Review>();
-        var companyReviews = new List<Review>();
-        if (Reviews != null)
-        {
-            foreach (var review in Reviews)
-            {
-                if (review.ProductId == product.Id) //get all the reviews of this specific product
-                {
-                    productReviews.Add(review);
-                    productreviewCount++;
-                }
 
-                if (review.Product.CompanyId == product.CompanyId)
-                {
-                    companyReviews.Add(review);
-                    companyreviewCount++;
-                }
-            }
-        }
-        reviews = productReviews;
-        companyreviews = companyReviews;
+        var context = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var Consumers = await _client.GetFromJsonAsync<List<Consumer>>($"{Endpoints.ConsumersEndpoint}");
+        currentConsumerId = context.User.IsInRole("Consumer") ? Consumers?.FirstOrDefault(u => u.UserId == context.User.FindFirst(c => c.Type == "sub")?.Value)?.Id : null;
+
+        var allReviews = await _client.GetFromJsonAsync<List<Review>>($"{Endpoints.ReviewsEndpoint}");
+        reviews = allReviews?.Where(r => r.ProductId == product?.Id).ToList();
+
+        productReviewCount = reviews?.Count ?? 0;
+        productRating = Math.Round((double)(reviews?.Average(r => r?.Rating) ?? 0), 1);
+        companyReviewCount = allReviews?.Count(r => r?.Product?.CompanyId == product?.CompanyId) ?? 0;
+        companyRating = Math.Round((double)(allReviews?.Where(r => r?.Product?.CompanyId == product?.CompanyId)?.Average(r => r?.Rating) ?? 0), 1);
     }
 
     private async Task WriteReview((Review rev, bool revChanged) revData)
@@ -757,9 +686,9 @@
         await OnInitializedAsync();
     }
 
-    async Task removeReview(int reviewId)
+    private async Task removeReview(int reviewId)
     {
-        if (Reviews != null)
+        if (reviews != null)
         {
             await _client.DeleteAsync($"{Endpoints.ReviewsEndpoint}/{reviewId}");
             await OnInitializedAsync();
@@ -860,15 +789,10 @@
 
     void ToggleRating(int rating)
     {
-        if (selectedRatings.Contains(rating))
-        {
-            selectedRatings.Remove(rating);
-        }
-        else
+        if (!selectedRatings.Remove(rating))
         {
             selectedRatings.Add(rating);
         }
-        StateHasChanged();
     }
 
     string GetRatingColor(int rating)
