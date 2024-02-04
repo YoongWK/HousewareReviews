@@ -45,7 +45,8 @@
                                           Action="Edit"
                                           OnValidSubmit="@((comData)=>EditComment(comData))"
                                           OnInitAsync="OnInitializedAsync"
-                                          Comment="comment" />
+                                          Comment="comment"
+                                          Disabled="@(comment?.Consumer?.UserId == null ? false : true)"/>
 
                             <ConfirmDeleteModal Id="@($"delete-comment-{comment.Id}")"
                                                 ItemName="@($"Comment {comment.Id}")"

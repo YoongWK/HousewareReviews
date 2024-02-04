@@ -23,7 +23,7 @@
 							<div>
 								@if (Action != "Create")
 								{
-									<input type="text" value="@((Review.Consumer == null) ? "[Deleted Consumer]" : $"{Review.Consumer.FirstName} {Review.Consumer.LastName}")" class="form-control shadow-none" disabled />
+									<input type="text" value="@((Consumer == null) ? "[Deleted Consumer]" : $"{Review?.Consumer?.FirstName} {Review?.Consumer?.LastName}")" class="form-control shadow-none" disabled />
 								}
 								else
 								{
@@ -52,7 +52,7 @@
 								{
 									var id = Guid.NewGuid();
 									var rating = i;
-									<input class="d-none" type="radio" value="@i" checked="@(Review.Rating.HasValue && Review.Rating == i)" id="star-@id" @onchange="@(e => updateRating(rating))" />
+									<input class="d-none" type="radio" value="@i" checked="@(Review.Rating.HasValue && Review.Rating == i)" id="star-@id" @onchange="@(e => updateRating(rating))" disabled="@(Consumer?.UserId == null ? false : true)" />
 									<label for="star-@id">☆</label>
 								}
 							</div>
@@ -65,7 +65,7 @@
 								<p class="d-inline-flex justify-content-end w-50 m-0 text-secondary" style="font-size:0.8rem;">Count:&nbsp;<span>@(Review.Description?.Length ?? 0)</span>/300</p>
 							</div>
 							<div>
-								<InputTextArea @bind-Value="@Review.Description" class="form-control shadow-none" style="resize:none;" rows="4" maxlength="301" oninput="updateCharCount(this, 300)" />
+								<InputTextArea @bind-Value="@Review.Description" class="form-control shadow-none" style="resize:none;" rows="4" maxlength="301" oninput="updateCharCount(this, 300)" disabled="@(Consumer?.UserId == null ? false : true)" />
 								<ValidationMessage For="@(() => Review.Description)" />
 							</div>
 						</div>
@@ -136,6 +136,7 @@
 
 	private HttpClient _client;
 	private List<Consumer> Consumers;
+	private Consumer Consumer;
 	private Review orgReview;
 
 	protected override void OnInitialized()
@@ -165,6 +166,10 @@
 	protected async override Task OnInitializedAsync()
 	{
 		Consumers = await _client.GetFromJsonAsync<List<Consumer>>($"{Endpoints.ConsumersEndpoint}");
+		if (Review.ConsumerId != null)
+		{
+			Consumer = await _client.GetFromJsonAsync<Consumer>($"{Endpoints.ConsumersEndpoint}/{Review.ConsumerId}");
+		}
 	}
 
 	private void updateRating(int selectedRating)
