@@ -407,10 +407,60 @@
                                                 @* <span class="oi oi-thumb-up" aria-hidden="true"></span>
                                                 <small>Helpful</small>
                                                 &nbsp; *@
-                                                <a href="/comments/@comment.Id/report" style="text-decoration: none; color: var(--black)">
+                                                @* <a href="/comments/@comment.Id/report" style="text-decoration: none; color: var(--black)">
                                                     <span class="oi oi-flag" aria-hidden="true"></span>
                                                     <small>Report</small>
-                                                </a>
+                                                </a> *@
+                                                &nbsp;
+                                                @{
+                                                    Commentreport commentreport = new Commentreport { Outcome = "Pending", ConsumerId = currentconsumerid, CommentId = comment.Id };
+                                                    bool crCreated = false;
+
+                                                    foreach (var cr in Commentreports)
+                                                    {
+                                                        if (cr.ConsumerId == currentconsumerid && cr.CommentId == comment.Id)
+                                                        {
+                                                            crCreated = true;
+                                                            commentreport = cr;
+                                                        }
+                                                    }
+                                                    if (crCreated)
+                                                    {
+                                                        <a style="text-decoration: none; color: var(--black); cursor:pointer;" data-bs-toggle="modal" data-bs-target="#edit-commentreport-@commentreport.Id">
+                                                            <span class="oi oi-flag" aria-hidden="true"></span>
+                                                            <small>Report</small>
+                                                        </a>
+                                                        <div class="modal fade" id="edit-commentreport-@commentreport.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit-commentreport-label-@commentreport.Id" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h1 class="modal-title fs-5" id="edit-commentreport-label-@commentreport.Id">Edit Your Report</h1>
+                                                                        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                                                                    </div>
+                                                                    <CommentreportFormComponent OnValidSubmit="@((creport)=>EditCommentReport(creport))" OnInitAsync="OnInitializedAsync" commentreport="commentreport" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a style="text-decoration: none; color: var(--black) cursor:pointer;" data-bs-toggle="modal" data-bs-target="#make-commentreport-@commentreport.Id">
+                                                            <span class="oi oi-flag" aria-hidden="true"></span>
+                                                            <small>Report</small>
+                                                        </a>
+                                                        <div class="modal fade" id="make-commentreport-@commentreport.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="make-commentreport-label-@commentreport.Id" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h1 class="modal-title fs-5" id="make-commentreport-label-@commentreport.Id">Make A Report</h1>
+                                                                        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                                                                    </div>
+                                                                    <CommentreportFormComponent ButtonText="Submit" OnValidSubmit="@((creport)=>MakeCommentReport(creport))" OnInitAsync="OnInitializedAsync" commentreport="commentreport" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -634,6 +684,7 @@
     private IList<Comment> Comments;
     private IList<Consumer> Consumers;
     private IList<Reviewreport> Reviewreports;
+    private IList<Commentreport> Commentreports;
     private List<Review>? reviews;
     private List<Review>? companyreviews;
     private int currentconsumerid;
@@ -659,6 +710,7 @@
         Comments = await _client.GetFromJsonAsync<List<Comment>>($"{Endpoints.CommentsEndpoint}");
         Consumers = await _client.GetFromJsonAsync<List<Consumer>>($"{Endpoints.ConsumersEndpoint}");
         Reviewreports = await _client.GetFromJsonAsync<List<Reviewreport>>($"{Endpoints.ReviewreportsEndpoint}");
+        Commentreports = await _client.GetFromJsonAsync<List<Commentreport>>($"{Endpoints.CommentreportsEndpoint}");
         var context = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         if (context.User.IsInRole("Consumer"))
         {
@@ -759,6 +811,20 @@
     {
         await _client.PutAsJsonAsync($"{Endpoints.ReviewreportsEndpoint}/{rreport.Id}", rreport);
         await js.InvokeVoidAsync("hideModal", $"#edit-reviewreport-{rreport.Id}");
+        await OnInitializedAsync();
+    }
+
+    private async Task MakeCommentReport(Commentreport creport)
+    {
+        await _client.PostAsJsonAsync(Endpoints.CommentreportsEndpoint, creport);
+        await js.InvokeVoidAsync("hideModal", $"#make-commentreport-{creport.Id}");
+        await OnInitializedAsync();
+    }
+
+    private async Task EditCommentReport(Commentreport creport)
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.CommentreportsEndpoint}/{creport.Id}", creport);
+        await js.InvokeVoidAsync("hideModal", $"#edit-commentreport-{creport.Id}");
         await OnInitializedAsync();
     }
 
