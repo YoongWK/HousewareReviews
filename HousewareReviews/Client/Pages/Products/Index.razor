@@ -280,7 +280,7 @@
                         <div class="collapse" id="collapseReview-@review.Id">
                             @if (!String.IsNullOrEmpty(review.Reply))
                             {
-                                <div class="d-flex align-items-center mx-1 my-4 p-4 row bg-light rounded-4" style="background-color:#ADD8E6">
+                                <div class="d-flex align-items-center mx-1 mt-4 p-4 row bg-light rounded-4" style="background-color:#ADD8E6">
                                     <div class="d-flex align-items-center p-0 pb-2">
                                         <div class="me-auto">
                                             <h5 class="m-0">
@@ -301,7 +301,7 @@
                             {
                                 if (comment.ReviewId == review.Id)
                                 {
-                                    <div class="d-flex align-items-center mx-1 mt-4 p-4 row bg-light rounded-4" style="background-color:#ADD8E6">
+                                    <div class="d-flex align-items-center mx-1 mt-4 p-4 pb-2 row bg-light rounded-4" style="background-color:#ADD8E6">
                                         <div class="d-flex align-items-center p-0 pb-2">
                                             <div>
                                                 <img class="rounded-5" src="@review.Consumer?.ProfileImgUri" style="width:25px;height:25px;border:2px solid;object-fit:cover;" />&nbsp;
@@ -363,7 +363,7 @@
                                                 </div>
                                             }
                                         </div>
-                                        <hr />
+                                        <hr class="m-0 pb-2" />
                                         <div class="d-flex">
                                             <div class="me-auto"></div>
                                             <div>
@@ -421,6 +421,10 @@
                                         </div>
                                     </div>
                                 }
+                            }
+                            @if ((String.IsNullOrEmpty(review.Reply)) && (Comments?.Any(c => c.ReviewId == review.Id) == false))
+                            {
+                                <p class="text-center m-0 pt-3">This review has no replies or comments yet &#128577;</p>
                             }
                         </div>
                     </div>
