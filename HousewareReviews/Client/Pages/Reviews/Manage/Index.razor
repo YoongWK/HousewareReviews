@@ -107,7 +107,7 @@
     {
         var latestDateTime = DateTime.Now;
         revData.rev.DateUpdated = revData.revChanged ? latestDateTime : revData.rev.DateUpdated;
-        revData.rev.DateReplied = revData.revReplyChanged ? (String.IsNullOrEmpty(revData.rev.Reply) ? null : latestDateTime) : revData.rev.DateReplied;
+        revData.rev.DateReplied = String.IsNullOrEmpty(revData.rev.Reply) ? null : (revData.revReplyChanged ? latestDateTime : revData.rev.DateReplied);
         await _client.PutAsJsonAsync($"{Endpoints.ReviewsEndpoint}/{revData.rev.Id}", revData.rev);
         await js.InvokeVoidAsync("hideModal", $"#edit-review-{revData.rev.Id}");
         await OnInitializedAsync();
