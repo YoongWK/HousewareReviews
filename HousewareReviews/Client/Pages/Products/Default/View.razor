@@ -1,0 +1,714 @@
+﻿@page "/products/{productId:int}/"
+@inject IHttpClientFactory ClientFactory
+@inject IJSRuntime js
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="container-fluid pb-2">
+    <div class="d-flex align-items-center p-4 row column-gap-2" style="background-color: var(--lightblue)">
+        <div class="col-lg">
+            <img src="@product.ImgUri" class="rounded-4 w-100">
+        </div>
+        <div class="d-lg-none p-2"></div>
+        <div class="col-lg-7 d-flex flex-column">
+            <h4><b>@product.Name</b></h4>
+            <span>@product.Description</span>
+            <br />
+            <span>$@String.Format("{0:F2}", product.Price)</span>
+            <span>Company: <span style="color: var(--blue)">@product.Company?.Name</span></span>
+            <span>Category: <span style="color: var(--blue)">@(product.Category?.Name ?? "No Category")</span></span>
+        </div>
+        <div class="d-lg-none p-2"></div>
+        <div class="col-lg d-flex justify-content-end">
+            <button type="button" class="btn rounded-5 text-white shadow-none" style="background-color: var(--blue)" data-bs-toggle="modal" data-bs-target="#write-review">
+                <small><b>Write A Review</b></small>
+                <span class="oi oi-share"></span>
+            </button>
+            @if (currentConsumerId != null)
+            {
+                <div class="modal fade" id="write-review" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="write-review-label" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="create-review-label">Write Review for @product.Name</h1>
+                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                            </div>
+                            <ReviewFormComponent ButtonText="Create" OnValidSubmit="@((revData)=>WriteReview(revData))" OnInitAsync="OnInitializedAsync" review="new Review{ProductId=productId, ConsumerId=currentConsumerId}" />
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="modal fade" id="write-review" tabindex="-1" aria-labelledby="write-review-label" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="create-review-label">Consumer Account Required!</h1>
+                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-start">
+                                Please login or register for a consumer account to write a review.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
+        <div class="col-lg">
+            <img src="@product.Company?.LogoUri" class="rounded-4 w-100">
+        </div>
+        <div class="d-lg-none p-2"></div>
+        <div class="col-lg-3">
+            <h5 class="m-0" style="font-weight:600;">@product.Company?.Name</h5>
+        </div>
+        <div class="d-lg-none p-2"></div>
+        <div class="col-lg">
+            <h6 class="m-0">Total Reviews:</h6>
+            <span>@companyReviewCount</span>
+        </div>
+        <div class="d-lg-none p-1"></div>
+        <div class="col-lg">
+            <h6 class="m-0">Overall Rating:</h6>
+            <span>@companyRating <span class="oi oi-star" style="color:orange"></span></span>
+        </div>
+        <div class="d-lg-none p-2"></div>
+        <div class="col-lg d-flex justify-content-end">
+            <a href="/companies/@product.CompanyId" class="btn rounded-5 text-white shadow-none" style="background-color: var(--blue)">
+                <small><b>View Page</b></small>
+                <span class="oi oi-arrow-right"></span>
+            </a>
+        </div>
+    </div>
+
+    <!--Card for progress bars for Reviews-->
+    <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
+        <div class="d-flex pb-1">
+            <div class="me-auto">
+                <h5 class="card-title" style="color: var(--black)"><b>Reviews (@productReviewCount)</b></h5>
+            </div>
+            <div>
+                <small><b>Sort: </b></small>
+                <a class="dropdown-toggle" style="color:var(--blue);text-decoration:none;" role="button" id="dropdownmenuitems" data-bs-toggle="dropdown" aria-expanded="false">
+                    <small>@selectedSortOptionText</small>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" style="cursor:pointer" aria-labelledby="drowpdownmenuitems">
+                    <li><a class="dropdown-item" @onclick="()=>ChangeSortOption(1)"><small>Newest First</small></a></li>
+                    <li><a class="dropdown-item" @onclick="()=>ChangeSortOption(2)"><small>Oldest First</small></a></li>
+                    <li><a class="dropdown-item" @onclick="()=>ChangeSortOption(3)"><small>Highest Rating</small></a></li>
+                    <li><a class="dropdown-item" @onclick="()=>ChangeSortOption(4)"><small>Lowest Rating</small></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="pb-1">Rating: @productRating <span class="oi oi-star" style="color:orange"></span></div>
+        @{
+            // dictionary key:value = rating:count
+            Dictionary<int, int> ratingCounts = new Dictionary<int, int>
+            {
+                { 1, 0 },
+                { 2, 0 },
+                { 3, 0 },
+                { 4, 0 },
+                { 5, 0 }
+            };
+            foreach (var review in reviews)
+            {
+                int rating = review.Rating ?? 0;
+                ratingCounts[rating]++;
+            }
+        }
+        @foreach (var ratingCount in ratingCounts.OrderByDescending(kvp => kvp.Key)) {
+            int rating = ratingCount.Key;
+            int count = ratingCount.Value;
+            string ratingColor = GetRatingColor(rating);
+
+            <div class="d-flex">
+                <div class="pe-2">
+                    <input type="checkbox" id="checkbox-@rating" style="width:1rem; height:1rem;" class="align-middle" @onchange="()=>ToggleRating(rating)" checked="@selectedRatings.Contains(rating)">
+                    <label for="checkbox-@rating" style="font-size:1rem; width:3rem; text-align:left;" class="align-middle">@rating-star</label>
+                </div>
+                <div class="flex-grow-1 p-1">
+                    <div class="progress w-100">
+                        <div class="progress-bar align-middle rounded-2" role="progressbar" style="width:@((double)(count)/(double)(reviews.Count)*100.0)%;background-color:@ratingColor" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="ps-2 align-middle">
+                    <div class="progress-number" style="width:0.5rem; text-align:right;">@count</div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (reviews != null)
+    {
+        //logged in consumer reviews displayed at the top
+        @foreach (var review in reviews
+        .Where(r => selectedRatings.Contains(r.Rating ?? 0))
+        .OrderByDescending(r => currentConsumerId != null && r.ConsumerId == currentConsumerId)
+        .ThenBy(GetSortExpression(selectedSortOption)))
+        {
+            <div class="d-flex align-items-center m-4 p-4 row column-gap-2 bg-white rounded-4">
+                <div class="d-flex align-items-center p-0 pb-2">
+                    <div>
+                        <img class="rounded-5" src="@review.Consumer?.ProfileImgUri" style="width:25px;height:25px;border:2px solid;object-fit:cover;" onerror="this.style.display='none'" />&nbsp;
+                    </div>
+                    <div class="me-auto">
+                        <h5 class="m-0"><b>@((review.Consumer != null) ? $"{review.Consumer.FirstName} {review.Consumer.LastName}" : "Deleted Consumer")</b></h5>
+                    </div>
+                    <div>
+                        <p class="m-0"><small><b>Last Updated: @review.DateUpdated.ToString("d MMM yyyy")</b></small></p>
+                    </div>
+                </div>
+                <hr class="mb-2" />
+                <h4 class="align-items-center m-0 p-0">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        <span class="oi oi-star me-1" style="color:@(i <= review.Rating ? "orange" : "gray")"></span>
+                    }
+                </h4>
+                <br />
+                <p class="p-0 m-0">@review.Description</p>
+                <br />
+                <div class="d-flex align-items-center p-0 mb-2">
+                    <div class="me-auto">
+                        <h6 class="m-0"><small><b>Date Reviewed: @review.DateCreated.ToString("d MMM yyyy")</b></small></h6>
+                    </div>
+                    @if ((review.ConsumerId != null) && (review.ConsumerId == currentConsumerId))
+                    {
+                        <div>
+                            <a class="align-middle text-warning" style="text-decoration: none; cursor: pointer" data-bs-toggle="modal" data-bs-target="#modify-review-@review.Id">
+                                <span class="oi oi-pencil" aria-hidden="true"></span>
+                                <small><b>Edit</b></small>
+                            </a>
+                            <div class="modal fade" id="modify-review-@review.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modify-review-label-@review.Id" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="modify-review-label-@review.Id">Edit Your Review</h1>
+                                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                                        </div>
+                                        <ReviewFormComponent OnValidSubmit="@((revData)=>ModifyReview(revData))" OnInitAsync="OnInitializedAsync" review="review" />
+                                    </div>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <a class="align-middle text-danger" style="text-decoration: none; cursor: pointer" data-bs-toggle="modal" data-bs-target="#remove-review-@review.Id">
+                                <span class="oi oi-delete" aria-hidden="true"></span>
+                                <small><b>Delete</b></small>
+                            </a>
+                            <div class="modal fade" id="remove-review-@review.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="remove-review-label-@review.Id" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="remove-review-label-@review.Id">Confirm Delete Review?</h1>
+                                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body text-start">
+                                            This action cannot be undone.
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-danger shadow-none" data-bs-dismiss="modal" @onclick="@(()=>removeReview(review.Id))">Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <hr class="m-0 pb-2" />
+                <div class="d-flex flex-column container p-0">
+                    <div class="d-flex">
+                        <div class="me-auto">
+                            <button class="dropdown-toggle reply-comment-btn shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReview-@review.Id" aria-expanded="false" aria-controls="collapseReview-@review.Id">
+                                <small>View Replies & Comments</small>
+                            </button>
+                        </div>
+
+                        <div>
+                            <a class="align-middle" style="text-decoration: none; color: var(--black); cursor: pointer" data-bs-toggle="modal" data-bs-target="#write-comment-@review.Id">
+                                <span class="oi oi-comment-square" aria-hidden="true"></span>
+                                <small>Comment</small>
+                            </a>
+                            @if (currentConsumerId != null)
+                            {
+                                <div class="modal fade" id="write-comment-@review.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="write-comment-@review.Id-label" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="write-comment-@review.Id-label">Make a comment</h1>
+                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                                            </div>
+                                            <CommentFormComponent ButtonText="Create" OnValidSubmit="@((comData)=>WriteComment(comData))" OnInitAsync="OnInitializedAsync" comment="new Comment{ReviewId=review.Id, ConsumerId=currentConsumerId}" />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="modal fade" id="write-comment-@review.Id" tabindex="-1" aria-labelledby="write-comment-@review.Id-label" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="write-comment-@review.Id-label">Consumer Account Required!</h1>
+                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-start">
+                                                Please login or register for a consumer account to write a comment.
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            &nbsp;
+                            @if (currentConsumerId != null)
+                            {
+                                Reviewreport reviewreport = new Reviewreport {Outcome="Pending", ConsumerId=currentConsumerId, ReviewId=review.Id};
+                                bool rrCreated = false;
+
+                                foreach (var rr in Reviewreports)
+                                {
+                                    if (rr.ConsumerId == currentConsumerId && rr.ReviewId == review.Id)
+                                    {
+                                        rrCreated = true;
+                                        reviewreport = rr;
+                                    }
+                                }
+                                if (rrCreated)
+                                {
+                                    <a class="align-middle text-danger" style="text-decoration: none; color: var(--black); cursor:pointer;" data-bs-toggle="modal" data-bs-target="#modify-reviewreport-@reviewreport.Id">
+                                        <span class="oi oi-flag" aria-hidden="true"></span>
+                                        <small>Report</small>
+                                    </a>
+                                    <div class="modal fade" id="modify-reviewreport-@reviewreport.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modify-reviewreport-label-@reviewreport.Id" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="modify-reviewreport-label-@reviewreport.Id">Modify Your Report</h1>
+                                                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                                                </div>
+                                                <ReviewreportFormComponent OnValidSubmit="@((rreport)=>EditReviewReport(rreport))" OnInitAsync="OnInitializedAsync" reviewreport="reviewreport" Modify="true" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <a class="align-middle" style="text-decoration: none; color: var(--black);cursor:pointer;" data-bs-toggle="modal" data-bs-target="#make-reviewreport-@reviewreport.Id">
+                                        <span class="oi oi-flag" aria-hidden="true"></span>
+                                        <small>Report</small>
+                                    </a>
+                                    <div class="modal fade" id="make-reviewreport-@reviewreport.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="make-reviewreport-label-@reviewreport.Id" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="make-reviewreport-label-@reviewreport.Id">Make A Report</h1>
+                                                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                                                </div>
+                                                <ReviewreportFormComponent ButtonText="Submit" OnValidSubmit="@((rreport)=>MakeReviewReport(rreport))" OnInitAsync="OnInitializedAsync" reviewreport="reviewreport" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <a class="align-middle" style="text-decoration: none; color: var(--black);cursor:pointer;" data-bs-toggle="modal" data-bs-target="#review-@review.Id-report-account-required">
+                                    <span class="oi oi-flag" aria-hidden="true"></span>
+                                    <small>Report</small>
+                                </a>
+                                <div class="modal fade" id="review-@review.Id-report-account-required" tabindex="-1" aria-labelledby="review-@review.Id-report-account-required-label" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="review-@review.Id-report-account-required-label">Consumer Account Required!</h1>
+                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-start">
+                                                Please login or register for a consumer account to report a review.
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="collapse" id="collapseReview-@review.Id">
+                        @if (!String.IsNullOrEmpty(review.Reply))
+                        {
+                            <div class="d-flex align-items-center mx-1 mt-4 p-4 row bg-light rounded-4" style="background-color:#ADD8E6">
+                                <div class="d-flex align-items-center p-0 pb-2">
+                                    <div class="me-auto">
+                                        <h5 class="m-0">
+                                            <span class="oi"><span class="oi-arrow-thick-right" aria-hidden="true"></span></span>
+                                            <b>@product.Company.Name</b>
+                                        </h5>
+                                    </div>
+                                    <div>
+                                        <p class="m-0"><small><b>Date Replied: @(review.DateReplied?.ToString("d MMM yyyy") ?? "Not Replied")</b></small></p>
+                                    </div>
+                                </div>
+                                <hr class="mb-2" />
+                                <p class="m-0 p-0">@review.Reply</p>
+                            </div>
+                        }
+
+                        @foreach (var comment in Comments.OrderBy<Comment, int>(c => (c.ConsumerId == currentConsumerId && currentConsumerId != null) ? 0 : 1))
+                        {
+                            if (comment.ReviewId == review.Id)
+                            {
+                                <div class="d-flex align-items-center mx-1 mt-4 p-4 pb-2 row bg-light rounded-4" style="background-color:#ADD8E6">
+                                    <div class="d-flex align-items-center p-0 pb-2">
+                                        <div>
+                                            <img class="rounded-5" src="@comment.Consumer?.ProfileImgUri" style="width:25px;height:25px;border:2px solid;object-fit:cover;" onerror="this.style.display='none'" />&nbsp;
+                                        </div>
+                                        <div class="me-auto">
+                                            <h5 class="m-0"><b>@((comment.Consumer != null) ? $"{comment.Consumer.FirstName} {comment.Consumer.LastName}" : "Deleted Consumer")</b></h5>
+                                        </div>
+                                        <div>
+                                            <p class="m-0"><small><b>Last Updated: @comment.DateUpdated.ToString("d MMM yyyy")</b></small></p>
+                                        </div>
+                                    </div>
+                                    <hr class="mb-2" />
+                                    <p class="mb-4 p-0">@comment.Description</p>
+                                    <br />
+                                    <div class="d-flex align-items-center p-0 mb-2">
+                                        <div class="me-auto">
+                                            <h6 class="m-0"><small><b>Date Commented: @comment.DateCreated.ToString("d MMM yyyy")</b></small></h6>
+                                        </div>
+                                        @if ((comment.ConsumerId != null) && (comment.ConsumerId == currentConsumerId))
+                                        {
+                                            <div>
+                                                <a class="text-warning" style="text-decoration: none; cursor:pointer;" data-bs-toggle="modal" data-bs-target="#modify-comment-@comment.Id">
+                                                    <span class="oi oi-pencil" aria-hidden="true"></span>
+                                                    <small><b>Edit</b></small>
+                                                </a>
+                                                <div class="modal fade" id="modify-comment-@comment.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modify-comment-label-@comment.Id" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5" id="modify-comment-label-@comment.Id">Edit Your Comment</h1>
+                                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                                                            </div>
+                                                            <CommentFormComponent OnValidSubmit="@((comData)=>ModifyComment(comData))" OnInitAsync="OnInitializedAsync" comment="comment" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                &nbsp;
+                                                <a class="text-danger" style="text-decoration: none; cursor: pointer" data-bs-toggle="modal" data-bs-target="#remove-comment-@comment.Id">
+                                                    <span class="oi oi-delete" aria-hidden="true"></span>
+                                                    <small><b>Delete</b></small>
+                                                </a>
+                                                <div class="modal fade" id="remove-comment-@comment.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="remove-comment-label-@comment.Id" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5" id="remove-comment-label-@comment.Id">Confirm Delete Comment?</h1>
+                                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body text-start">
+                                                                This action cannot be undone.
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-danger shadow-none" data-bs-dismiss="modal" @onclick="@(()=>removeComment(comment.Id))">Delete</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                    <hr class="m-0 pb-2" />
+                                    <div class="d-flex p-0">
+                                        <div class="me-auto"></div>
+                                        <div>
+                                            &nbsp;
+                                            @if (currentConsumerId != null)
+                                            {
+                                                Commentreport commentreport = new Commentreport { Outcome = "Pending", ConsumerId = currentConsumerId, CommentId = comment.Id };
+                                                bool crCreated = false;
+
+                                                foreach (var cr in Commentreports)
+                                                {
+                                                    if (cr.ConsumerId == currentConsumerId && cr.CommentId == comment.Id)
+                                                    {
+                                                        crCreated = true;
+                                                        commentreport = cr;
+                                                    }
+                                                }
+                                                if (crCreated)
+                                                {
+                                                    <a class="align-middle text-danger" style="text-decoration: none; color: var(--black); cursor:pointer;" data-bs-toggle="modal" data-bs-target="#modify-commentreport-@commentreport.Id">
+                                                        <span class="oi oi-flag" aria-hidden="true"></span>
+                                                        <small>Report</small>
+                                                    </a>
+                                                    <div class="modal fade" id="modify-commentreport-@commentreport.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modify-commentreport-label-@commentreport.Id" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="modify-commentreport-label-@commentreport.Id">Modify Your Report</h1>
+                                                                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                                                                </div>
+                                                                <CommentreportFormComponent OnValidSubmit="@((creport)=>EditCommentReport(creport))" OnInitAsync="OnInitializedAsync" commentreport="commentreport" Modify="true" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <a class="align-middle" style="text-decoration: none; color: var(--black);cursor:pointer;" data-bs-toggle="modal" data-bs-target="#make-commentreport-@comment.Id">
+                                                        <span class="oi oi-flag" aria-hidden="true"></span>
+                                                        <small>Report</small>
+                                                    </a>
+                                                    <div class="modal fade" id="make-commentreport-@comment.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="make-commentreport-label-@comment.Id" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="make-commentreport-label-@comment.Id">Make A Report</h1>
+                                                                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close" @onclick="OnInitializedAsync"></button>
+                                                                </div>
+                                                                <CommentreportFormComponent ButtonText="Submit" OnValidSubmit="@((creport)=>MakeCommentReport(creport))" OnInitAsync="OnInitializedAsync" commentreport="commentreport" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <a class="align-middle" style="text-decoration: none; color: var(--black);cursor:pointer;" data-bs-toggle="modal" data-bs-target="#comment-@comment.Id-report-account-required">
+                                                    <span class="oi oi-flag" aria-hidden="true"></span>
+                                                    <small>Report</small>
+                                                </a>
+                                                <div class="modal fade" id="comment-@comment.Id-report-account-required" tabindex="-1" aria-labelledby="comment-@comment.Id-report-account-required-label" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5" id="comment-@comment.Id-report-account-required-label">Consumer Account Required!</h1>
+                                                                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body text-start">
+                                                                Please login or register for a consumer account to report a comment.
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        @if ((String.IsNullOrEmpty(review.Reply)) && (Comments?.Any(c => c.ReviewId == review.Id) == false))
+                        {
+                            <p class="text-center m-0 pt-3">This review has no replies or comments yet &#128577;</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    [Parameter] public int productId { get; set; }
+    private HttpClient _client;
+    private Product? product;
+    private List<Comment>? Comments;
+    private List<Reviewreport>? Reviewreports;
+    private List<Commentreport>? Commentreports;
+    private List<Review>? reviews;
+    private int? currentConsumerId;
+    private int productReviewCount = 0;
+    private int companyReviewCount = 0;
+    private double? productRating = 0;
+    private double? companyRating = 0;
+    private int selectedSortOption = 1;
+    private string selectedSortOptionText = "Newest First";
+    List<int>? selectedRatings;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("public");
+        selectedRatings = Enumerable.Range(1, 5).ToList();
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        product = await _client.GetFromJsonAsync<Product>($"{Endpoints.ProductsEndpoint}/{productId}");
+        Comments = await _client.GetFromJsonAsync<List<Comment>>($"{Endpoints.CommentsEndpoint}");
+        Reviewreports = await _client.GetFromJsonAsync<List<Reviewreport>>($"{Endpoints.ReviewreportsEndpoint}");
+        Commentreports = await _client.GetFromJsonAsync<List<Commentreport>>($"{Endpoints.CommentreportsEndpoint}");
+
+        var context = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var Consumers = await _client.GetFromJsonAsync<List<Consumer>>($"{Endpoints.ConsumersEndpoint}");
+        currentConsumerId = context.User.IsInRole("Consumer") ? Consumers?.FirstOrDefault(u => u.UserId == context.User.FindFirst(c => c.Type == "sub")?.Value)?.Id : null;
+
+        var allReviews = await _client.GetFromJsonAsync<List<Review>>($"{Endpoints.ReviewsEndpoint}");
+        reviews = allReviews?.Where(r => r.ProductId == product?.Id).ToList();
+
+        productReviewCount = reviews?.Count ?? 0;
+        productRating = Math.Round((double)(reviews?.Average(r => r?.Rating) ?? 0), 1);
+        companyReviewCount = allReviews?.Count(r => r?.Product?.CompanyId == product?.CompanyId) ?? 0;
+        companyRating = Math.Round((double)(allReviews?.Where(r => r?.Product?.CompanyId == product?.CompanyId)?.Average(r => r?.Rating) ?? 0), 1);
+    }
+
+    private async Task WriteReview((Review rev, bool revChanged) revData)
+    {
+        revData.rev.DateCreated = DateTime.Now;
+        revData.rev.DateUpdated = DateTime.Now;
+        await _client.PostAsJsonAsync(Endpoints.ReviewsEndpoint, revData.rev);
+        await js.InvokeVoidAsync("hideModal", "#write-review");
+        await OnInitializedAsync();
+    }
+
+    private async Task ModifyReview((Review rev, bool revChanged) revData)
+    {
+        revData.rev.DateUpdated = revData.revChanged ? DateTime.Now : revData.rev.DateUpdated;
+        await _client.PutAsJsonAsync($"{Endpoints.ReviewsEndpoint}/{revData.rev.Id}", revData.rev);
+        await js.InvokeVoidAsync("hideModal", $"#modify-review-{revData.rev.Id}");
+        await OnInitializedAsync();
+    }
+
+    private async Task removeReview(int reviewId)
+    {
+        if (reviews != null)
+        {
+            await _client.DeleteAsync($"{Endpoints.ReviewsEndpoint}/{reviewId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    private async Task WriteComment((Comment com, bool comChanged) comData)
+    {
+        comData.com.DateCreated = DateTime.Now;
+        comData.com.DateUpdated = DateTime.Now;
+        await _client.PostAsJsonAsync(Endpoints.CommentsEndpoint, comData.com);
+        await js.InvokeVoidAsync("hideModal", $"#write-comment-{comData.com.ReviewId}");
+        await OnInitializedAsync();
+    }
+
+    private async Task ModifyComment((Comment com, bool comChanged) comData)
+    {
+        comData.com.DateUpdated = comData.comChanged ? DateTime.Now : comData.com.DateUpdated;
+        await _client.PutAsJsonAsync($"{Endpoints.CommentsEndpoint}/{comData.com.Id}", comData.com);
+        await js.InvokeVoidAsync("hideModal", $"#modify-comment-{comData.com.Id}");
+        await OnInitializedAsync();
+    }
+
+    async Task removeComment(int commentId)
+    {
+        if (Comments != null)
+        {
+            await _client.DeleteAsync($"{Endpoints.CommentsEndpoint}/{commentId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    private async Task MakeReviewReport(Reviewreport rreport)
+    {
+        await _client.PostAsJsonAsync(Endpoints.ReviewreportsEndpoint, rreport);
+        await js.InvokeVoidAsync("hideModal", $"#make-reviewreport-{rreport.Id}");
+        await OnInitializedAsync();
+    }
+
+    private async Task EditReviewReport(Reviewreport rreport)
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.ReviewreportsEndpoint}/{rreport.Id}", rreport);
+        await js.InvokeVoidAsync("hideModal", $"#modify-reviewreport-{rreport.Id}");
+        await OnInitializedAsync();
+    }
+
+    private async Task MakeCommentReport(Commentreport creport)
+    {
+        await _client.PostAsJsonAsync(Endpoints.CommentreportsEndpoint, creport);
+        await js.InvokeVoidAsync("hideModal", $"#make-commentreport-{creport.CommentId}");
+        await OnInitializedAsync();
+    }
+
+    private async Task EditCommentReport(Commentreport creport)
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.CommentreportsEndpoint}/{creport.Id}", creport);
+        await js.InvokeVoidAsync("hideModal", $"#modify-commentreport-{creport.Id}");
+        await OnInitializedAsync();
+    }
+
+    void ChangeSortOption(int option)
+    {
+        selectedSortOption = option;
+        switch(option)
+        {
+            case 1:
+                selectedSortOptionText = "Newest First";
+                break;
+            case 2:
+                selectedSortOptionText = "Oldest First";
+                break;
+            case 3:
+                selectedSortOptionText = "Highest Rating";
+                break;
+            case 4:
+                selectedSortOptionText = "Lowest Rating";
+                break;
+        }
+        StateHasChanged();
+    }
+
+    Func<Review, object> GetSortExpression(int option)
+    {
+        switch (option)
+        {
+            case 1:
+                return r => -r.DateUpdated.Ticks; // Newest First, negate to sort in descending order
+            case 2:
+                return r => r.DateUpdated.Ticks; // Oldest First
+            case 3:
+                return r => -(r.Rating ?? 0); // Highest Rating, negate to sort in descending order
+            case 4:
+                return r => r.Rating ?? 0; // Lowest Rating
+            default:
+                return r => -r.DateUpdated.Ticks; // Default to Newest First
+        }
+    }
+
+    void ToggleRating(int rating)
+    {
+        if (!selectedRatings.Remove(rating))
+        {
+            selectedRatings.Add(rating);
+        }
+    }
+
+    string GetRatingColor(int rating)
+    {
+        switch (rating)
+        {
+            case 5:
+                return "#49A401";
+            case 4:
+                return "#9DEA1E";
+            case 3:
+                return "#FFC107";
+            case 2:
+                return "#FF9529";
+            case 1:
+                return "#DC3545";
+            default:
+                return "gray";
+        }
+    }
+}

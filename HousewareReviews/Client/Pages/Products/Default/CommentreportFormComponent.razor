@@ -1,4 +1,5 @@
-﻿@attribute [Authorize(Roles = "Consumer")]
+﻿@inject IHttpClientFactory ClientFactory
+@attribute [Authorize(Roles = "Consumer")]
 
 <EditForm Model="@commentreport" OnValidSubmit="@(() => OnValidSubmitCallback(commentreport))" style="font-size:1rem;">
     <DataAnnotationsValidator />
@@ -38,6 +39,10 @@
         <button type="submit" class="btn btn-success shadow-none">
             @ButtonText
         </button>
+        @if (Modify)
+        {
+            <button type="button" class="btn btn-danger shadow-none" data-bs-dismiss="modal" @onclick="DeleteCommentreport">Delete</button>
+        }
     </div>
 </EditForm>
 
@@ -45,7 +50,24 @@
     [Parameter] public Commentreport? commentreport { get; set; }
     [Parameter] public string ButtonText { get; set; } = "Save";
     [Parameter] public EventCallback<Commentreport> OnValidSubmit { get; set; }
-    [Parameter] public Func<Task> OnInitAsync { get; set; }
+    [Parameter] public EventCallback OnInitAsync { get; set; }
+    [Parameter] public bool Modify { get; set; } = false;
+
+    private HttpClient _client;
+
+    protected override void OnInitialized()
+    {
+        _client = ClientFactory.CreateClient("private");
+    }
+
+    private async Task DeleteCommentreport()
+    {
+        if ((Modify) && (commentreport != null))
+        {
+            await _client.DeleteAsync($"{Endpoints.CommentreportsEndpoint}/{commentreport.Id}");
+            await OnInitAsync.InvokeAsync();
+        }
+    }
 
     private async Task OnValidSubmitCallback(Commentreport creport)
     {
