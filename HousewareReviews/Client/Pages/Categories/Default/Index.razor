@@ -19,7 +19,7 @@
                 foreach (var category in Categories)
                 {
                     <div class="col">
-                        <a href="/products/categories/@category.Id" style="text-decoration: none;">
+                        <a href="/categories/@category.Id/products" style="text-decoration: none;">
                             <div class="card text-center h-100 rounded-5">
                                 @{
                                     var imgId = $"img-category-{category.Id}";

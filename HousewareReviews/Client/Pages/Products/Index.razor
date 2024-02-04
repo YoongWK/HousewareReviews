@@ -156,7 +156,7 @@
             //logged in consumer reviews displayed at the top
             @foreach (var review in reviews
                 .Where(r => selectedRatings.Contains(r.Rating ?? 0))
-                .OrderByDescending(r => (r.ConsumerId == currentconsumerid || r.ConsumerId == null))
+                .OrderByDescending(r => r?.ConsumerId == currentconsumerid)
                 .ThenBy(GetSortExpression(selectedSortOption)))@* r => r.DateUpdated) *@ //also sort by descending and ascending ratings
             {
                 <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
@@ -238,7 +238,7 @@
                     <div class="d-flex flex-column container">
                         <div class="d-flex">
                             <div class="me-auto">
-                                <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReview-@review.Id" aria-expanded="false" aria-controls="collapseReview-@review.Id">
+                                <button class="btn shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReview-@review.Id" aria-expanded="false" aria-controls="collapseReview-@review.Id">
                                     <small>View Replies & Comments</small>
                                     <span class="oi oi-chevron-bottom" aria-hidden="true"></span>
                                 </button>
@@ -314,7 +314,7 @@
                         </div>
 
                         <div class="collapse" id="collapseReview-@review.Id">
-                            @if (review.Reply != null)
+                            @if (!String.IsNullOrEmpty(review.Reply))
                             {
                                 <div class="d-flex align-items-center m-4 p-3 row bg-light rounded-4" style="background-color:#ADD8E6">
                                     <div class="d-flex">
@@ -850,7 +850,7 @@
             case 2:
                 return r => r.DateUpdated.Ticks; // Oldest First
             case 3:
-                return r => -1 * (r.Rating ?? 0); // Highest Rating, negate to sort in descending order
+                return r => -(r.Rating ?? 0); // Highest Rating, negate to sort in descending order
             case 4:
                 return r => r.Rating ?? 0; // Lowest Rating
             default:

@@ -1,0 +1,59 @@
+﻿@inject IHttpClientFactory ClientFactory
+@inject IJSRuntime js
+@implements IAsyncDisposable
+
+<a href="/products/@product?.Id" style="text-decoration: none;">
+    <div class="card text-center pb-2 h-100 rounded-4">
+		<img src="@product?.ImgUri" class="card-img-top rounded-top-4 pb-2 w-100" style="object-fit:cover;" onerror="this.style.display='none'" id="@imgId" onload="updateImgHeight('@imgId', 1)">
+		<div class="card-body m-0 py-0 px-2">
+			<small class="card-title"><b>@product?.Name</b></small>
+		</div>
+		<div class="card-body m-0 py-0 px-2">
+			<small class="card-text">$@String.Format("{0:F2}", product?.Price)</small>
+		</div>
+		<div class="card-body m-0 py-0 px-2">
+			<small class="card-text">@product?.Company?.Name</small>
+		</div>
+		<div class="card-body m-0 py-0 px-2">
+			<small class="card-text">@(product?.Category?.Name ?? "No Category")</small>
+		</div>
+		<div class="card-body m-0 py-0 px-2">
+			<small class="card-text">@productRating</small>
+			<span class="oi oi-star" style="color:orange"></span>
+		</div>
+    </div>
+</a>
+
+@code {
+	[Parameter] public Product? product { get; set; }
+
+	private HttpClient _client;
+	private double productRating;
+	private String? imgId;
+
+	protected override void OnInitialized()
+	{
+		_client = ClientFactory.CreateClient("public");
+		imgId = $"{Guid.NewGuid()}";
+	}
+
+	protected async override Task OnInitializedAsync()
+	{
+		var allReviews = await _client.GetFromJsonAsync<List<Review>>($"{Endpoints.ReviewsEndpoint}");
+		var reviews = allReviews?.Where(review => review?.ProductId == product?.Id).ToList();
+		productRating = Math.Round((double)(reviews?.Average(rev => rev?.Rating) ?? 0), 1);
+	}
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await js.InvokeVoidAsync("addImgHeightListener", imgId, 1);
+		}
+	}
+
+	public async ValueTask DisposeAsync()
+	{
+		await js.InvokeVoidAsync("removeImgHeightListener", imgId);
+	}
+}
