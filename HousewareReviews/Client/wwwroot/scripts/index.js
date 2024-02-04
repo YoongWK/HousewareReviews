@@ -50,7 +50,6 @@ window.ModalImgHandlers = {};
 function updateImgHeight(imgId, hwRatio) {
     var image = document.getElementById(imgId);
     image.style.height = `${image.width * hwRatio}px`;
-    console.log(imgId, image.height, image.width, hwRatio);
 }
 
 function addImgHeightListener(imgId, hwRatio) {

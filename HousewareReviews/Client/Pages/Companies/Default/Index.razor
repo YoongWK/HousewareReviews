@@ -1,37 +1,37 @@
-﻿@page "/categories/"
+﻿@page "/companies/"
 @inject IHttpClientFactory ClientFactory
 @inject IJSRuntime js
 @implements IAsyncDisposable
 
-<PageTitle>Houseware Reviews - Categories</PageTitle>
+<PageTitle>Houseware Reviews - Companies</PageTitle>
 
 <div class="container-fluid p-4">
-    <h4 class="card-title pb-3">Categories</h4>
+    <h4 class="card-title pb-3">Companies</h4>
 
-    @if (Categories == null)
+    @if (Companies == null)
     {
-        <div class="alert alert-info">Loading Categories...</div>
+        <div class="alert alert-info">Loading Companies...</div>
     }
     else
     {
         <div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
             @{
-                foreach (var category in Categories)
+                foreach (var company in Companies)
                 {
                     <div class="col">
-                        <a href="/products/categories/@category.Id" style="text-decoration: none;">
+                        <a href="/companies/view/@company.Id" style="text-decoration: none;">
                             <div class="card text-center h-100 rounded-5">
                                 @{
-                                    var imgId = $"img-category-{category.Id}";
+                                    var imgId = $"img-company-{company.Id}";
                                     if (!imgListenersAdded)
                                     {
                                         imgIds.Add(imgId);
                                         js.InvokeVoidAsync("addImgHeightListener", imgId, 0.5);
                                     }
-                                    <img src="@category.ImgUri" class="card-img-top rounded-top-5 w-100" style="object-fit:cover;" onerror="this.style.display='none'" id="@imgId" onload="updateImgHeight('@imgId', 0.5)">
+                                    <img src="@company.LogoUri" class="card-img-top rounded-top-5 w-100" style="object-fit:cover;" onerror="this.style.display='none'" id="@imgId" onload="updateImgHeight('@imgId', 0.5)">
                                 }
                                 <div class="card-body p-2 m-0">
-                                    <h5 class="card-title">@category.Name</h5>
+                                    <h5 class="card-title">@company.Name</h5>
                                 </div>
                             </div>
                         </a>
@@ -45,7 +45,7 @@
 
 @code {
     private HttpClient _client;
-    private List<Category>? Categories;
+    private List<Company>? Companies;
     private List<String>? imgIds = new List<String>();
     private bool imgListenersAdded = false;
 
@@ -56,9 +56,9 @@
 
     protected async override Task OnInitializedAsync()
     {
-        Categories = await _client.GetFromJsonAsync<List<Category>>($"{Endpoints.CategoriesEndpoint}");
+        Companies = await _client.GetFromJsonAsync<List<Company>>($"{Endpoints.CompaniesEndpoint}");
     }
-   
+
     public async ValueTask DisposeAsync()
     {
         foreach (var Id in imgIds)
