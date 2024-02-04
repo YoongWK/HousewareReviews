@@ -34,7 +34,7 @@
 	protected override void OnInitialized()
 	{
 		_client = ClientFactory.CreateClient("public");
-		imgId = $"{Guid.NewGuid()}";
+		imgId = $"img-{Guid.NewGuid()}";
 	}
 
 	protected async override Task OnInitializedAsync()

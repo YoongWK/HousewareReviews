@@ -1,12 +1,14 @@
 ﻿@page "/companies/{companyId:int}/"
 @inject IHttpClientFactory ClientFactory
+@inject IJSRuntime js
+@implements IAsyncDisposable
 
 <PageTitle>Houseware Reviews - @company?.Name</PageTitle>
 
 <div class="container-fluid pb-3">
 	<div class="d-flex align-items-center p-4 row column-gap-3" style="background-color: var(--blue)">
 		<div class="col-lg">
-			<img src="@company?.LogoUri" class="rounded-4 w-100">
+			<img src="@company?.LogoUri" class="rounded-4 w-100" style="object-fit:cover;" onerror="this.style.display='none'" id="@imgId" onload="updateImgHeight('@imgId', 0.5)">
 		</div>
 		<div class="d-lg-none p-2"></div>
 		<div class="col-lg-9 d-flex flex-column" style="color: var(--white)">
@@ -37,7 +39,7 @@
 		}
 		else
 		{
-			<p>@company?.Name Products are not under any categories.</p>
+			<p>@company?.Name products are not under any categories.</p>
 		}
 		<h4 class="card-title" style="color: var(--blue)"><b>Contact</b></h4>
 		<p class="m-0">
@@ -52,17 +54,22 @@
 	<div class="card row rounded-4 m-4 mb-0 p-3" style="background-color: var(--lightblue)">
 		<div class="container-fluid">
 			<h4 class="card-title text-center pb-3 m-0"><b>Our Products</b></h4>
-			<div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
-				@if (Products != null)
+			
+				@if (Products?.Any() == true)
 				{
-					@foreach (var product in Products)
-					{
-						<div class="col">
-							<ProductCard product="product"></ProductCard>
-						</div>
-					}
+					<div class="row row-cols-1 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
+						@foreach (var product in Products)
+						{
+							<div class="col">
+								<ProductCard product="product"></ProductCard>
+							</div>
+						}
+					</div>
 				}
-			</div>
+				else
+				{
+					<p class="m-0 text-center">@company?.Name has no products yet. Come again later.</p>
+				}
 		</div>
 	</div>
 </div>
@@ -74,6 +81,7 @@
 	private List<Product>? Products;
 	private IEnumerable<String?>? distinctCategories;
 
+	private String? imgId;
 	private int productCount;
 	private int reviewCount;
 	private double overallRating;
@@ -81,6 +89,7 @@
 	protected override void OnInitialized()
 	{
 		_client = ClientFactory.CreateClient("public");
+		imgId = $"img-{Guid.NewGuid()}";
 	}
 
 	protected async override Task OnInitializedAsync()
@@ -101,5 +110,18 @@
 		var reviews = allReviews?.Where(review => review?.Product?.CompanyId == companyId).ToList();
 		reviewCount = reviews?.Count ?? 0;
 		overallRating = Math.Round((double)(reviews?.Average(rev => rev?.Rating) ?? 0), 1);
+	}
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await js.InvokeVoidAsync("addImgHeightListener", imgId, 0.5);
+		}
+	}
+
+	public async ValueTask DisposeAsync()
+	{
+		await js.InvokeVoidAsync("removeImgHeightListener", imgId);
 	}
 }
