@@ -1,7 +1,6 @@
 ﻿@page "/products/{id:int}"
 @inject IHttpClientFactory ClientFactory
 @inject IJSRuntime js
-@inject NavigationManager _navManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <AuthorizeView Roles="Consumer">
@@ -70,7 +69,7 @@
                 </span>
             </div>
             <div class="col-lg d-flex justify-content-end">
-                <a href="/companies/view/@product.CompanyId" class="btn rounded-5 text-white" style="background-color: var(--blue)">
+                <a href="/companies/@product.CompanyId" class="btn rounded-5 text-white" style="background-color: var(--blue)">
                     <small><b>View Page</b></small>
                     <span class="oi oi-arrow-right"></span>
                 </a>
@@ -679,7 +678,6 @@
     [Parameter] public int id { get; set; }
     private List<Product>? products;
     private Product? product = new Product();
-    //private Consumer? currentConsumer = new Consumer();
     private IList<Review> Reviews;
     private IList<Comment> Comments;
     private IList<Consumer> Consumers;
@@ -719,7 +717,6 @@
         }
         productreviewCount = 0;
         companyreviewCount = 0;
-        // hideRnC = true;
         var productReviews = new List<Review>();
         var companyReviews = new List<Review>();
         if (Reviews != null)
@@ -741,11 +738,6 @@
         }
         reviews = productReviews;
         companyreviews = companyReviews;
-    }
-
-    protected async override Task OnParametersSetAsync()
-    {
-
     }
 
     private async Task WriteReview((Review rev, bool revChanged) revData)
@@ -897,5 +889,4 @@
                 return "gray";
         }
     }
-
 }
