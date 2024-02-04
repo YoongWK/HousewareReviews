@@ -1,12 +1,13 @@
 ﻿@page "/products/{productId:int}/"
 @inject IHttpClientFactory ClientFactory
 @inject IJSRuntime js
+@implements IAsyncDisposable
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <div class="container-fluid pb-2">
     <div class="d-flex align-items-center p-4 row column-gap-2" style="background-color: var(--lightblue)">
         <div class="col-lg">
-            <img src="@product.ImgUri" class="rounded-4 w-100">
+            <img src="@product.ImgUri" class="rounded-4 w-100" style="object-fit:cover;" onerror="this.style.display='none'" id="@($"img-product-{imgId}")" onload="updateImgHeight('img-product-@imgId', 1)">
         </div>
         <div class="d-lg-none p-2"></div>
         <div class="col-lg-7 d-flex flex-column">
@@ -60,7 +61,7 @@
     </div>
     <div class="d-flex align-items-center m-4 p-3 row column-gap-2 bg-white rounded-4">
         <div class="col-lg">
-            <img src="@product.Company?.LogoUri" class="rounded-4 w-100">
+            <img src="@product.Company?.LogoUri" class="rounded-4 w-100" style="object-fit:cover;" onerror="this.style.display='none'" id="@($"img-company-{imgId}")" onload="updateImgHeight('img-company-@imgId', 0.5)">
         </div>
         <div class="d-lg-none p-2"></div>
         <div class="col-lg-3">
@@ -540,11 +541,13 @@
     private int selectedSortOption = 1;
     private string selectedSortOptionText = "Newest First";
     List<int>? selectedRatings;
+    private string imgId;
 
     protected override void OnInitialized()
     {
         _client = ClientFactory.CreateClient("public");
         selectedRatings = Enumerable.Range(1, 5).ToList();
+        imgId = $"{Guid.NewGuid()}";
     }
 
     protected async override Task OnInitializedAsync()
@@ -565,6 +568,21 @@
         productRating = Math.Round((double)(reviews?.Average(r => r?.Rating) ?? 0), 1);
         companyReviewCount = allReviews?.Count(r => r?.Product?.CompanyId == product?.CompanyId) ?? 0;
         companyRating = Math.Round((double)(allReviews?.Where(r => r?.Product?.CompanyId == product?.CompanyId)?.Average(r => r?.Rating) ?? 0), 1);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await js.InvokeVoidAsync("addImgHeightListener", $"img-product-{imgId}", 1);
+            await js.InvokeVoidAsync("addImgHeightListener", $"img-company-{imgId}", 0.5);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await js.InvokeVoidAsync("removeImgHeightListener", $"img-product-{imgId}");
+        await js.InvokeVoidAsync("removeImgHeightListener", $"img-company-{imgId}");
     }
 
     private async Task WriteReview((Review rev, bool revChanged) revData)
