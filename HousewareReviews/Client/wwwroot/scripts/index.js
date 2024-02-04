@@ -44,11 +44,29 @@ function updateCharCount(inputField, maxlLength) {
     }
 }
 
+window.ImgHandlers = {};
 window.ModalImgHandlers = {};
 
 function updateImgHeight(imgId, hwRatio) {
     var image = document.getElementById(imgId);
     image.style.height = `${image.width * hwRatio}px`;
+    console.log(imgId, image.height, image.width, hwRatio);
+}
+
+function addImgHeightListener(imgId, hwRatio) {
+    function imgHandler() {
+        updateImgHeight(imgId, hwRatio);
+    }
+    window.addEventListener('resize', imgHandler);
+    window.ImgHandlers[imgId] = imgHandler;
+}
+
+function removeImgHeightListener(imgId) {
+    var imgHandler = window.ImgHandlers[imgId];
+    if (imgHandler) {
+        window.removeEventListener('resize', imgHandler);
+        delete window.ImgHandlers[imgId];
+    }
 }
 
 function addModalImgHeightListener(modalId, imgId, hwRatio) {
