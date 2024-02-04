@@ -1,0 +1,90 @@
+﻿@inject IHttpClientFactory ClientFactory
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="staffhome">
+	<img class="d-block w-100" src="/images/backgrounds/staffhome.jpg" />
+	<div class="staffhome-info px-4">
+		<h2 class="staffhome-info-title m-0">Hello, @Staffname!</h2>
+		<p class="staffhome-info-text m-0">There are <span class="text-danger">@numReportPending</span> reports pending for review.</p>
+	</div>
+</div>
+<div class="px-4 pb-3">
+	<h4 class="staffaccess py-3">Quick Access</h4>
+	<div class="row row-cols-1 row-cols-xl-4 row-cols-lg-3 row-cols-sm-2 g-3">
+		<div class="col">
+			<a href="manage/categories" style="text-decoration: none;">
+				<div class="staffaccess-item card text-center h-100 p-3 rounded-4">
+					<span class="oi oi-grid-two-up pb-3" aria-hidden="true"></span>
+					<div class="card-body m-0 p-0">
+						<h5 class="card-title m-0">Manage Categories</h5>
+					</div>
+				</div>
+			</a>
+		</div>
+		<div class="col">
+			<a href="manage/companies" style="text-decoration: none;">
+				<div class="staffaccess-item card text-center h-100 p-3 rounded-4">
+					<span class="oi oi-briefcase pb-3" aria-hidden="true"></span>
+					<div class="card-body m-0 p-0">
+						<h5 class="card-title m-0">Manage Companies</h5>
+					</div>
+				</div>
+			</a>
+		</div>
+		<div class="col">
+			<a href="manage/reports/reviewreports" style="text-decoration: none;">
+				<div class="staffaccess-item card text-center h-100 p-3 rounded-4">
+					<span class="oi oi-document pb-3" aria-hidden="true"></span>
+					<div class="card-body m-0 p-0">
+						<h5 class="card-title m-0">Manage Reports</h5>
+					</div>
+				</div>
+			</a>
+		</div>
+		<div class="col">
+			<a href="manage/consumers" style="text-decoration: none;">
+				<div class="staffaccess-item card text-center h-100 p-3 rounded-4">
+					<span class="oi oi-people pb-3" aria-hidden="true"></span>
+					<div class="card-body m-0 p-0">
+						<h5 class="card-title m-0">Manage Consumers</h5>
+					</div>
+				</div>
+			</a>
+		</div>
+		<div class="col">
+			<a href="manage/staffs" style="text-decoration: none;">
+				<div class="staffaccess-item card text-center h-100 p-3 rounded-4">
+					<span class="oi oi-person pb-3" aria-hidden="true"></span>
+					<div class="card-body m-0 p-0">
+						<h5 class="card-title m-0">Manage Staffs</h5>
+					</div>
+				</div>
+			</a>
+		</div>
+	</div>
+</div>
+
+@code {
+	private HttpClient _client;
+	private string Staffname = "";
+	private int numReportPending;
+
+	protected override void OnInitialized()
+	{
+		_client = ClientFactory.CreateClient("private");
+	}
+
+	protected async override Task OnInitializedAsync()
+	{
+		var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		if (authstate.User.IsInRole("Staff"))
+		{
+			var staffs = await _client.GetFromJsonAsync<List<Staff>>($"{Endpoints.StaffsEndpoint}");
+			var staff = staffs.FirstOrDefault(u => u.UserId == (authstate.User.FindFirst(c => c.Type == "sub")?.Value));
+			Staffname = $"{staff.FirstName} {staff.LastName}";
+		}
+		var Reviewreports = await _client.GetFromJsonAsync<List<Reviewreport>>($"{Endpoints.ReviewreportsEndpoint}");
+		var Commentreports = await _client.GetFromJsonAsync<List<Commentreport>>($"{Endpoints.CommentreportsEndpoint}");
+		numReportPending = (Reviewreports?.Count(rr => rr.Outcome == "Pending") ?? 0) + (Commentreports?.Count(cr => cr.Outcome == "Pending") ?? 0);
+	}
+}

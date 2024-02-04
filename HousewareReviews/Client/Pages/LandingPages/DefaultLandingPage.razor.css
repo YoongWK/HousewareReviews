@@ -28,37 +28,3 @@
 .control {
     width: 8vw;
 }
-
-.staffhome {
-    position: relative;
-}
-
-.staffhome-info {
-    position: absolute;
-    bottom: 1vw;
-    left: 0;
-}
-
-.staffhome-info-title {
-    font-size: 4vw;
-    font-weight: bold;
-}
-
-.staffhome-info-text {
-    font-size: 2vw;
-    color: var(--darkgray);
-    font-weight: 500;
-}
-
-.staffaccess {
-    color: var(--blue);
-    font-weight: 600;
-}
-
-.staffaccess-item {
-    color: var(--darkgray);
-}
-
-.oi {
-    font-size: 3.2rem;
-}

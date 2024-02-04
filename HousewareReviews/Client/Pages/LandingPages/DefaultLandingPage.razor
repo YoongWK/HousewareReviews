@@ -1,0 +1,36 @@
+﻿@inject IJSRuntime JS
+
+<div id="furnitureCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-pause="false">
+	<div class="d-flex carousel-inner">
+		<div class="carousel-item active" data-bs-interval="3000">
+			<img src="/images/backgrounds/defaulthome1.jpg" class="d-block w-100">
+		</div>
+		<div class="carousel-item" data-bs-interval="3000">
+			<img src="/images/backgrounds/defaulthome2.jpg" class="d-block w-100">
+		</div>
+		<div class="carousel-item" data-bs-interval="3000">
+			<img src="/images/backgrounds/defaulthome3.jpg" class="d-block w-100">
+		</div>
+		<div class="carousel-caption welcome rounded-3 text-start ms-auto">
+			<h2 class="welcome-title m-0">Welcome to</h2>
+			<h2 class="welcome-title">Houseware Reviews!</h2>
+			<p class="welcome-text">Discover the best products for your home.</p>
+			<a href="categories" class="welcome-btn rounded-5 text-white shadow-none" style="text-decoration:none;">
+				Discover Now
+			</a>
+		</div>
+	</div>
+	<button class="carousel-control-prev control" type="button" data-bs-target="#furnitureCarousel" data-bs-slide="prev">
+		<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+	</button>
+	<button class="carousel-control-next control" id="nextFurnitureCarouselBtn" type="button" data-bs-target="#furnitureCarousel" data-bs-slide="next">
+		<span class="carousel-control-next-icon" aria-hidden="true"></span>
+	</button>
+</div>
+
+@code {
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		await JS.InvokeVoidAsync("startAutoplayCarousel");
+	}
+}

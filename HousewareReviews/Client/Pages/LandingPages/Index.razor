@@ -1,0 +1,16 @@
+﻿@page "/"
+
+<PageTitle>Houseware Reviews - Home</PageTitle>
+
+<AuthorizeView Roles="Staff">
+	<Authorized>
+		<StaffLandingPage></StaffLandingPage>
+	</Authorized>
+    <NotAuthorized>
+		<DefaultLandingPage></DefaultLandingPage>
+	</NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+}
