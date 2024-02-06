@@ -16,15 +16,6 @@ function startAutoplayCarousel() {
     document.getElementById("nextFurnitureCarouselBtn").click();
 }
 
-// View replies and comments
-function showRepliesNComments(reviewId) {
-    // the button is id = "repliesncomments"
-    let container = document.getElementById(`rncContainer-${reviewId}`);
-    if (container) {
-        container.style.display = container.style.display === 'none' ? 'block' : 'none';
-    }
-}
-
 function hideModal(modalSelector) {
     let modal = document.querySelector(modalSelector);
     let bsModal = bootstrap.Modal.getOrCreateInstance(modal);
