@@ -73,11 +73,12 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account
         /// </summary>
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public class InputModel
+		/// <summary>
+		///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+		///     directly from your code. This API may change or be removed in future releases.
+		/// </summary>
+		// InputModel class to define the user registration form fields
+		public class InputModel
         {
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -126,20 +127,22 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
         }
 
-
-        public async Task OnGetAsync(string returnUrl = null)
+		// Handles GET requests for the registration page
+		public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+		// Handles POST requests for the registration page
+		public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
+				// Creater a new user & set the details from the input
+				var user = CreateUser();
                 await _userStore.SetUserNameAsync(user, Input.NRIC, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 await _userManager.SetPhoneNumberAsync(user, Input.ContactNumber);
@@ -147,14 +150,15 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    //Set user role to user
+                    // Set the user role to user
                     if (!await _roleManager.RoleExistsAsync("Consumer"))
                     {
                         await _roleManager.CreateAsync(new IdentityRole("Consumer"));
                     }
                     await _userManager.AddToRoleAsync(user, "Consumer");
 
-                    var consumer = new Consumer();
+					// Create a Consumer entity and save it to the database
+					var consumer = new Consumer();
                     consumer.UserId = user.Id;
                     consumer.FirstName = Input.FirstName;
                     consumer.LastName = Input.LastName;

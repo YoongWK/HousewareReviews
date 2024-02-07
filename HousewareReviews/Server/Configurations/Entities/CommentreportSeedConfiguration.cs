@@ -8,6 +8,7 @@ namespace HousewareComments.Server.Configurations.Entities
     {
         public void Configure(EntityTypeBuilder<Commentreport> builder)
         {
+            // Seed the database with initial data for the Commentreport entity
             builder.HasData(
                 new Commentreport
                 {

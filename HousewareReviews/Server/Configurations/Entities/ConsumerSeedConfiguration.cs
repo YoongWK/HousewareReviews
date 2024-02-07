@@ -8,6 +8,7 @@ namespace HousewareReviews.Server.Configurations.Entities
     {
         public void Configure(EntityTypeBuilder<Consumer> builder)
         {
+            // Seed the database with initial data for the Consumer entity
             builder.HasData(
                 new Consumer
                 {

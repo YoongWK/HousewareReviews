@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
 namespace HousewareReviews.Server.Configurations.Entities
 {
     public class UserSeedConfiguration : IEntityTypeConfiguration<ApplicationUser>
     {
         public void Configure(EntityTypeBuilder<ApplicationUser> builder)
         {
+            // Seed the database with initial data for the ApplicationUser
             var hasher = new PasswordHasher<ApplicationUser>();
             builder.HasData(
                 new ApplicationUser

@@ -1,8 +1,6 @@
 ﻿using HousewareReviews.Shared.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Drawing;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace HousewareReviews.Server.Configurations.Entities
 {
@@ -10,6 +8,7 @@ namespace HousewareReviews.Server.Configurations.Entities
     {
         public void Configure(EntityTypeBuilder<Review> builder)
         {
+            // Seed the database with initial data for the Review entity
             builder.HasData(
                 new Review
                 {

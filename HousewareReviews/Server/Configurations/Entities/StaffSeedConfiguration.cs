@@ -8,6 +8,7 @@ namespace HousewareReviews.Server.Configurations.Entities
     {
         public void Configure(EntityTypeBuilder<Staff> builder)
         {
+            // Seed the database with initial data for the Staff entity
             builder.HasData(
                 new Staff
                 {

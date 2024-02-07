@@ -18,13 +18,13 @@
 </head>
 <body class="m-0">
     <header>
-        @* Navbar *@
+        <!-- Navbar -->
         <nav class="navbar navbar-expand-xl fixed-top">
             <div class="container-fluid">
-                @* Brand Name*@
+                <!-- Brand Name -->
                 <a class="navbar-brand justify-content-start" href="~/">Houseware Reviews</a>
 
-                @* Hamburger/Cross Menu Button *@
+                <!-- Hamburger/Cross Menu Button !-->
                 <button class="navbar-toggler collapsed d-flex d-xl-none flex-column justify-content-around"
                         id="navbarToggler"
                         type="button"
@@ -58,10 +58,10 @@
         </nav>
     </header>
 
-    @* Render the '_CookieConsentPartial' view if it exists *@
+    <!-- Render the '_CookieConsentPartial' view if it exists -->
     <partial name="_CookieConsentPartial" optional />
 
-    @* Render the page content in the main section *@
+    <!-- Render the page content in the main section -->
     <main role="main" class="content">
         <div class="container-fluid" style="margin-top: 1.4rem;">
 			@RenderBody()

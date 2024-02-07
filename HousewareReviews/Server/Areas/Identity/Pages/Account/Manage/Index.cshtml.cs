@@ -59,6 +59,7 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 		///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
 		///     directly from your code. This API may change or be removed in future releases.
 		/// </summary>
+		// InputModel class to define the manage profile form fields
 		public class InputModel
 		{
 			/// <summary>
@@ -132,6 +133,7 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 			};
 		}
 
+		// Handles GET requests for the manage profile page
 		public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -165,7 +167,8 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 			return Page();
 		}
 
-        public async Task<IActionResult> OnPostAsync(IFormCollection form)
+		// Handles POST requests for the manage profile page
+		public async Task<IActionResult> OnPostAsync(IFormCollection form)
         {
 			var buttonValue = form["submitButton"];
 			var user = await _userManager.GetUserAsync(User);
@@ -175,8 +178,10 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
+			// If Deleted Button Selected
 			if (buttonValue == "deleteProfile")
 			{
+				// Delete user account
 				var result = await _userManager.DeleteAsync(user);
 				var userId = await _userManager.GetUserIdAsync(user);
 				if (!result.Succeeded)
@@ -184,6 +189,7 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 					throw new InvalidOperationException($"Unexpected error occurred deleting user.");
 				}
 
+				// Delete corresponding staff if user has a role of "Staff"
 				if (User.IsInRole("Staff"))
 				{
 					var staff = _context.Staffs.FirstOrDefault(u => u.UserId == user.Id);
@@ -193,6 +199,7 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 					}
 					_context.Staffs.Remove(staff);
 				}
+				// Delete corresponding consumer if user has a role of "Consumer"
 				else if (User.IsInRole("Consumer"))
 				{
 					var consumer = _context.Consumers.FirstOrDefault(u => u.UserId == user.Id);
@@ -212,8 +219,10 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 
 				return Redirect("~/");
 			}
+			// If Update Profile Button Selected
 			else if (buttonValue == "updateProfile")
 			{
+				// Get user profile image in Base64 String if input image is submitted
 				if (Input.ProfileImgFile != null)
 				{
 					using (var ms = new MemoryStream())
@@ -224,6 +233,7 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 					}
 				}
 
+				// Change user password if new password is provided & old password matches current password
 				if (Input.NewPassword != null)
 				{
 					var changePasswordResult = await _userManager.ChangePasswordAsync(user, Input.OldPassword == null? "" : Input.OldPassword, Input.NewPassword);
@@ -236,6 +246,7 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 					}
 				}
 
+				// Update corresponding staff details if user has a role of "Staff"
 				if (User.IsInRole("Staff"))
 				{
 					var staff = _context.Staffs.FirstOrDefault(u => u.UserId == user.Id);
@@ -256,6 +267,7 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 					staff.Password = Input.NewPassword == null? staff.Password : Input.NewPassword;
 					_context.Entry(staff).State = EntityState.Modified;
 				}
+				// Update corresponding consumer details if user has a role of "Consumer"
 				else if (User.IsInRole("Consumer"))
 				{
 					var consumer = _context.Consumers.FirstOrDefault(u => u.UserId == user.Id);
@@ -281,8 +293,11 @@ namespace HousewareReviews.Server.Areas.Identity.Pages.Account.Manage
 					return NotFound($"Unable to find role of user with ID '{user.Id}'.");
 				}
 
+				// Update user details
 				await _userManager.SetPhoneNumberAsync(user, Input.ContactNumber);
 				await _userManager.SetEmailAsync(user, Input.Email);
+
+				// Save changes to database
 				await _context.SaveChangesAsync();
 				await _signInManager.RefreshSignInAsync(user);
 				StatusMessage = "Your profile has been updated";

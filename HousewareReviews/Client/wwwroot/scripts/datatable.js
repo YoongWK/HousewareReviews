@@ -1,11 +1,13 @@
 ﻿function AddDataTable(table, text="Search") {
     $(document).ready(function () {
+        // Check if the DataTable is already initialized, and destroy it if necessary
         if ($.fn.dataTable.isDataTable(table)) {
             $(table).DataTable().destroy();
             var element = document.querySelector(table + '_wrapper');
             element.parentNode.removeChild(element);
         }
 
+        // Initialize the DataTable with custom configurations
         $(table).DataTable({
             "dom": 'ft<"d-flex justify-content-between align-items-center"ip>',
             "language": {
@@ -37,6 +39,8 @@
         });
     })
 }
+
+ // Destroy DataTable Instance & Remove Associated Elements Function
 function DataTablesDispose(table) {
     $(document).ready(function () {
         $(table).DataTable().destroy();

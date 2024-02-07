@@ -5,47 +5,67 @@
     ViewData["Title"] = "Log In";
 }
 
+<!-- LogIn Container -->
 <div class="d-flex align-items-center row rounded-4 m-0" style="background-color: var(--white)">
+	<!-- LogIn Card -->
 	<div class="col-xl-6 imagecard p-0">
+		<!-- LogIn Card Image -->
 		<img class="imagecard-image-l w-100" src="~/images/backgrounds/login.jpg" />
+
+		<!-- LogIn Card Content -->
 		<div class="imagecard-content text-center">
+			<!-- LogIn Card Title -->
 			<h2 class="imagecard-content-title">Welcome Back!</h2>
+			<!-- LogIn Card Text -->
 			<p class="d-none d-xl-block imagecard-content-text">Log In to engage with our vibrant community of home enthusiasts.</p>
 		</div>
 	</div>
 	<div class="col-xl-6 p-0">
 		<div class="px-5 py-3">
+			<!-- LogIn Form Title -->
 			<h2 class="form-title text-center">@ViewData["Title"]</h2>
+			<!-- LogIn Form Start -->
 			<form id="account" method="post">
 				<div asp-validation-summary="ModelOnly" class="text-danger form-validation" role="alert"></div>
+				<!-- NRIC Input Field -->
 				<div class="form-floating">
 					<input asp-for="Input.NRIC" class="form-control form-input" autocomplete="username" aria-required="true" placeholder="T0000000A" />
 					<label asp-for="Input.NRIC" class="form-label">NRIC</label>
 					<small><span asp-validation-for="Input.NRIC" class="text-danger"></span></small>
 				</div>
+
+				<!-- Password Input Field -->
 				<div class="form-floating mb-3">
 					<input asp-for="Input.Password" class="form-control form-input" autocomplete="current-password" aria-required="true" placeholder="password" />
 					<label asp-for="Input.Password" class="form-label">Password</label>
 					<small><span asp-validation-for="Input.Password" class="text-danger"></span></small>
 				</div>
+
+				<!-- Remember Me Checkbox -->
 				<div class="checkbox mb-2">
 					<label asp-for="Input.RememberMe" class="form-label">
 						<input class="form-check-input form-input-check" asp-for="Input.RememberMe" />
 						@Html.DisplayNameFor(m => m.Input.RememberMe)
 					</label>
 				</div>
+
+				<!-- LogIn Button -->
 				<div>
 					<button id="login-submit" type="submit" class="w-100 form-input-button rounded-5">Log in</button>
 				</div>
 				<div>
+					<!-- Link to Reset Password -->
 					<p class="form-input-label m-0 mt-3">
 						Forgot password? <a class="form-input-link" style="cursor: pointer;">Reset</a>
 					</p>
+
+					<!-- Link to Register Page -->
 					<p class="form-input-label m-0 mt-2">
 						Don't have an account? <a class="form-input-link" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register</a>
 					</p>
 				</div>
 			</form>
+			<!-- LogIn Form End -->
 		</div>
 	</div>
 </div>

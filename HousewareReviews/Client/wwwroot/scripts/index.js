@@ -1,27 +1,29 @@
-﻿// Hide Collapsable Bootstrap NavBar
+﻿// Hide Collapsable Bootstrap NavBar Function
 function hideNavBar() {
     let navbar = document.querySelector('#navbarNav');
     let bsCollapse = bootstrap.Collapse.getOrCreateInstance(navbar);
     bsCollapse.hide();
 }
 
-// Set Focus On Search Input Field
+// Set Focus On Search Input Field Function
 function SetSearchInputFocus() {
     document.getElementById('searchinput').focus();
 }
 
-// Autoplay Carousel function
+// Autoplay Carousel Function
 function startAutoplayCarousel() {
     setTimeout(3000);
     document.getElementById("nextFurnitureCarouselBtn").click();
 }
 
+// Hide Modal Function
 function hideModal(modalSelector) {
     let modal = document.querySelector(modalSelector);
     let bsModal = bootstrap.Modal.getOrCreateInstance(modal);
     bsModal.hide();
 }
 
+// Update Input Text Area Character Count Function
 function updateCharCount(inputField, maxlLength) {
     var formGroupDiv = inputField.closest('.form-group');
     var pElement = formGroupDiv.querySelector('p');
@@ -35,14 +37,17 @@ function updateCharCount(inputField, maxlLength) {
     }
 }
 
+// Store Image Resize Handlers
 window.ImgHandlers = {};
 window.ModalImgHandlers = {};
 
+// Update Image Height According to Aspect Ratio Function
 function updateImgHeight(imgId, hwRatio) {
     var image = document.getElementById(imgId);
     image.style.height = `${image.width * hwRatio}px`;
 }
 
+// Add Listener for Adjusting Image Height Function
 function addImgHeightListener(imgId, hwRatio) {
     function imgHandler() {
         updateImgHeight(imgId, hwRatio);
@@ -51,6 +56,7 @@ function addImgHeightListener(imgId, hwRatio) {
     window.ImgHandlers[imgId] = imgHandler;
 }
 
+// Remove Listener for Adjusting Image Height Function
 function removeImgHeightListener(imgId) {
     var imgHandler = window.ImgHandlers[imgId];
     if (imgHandler) {
@@ -59,6 +65,7 @@ function removeImgHeightListener(imgId) {
     }
 }
 
+// Add Listener for Adjusting Image Height in Modal Function
 function addModalImgHeightListener(modalId, imgId, hwRatio) {
     var modal = document.getElementById(modalId);
     function imgHandler() {
@@ -69,6 +76,7 @@ function addModalImgHeightListener(modalId, imgId, hwRatio) {
     window.ModalImgHandlers[modalId] = imgHandler;
 }
 
+// Remove Listener for Adjusting Image Height in Modal Function
 function removeModalImgHeightListener(modalId) {
     var modal = document.getElementById(modalId);
     var imgHandler = window.ModalImgHandlers[modalId];

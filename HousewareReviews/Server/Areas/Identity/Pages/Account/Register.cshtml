@@ -4,12 +4,16 @@
     ViewData["Title"] = "Register";
 }
 
+<!-- Registration Container -->
 <div class="d-flex align-items-center row rounded-4 m-0" style="background-color: var(--white)">
     <div class="order-xl-first order-last col-xl-6 p-0">
 		<div class="px-5 py-3">
+            <!-- Registration Form Title -->
 			<h2 class="form-title text-center">@ViewData["Title"]</h2>
+            <!-- Registration Form Start -->
             <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger form-validation" role="alert"></div>
+                <!-- First Name & Last Name Input Fields -->
                 <div class="row mx-0">
 					<div class="col-xl p-0 form-floating">
 						<input asp-for="Input.FirstName" class="form-control form-input" autocomplete="given-name" aria-required="true" placeholder="firstname" />
@@ -23,6 +27,8 @@
 						<small><span asp-validation-for="Input.LastName" class="text-danger"></span></small>
 					</div>
                 </div>
+
+                <!-- Email & Phone Number Input Fields -->
                 <div class="row mx-0">
                     <div class="col-xl p-0 form-floating">
                         <input asp-for="Input.Email" class="form-control form-input" autocomplete="email" aria-required="true" placeholder="email" />
@@ -36,11 +42,15 @@
                         <small><span asp-validation-for="Input.ContactNumber" class="text-danger"></span></small>
                     </div>
                 </div>
+
+                <!-- NRIC Input Field -->
                 <div class="form-floating">
                     <input asp-for="Input.NRIC" class="form-control form-input" autocomplete="username" aria-required="true" placeholder="T0000000A" />
                     <label asp-for="Input.NRIC" class="form-label">NRIC</label>
                     <small><span asp-validation-for="Input.NRIC" class="text-danger"></span></small>
                 </div>
+
+                <!-- Password & Confirm Password Input Fields -->
                 <div class="row mx-0 mb-3">
                     <div class="col-xl p-0 form-floating">
                         <input asp-for="Input.Password" class="form-control form-input" autocomplete="new-password" aria-required="true" placeholder="password" />
@@ -54,19 +64,31 @@
 						<small><span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span></small>
                     </div>
                 </div>
+
+                <!-- Register Button -->
                 <button id="registerSubmit" type="submit" class="w-100 form-input-button rounded-5">Register</button>
+
+                <!-- Link to LogIn Page -->
                 <div>
                     <p class="form-input-label m-0 mt-2">
                         Already have an account? <a class="form-input-link" asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Log In</a>
                     </p>
                 </div>
             </form>
+            <!-- Registration Form End -->
 		</div>
 	</div>
+
+    <!-- Registration Card -->
     <div class="order-xl-last order-first col-xl-6 imagecard p-0">
+        <!-- Registration Card Image -->
         <img class="imagecard-image-r w-100" src="~/images/backgrounds/register.jpg" />
+
+        <!-- Registration Card Content -->
         <div class="imagecard-content text-center">
+            <!-- Registration Card Title -->
             <h2 class="imagecard-content-title">Sign Up Today!</h2>
+            <!-- Registration Card Text -->
             <p class="d-none d-xl-block imagecard-content-text">Register an account to join our vibrant community of home enthusiasts.</p>
         </div>
     </div>

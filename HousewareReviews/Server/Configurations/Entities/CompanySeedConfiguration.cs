@@ -1,13 +1,14 @@
 ﻿using HousewareReviews.Shared.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Drawing;
+
 namespace HousewareReviews.Server.Configurations.Entities
 {
     public class CompanySeedConfiguration : IEntityTypeConfiguration<Company>
     {
         public void Configure(EntityTypeBuilder<Company> builder)
         {
+            // Seed the database with initial data for the Company entity
             builder.HasData(
                 new Company
                 {

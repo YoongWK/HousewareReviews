@@ -13,13 +13,18 @@
     }
 }
 
+@* If the user is Signed In *@
 @if (SignInManager.IsSignedIn(User))
 {
     var user = await UserManager.GetUserAsync(User);
+    <!-- NavItems -->
     <div class="collapse navbar-collapse" id="navbarNav">
+        <!-- Navbar Below XL Screen Size View Start -->
         <nav class="navbar-nav justify-content-center flex-grow-1">
+            <!-- Profile Navigation -->
 			<div class="d-xl-none dropdown">
 				<div class="nav-item px-1">
+                    <!-- Profile Button -->
 					<button type="button" class="btn-profile btn dropdown-toggle shadow-none nav-link" data-bs-toggle="dropdown" aria-expanded="false">
                         @if (user != null)
                         {
@@ -43,10 +48,15 @@
                             }
                         }
 					</button>
+
+                    <!-- Profile Dropdown Menu -->
 					<div class="dropdown-menu nav-item" style="margin: 0px 8px 8px 8px;">
+                        <!-- Manage Profile Navigation -->
 						<a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
 							<span class="oi oi-cog" aria-hidden="true"></span> Manage Profile
 						</a>
+
+                        <!-- LogOut Navigation -->
                         <form id="logout-small" style="cursor: pointer;" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" method="post">
                             <a class="nav-link" onclick="document.getElementById('logout-small').submit()">
                                 <span class="oi oi-account-logout" aria-hidden="true"></span> Log Out
@@ -56,8 +66,13 @@
 				</div>
 			</div>
         </nav>
+        <!-- Navbar Below XL Screen Size View End -->
+
+        <!-- Navbar Above XL Screen Size View Start -->
+        <!-- Profile Navigation -->
         <div class="d-none d-xl-flex btn-group justify-content-end" style="min-width:275px;">
             <div class="nav-item px-1">
+                <!-- Profile Button -->
                 <button type="button" class="btn-profile btn dropdown-toggle shadow-none nav-link" data-bs-toggle="dropdown" aria-expanded="false">
                     @if (user != null)
                     {
@@ -81,10 +96,15 @@
                         }
                     }
                 </button>
+
+                <!-- Profile Dropdown Menu -->
                 <div class="dropdown-menu dropdown-menu-end nav-item" style="margin: 8px 0px 0px 0px;">
+                    <!-- Manage Profile Navigation -->
                     <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
                         <span class="oi oi-cog" aria-hidden="true"></span> Manage Profile
                     </a>
+
+                    <!-- LogOut Navigation -->
                     <form id="logout-big" style="cursor: pointer;" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" method="post">
                         <a class="nav-link" onclick="document.getElementById('logout-big').submit()">
                             <span class="oi oi-account-logout" aria-hidden="true"></span> Log Out
@@ -93,35 +113,48 @@
                 </div>
             </div>
         </div>
+        <!-- Navbar Above XL Screen Size View End -->
     </div>
 }
+@* If the user is not Signed In *@
 else
 {
+    <!-- NavItems -->
     <div class="collapse navbar-collapse" id="navbarNav">
+        <!-- Navbar Below XL Screen Size View Start -->
         <nav class="navbar-nav justify-content-center flex-grow-1">
+            <!-- LogIn Button -->
             <div class="d-xl-none nav-item px-1">
                 <a class="nav-link" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@returnUrl">
                     <span class="oi oi-account-login" aria-hidden="true"></span> Log In
                 </a>
             </div>
 
+            <!-- Register Button -->
             <div class="d-xl-none nav-item px-1">
                     <a class="nav-link" asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="@returnUrl">
                     <span class="oi oi-plus" aria-hidden="true"></span> Register
                 </a>
             </div>
         </nav>
+        <!-- Navbar Below XL Screen Size View End -->
+
+        <!-- Navbar Above XL Screen Size View Start -->
         <div class="d-none d-xl-flex justify-content-end align-items-center gap-3" style="min-width:275px;">
+            <!-- LogIn Button -->
             <div class="btn-login btn rounded-5 shadow-none border-0" style="background-color: var(--lightblue)">
                 <a class="nav-link" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@returnUrl">
                     Log In
                 </a>
             </div>
+
+            <!-- Register Button -->
             <div class="btn-register btn rounded-5 shadow-none border-0" style="background-color: var(--blue)">
                 <a class="nav-link" asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="@returnUrl">
                     Register
                 </a>
             </div>
         </div>
+        <!-- Navbar Above XL Screen Size View End -->
     </div>
 }

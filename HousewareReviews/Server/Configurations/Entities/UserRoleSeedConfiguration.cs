@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
 namespace HousewareReviews.Server.Configurations.Entities
 {
     public class UserRoleSeedConfiguration : IEntityTypeConfiguration<IdentityUserRole<string>>
     {
         public void Configure(EntityTypeBuilder<IdentityUserRole<string>> builder)
         {
+            // Seed the database with initial data for the IdentityUserRole
             builder.HasData(
                 new IdentityUserRole<string>
                 {

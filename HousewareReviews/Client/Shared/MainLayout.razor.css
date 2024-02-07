@@ -1,9 +1,11 @@
+/* Page CSS */
 .page {
     position: relative;
     display: flex;
     flex-direction: column;
 }
 
+/* Page Content CSS */
 main {
     flex: 1;
 }

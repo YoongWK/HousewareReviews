@@ -73,10 +73,10 @@ app.UseRouting();
 app.UseIdentityServer();
 app.UseAuthorization();
 
-// Mao Razor Pages, controllers, & fallback to serving "index.html" for unmatched routes
+// Map Razor Pages, controllers, & fallback to serving "index.html" for unmatched routes
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 
-// Runn the application
+// Run the application
 app.Run();

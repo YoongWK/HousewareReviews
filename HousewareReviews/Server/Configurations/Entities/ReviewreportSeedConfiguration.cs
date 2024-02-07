@@ -8,6 +8,7 @@ namespace HousewareReviews.Server.Configurations.Entities
     {
         public void Configure(EntityTypeBuilder<Reviewreport> builder)
         {
+            // Seed the database with initial data for the Reviewreport entity
             builder.HasData(
                 new Reviewreport
 				{
